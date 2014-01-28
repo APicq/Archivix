@@ -5,8 +5,10 @@ import java.awt.*;
 
 /**
  * Created by pic on 1/28/14.
+ * Panel whith all configuration options.
  */
 public class ConfigPane extends JPanel {
+
 
     public ConfigPane() {
 
