@@ -26,55 +26,50 @@ public class ReportWorker extends SwingWorker<Boolean,String> {
 
     private class ReportWorkerDialog extends JDialog {
 
+        public JTextArea getTextArea() {
+            return textArea;
+        }
+
+        JTextArea textArea ;
+        JButton   OKButton ;
+        JButton   CancelButton ;
+
         public ReportWorkerDialog(JFrame myFrame, String name){
 
             super(myFrame);
             setTitle(name);
-
-
-            JTextArea textArea = new JTextArea();
+            textArea = new JTextArea();
             textArea.setEditable(false);
             textArea.setText("Wait..");
             textArea.setColumns(40);
             textArea.setRows(30);
-
-            JButton OKButton = new JButton("OK");
-            JButton CancelButton = new JButton("Cancel");
-
-            JPanel vertPanel = new JPanel();
-            vertPanel.setBorder(new EmptyBorder(10,10,10,10));
-            vertPanel.setLayout(new BoxLayout(vertPanel, BoxLayout.PAGE_AXIS));
-            //vertPanel.add(textArea);
-
+            OKButton = new JButton("OK");
+            CancelButton = new JButton("Cancel");
+            JPanel verticalPanel = new JPanel();
+            verticalPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            verticalPanel.setLayout(new BoxLayout(verticalPanel, BoxLayout.PAGE_AXIS));
             JScrollPane scrollPane = new JScrollPane(textArea);
-            vertPanel.add(scrollPane);
-
-            JPanel panel = new JPanel();
-            BoxLayout layout = new BoxLayout(panel,BoxLayout.LINE_AXIS);
-            //panel.setLayout(layout);
-            panel.add(OKButton);
-
-            panel.add(CancelButton);
-            panel.add(Box.createHorizontalGlue());
-
-            panel.setMaximumSize(panel.getPreferredSize());
-
-            vertPanel.add(panel);
-
-            add(vertPanel);
-
+            verticalPanel.add(scrollPane);
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+            buttonPanel.setBackground(Color.YELLOW);
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            buttonPanel.add(Box.createHorizontalGlue());
+            buttonPanel.add(OKButton);
+            buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+            buttonPanel.add(CancelButton);
+            verticalPanel.add(buttonPanel);
+            add(verticalPanel);
             pack();
+            setMinimumSize(getPreferredSize());
         }
-    }
+    }   // class
 
     private ReportWorkerDialog reportWorkerDialog ;
 
-    //private GlobalWorkerDialog dialog;
-
     @Override
     protected void done() {
-        super.done();
-        //dialog.dispose();
+        reportWorkerDialog.dispose();
     }
 
     /**
@@ -104,7 +99,7 @@ public class ReportWorker extends SwingWorker<Boolean,String> {
 
     @Override
     protected void process(List<String> chunks) {
-        super.process(chunks);
+        for(String chunk:chunks) reportWorkerDialog.getTextArea().append(chunk);
     }
 
     /**

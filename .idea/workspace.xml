@@ -67,8 +67,11 @@
       <file leaf-file-name="ReportWorker.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ReportWorker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="116" column="68" selection-start="2664" selection-end="2664" vertical-scroll-proportion="0.52755904" vertical-offset="1464" max-vertical-offset="1845">
-              <folding />
+            <state line="101" column="78" selection-start="2762" selection-end="2762" vertical-scroll-proportion="0.648294" vertical-offset="1193" max-vertical-offset="1770">
+              <folding>
+                <element signature="e#522#523#0" expanded="true" />
+                <element signature="e#561#562#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -642,7 +645,10 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ReportWorker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="27" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="795">
-          <folding />
+          <folding>
+            <element signature="e#522#523#0" expanded="true" />
+            <element signature="e#561#562#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -678,7 +684,10 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ReportWorker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="27" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="795">
-          <folding />
+          <folding>
+            <element signature="e#522#523#0" expanded="true" />
+            <element signature="e#561#562#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -732,8 +741,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ReportWorker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="116" column="68" selection-start="2664" selection-end="2664" vertical-scroll-proportion="0.52755904" vertical-offset="1464" max-vertical-offset="1845">
-          <folding />
+        <state line="101" column="78" selection-start="2762" selection-end="2762" vertical-scroll-proportion="0.648294" vertical-offset="1193" max-vertical-offset="1770">
+          <folding>
+            <element signature="e#522#523#0" expanded="true" />
+            <element signature="e#561#562#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
