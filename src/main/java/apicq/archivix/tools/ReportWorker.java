@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
-
-// TODO add scrollable
-
 /**
  * Created by pic on 1/27/14.
  * A specialized worker. Prints a dialog with informations.Needs to be subclassed.
