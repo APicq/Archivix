@@ -1,5 +1,7 @@
 package apicq.archivix;
 
+import apicq.archivix.gui.MainFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,10 +16,8 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JFrame jFrame = new JFrame("Test");
-                jFrame.setMinimumSize(new Dimension(100,100));
-                jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                jFrame.setVisible(true);
+                MainFrame mainFrame = new MainFrame();
+                mainFrame.setVisible(true);
             }
         });
     }
