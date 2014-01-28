@@ -10,6 +10,23 @@ import java.awt.*;
 public class ConfigPane extends JPanel {
 
     /**
+     * Simple line with label,textfield and button
+     */
+    class ConfigLine extends JPanel {
+
+        private JButton button ;
+        private JTextField textField;
+
+        public ConfigLine(String buttonString,String labelString) {
+            super();
+            button = new JButton(buttonString);
+            JLabel label = new JLabel(labelString);
+
+
+
+        }
+    }
+    /**
      * Constructor
      */
     public ConfigPane() {
@@ -45,6 +62,14 @@ public class ConfigPane extends JPanel {
         attachPathPanel.add(attachPathButton);
         attachPathPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                 attachPathPanel.getPreferredSize().height));
+
+        // Message Pool line :
+        JLabel messagePoolPath = new JLabel("Message pool : ");
+        JTextField messagePoolTextField = new JTextField();
+        messagePoolTextField.setEditable(false);
+        messagePoolTextField.setColumns(25);
+        JButton messagePoolButton = new JButton("change pool directory");
+
 
         // Add lines vertically : 
         add(panel1);
