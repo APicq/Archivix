@@ -9,7 +9,9 @@ import java.awt.*;
  */
 public class ConfigPane extends JPanel {
 
-
+    /**
+     * Constructor
+     */
     public ConfigPane() {
 
         super();
@@ -17,7 +19,7 @@ public class ConfigPane extends JPanel {
         setLayout(verticalLayout);
 
 
-        // Line database config
+        // Line database
         JLabel label1 = new JLabel("Database :");
         JTextField databaseTextField = new JTextField();
         databaseTextField.setColumns(25);

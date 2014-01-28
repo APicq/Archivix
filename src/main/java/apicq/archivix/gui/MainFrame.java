@@ -10,13 +10,13 @@ import java.awt.event.ActionListener;
  */
 public class MainFrame extends JFrame {
 
+    // configuration panel, place into tab.
     private ConfigPane configPane ;
 
     public MainFrame(){
 
         configPane = new ConfigPane();
 
-        setMinimumSize(new Dimension(100,100));
         setTitle("-- Archivix --");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -24,7 +24,8 @@ public class MainFrame extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.add("Config",configPane);
         add(tabbedPane);
-
+        pack();
+        setMinimumSize(getPreferredSize());
 
     }
 

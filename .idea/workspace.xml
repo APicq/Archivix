@@ -64,10 +64,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ConfigPane.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ConfigPane.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/gui/ConfigPane.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="41" selection-start="146" selection-end="146" vertical-scroll-proportion="0.27559054" vertical-offset="0" max-vertical-offset="855">
+            <state line="51" column="0" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.0" vertical-offset="444" max-vertical-offset="885">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainFrame.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/gui/MainFrame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="12" column="43" selection-start="266" selection-end="266" vertical-scroll-proportion="0.23622048" vertical-offset="90" max-vertical-offset="585">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -92,8 +103,8 @@
         <option value="$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ArchiLogger.java" />
         <option value="$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ArchiLog.java" />
         <option value="$PROJECT_DIR$/src/main/java/apicq/archivix/tools/ReportWorker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/apicq/archivix/gui/MainFrame.java" />
         <option value="$PROJECT_DIR$/src/main/java/apicq/archivix/gui/ConfigPane.java" />
+        <option value="$PROJECT_DIR$/src/main/java/apicq/archivix/gui/MainFrame.java" />
       </list>
     </option>
   </component>
@@ -686,15 +697,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/gui/MainFrame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="32" selection-start="551" selection-end="551" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="570">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="41" selection-start="450" selection-end="450" vertical-scroll-proportion="0.6062992" vertical-offset="54" max-vertical-offset="450">
@@ -708,7 +710,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/gui/ConfigPane.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="41" selection-start="146" selection-end="146" vertical-scroll-proportion="0.27559054" vertical-offset="0" max-vertical-offset="855">
+        <state line="51" column="0" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.0" vertical-offset="444" max-vertical-offset="885">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/gui/MainFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="43" selection-start="266" selection-end="266" vertical-scroll-proportion="0.23622048" vertical-offset="90" max-vertical-offset="585">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
