@@ -10,20 +10,22 @@ import java.awt.event.ActionListener;
  */
 public class MainFrame extends JFrame {
 
+    private ConfigPane configPane ;
+
     public MainFrame(){
+
+        configPane = new ConfigPane();
+
         setMinimumSize(new Dimension(100,100));
         setTitle("-- Archivix --");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        // debug
-        JButton OKButton = new JButton("OK");
-        getContentPane().add(OKButton);
-        OKButton.addActionListener( new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add("Config",configPane);
+        add(tabbedPane);
+
+
     }
 
 
