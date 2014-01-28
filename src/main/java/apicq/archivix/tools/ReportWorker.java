@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,16 +20,16 @@ import java.util.logging.Logger;
  */
 public class ReportWorker extends SwingWorker<Boolean,String> {
 
-
-
-
-
-
+    public static final String SEP = System.getProperty("line.separator");
 
     private class ReportWorkerDialog extends JDialog {
 
         public JTextArea getTextArea() {
             return textArea;
+        }
+
+        public JButton getCancelButton() {
+            return CancelButton;
         }
 
         JTextArea textArea ;
@@ -69,6 +71,7 @@ public class ReportWorker extends SwingWorker<Boolean,String> {
 
     @Override
     protected void done() {
+        // Auto close at the end :
         reportWorkerDialog.dispose();
     }
 
@@ -77,9 +80,13 @@ public class ReportWorker extends SwingWorker<Boolean,String> {
      */
     public ReportWorker(JFrame myFrame,String name){
         reportWorkerDialog = new ReportWorkerDialog(myFrame,name);
-
+        reportWorkerDialog.getCancelButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                publish(SEP+"Cancelling..."+SEP);
+            }
+        });
     }
-
 
     public void doTheJob(){
         execute();
