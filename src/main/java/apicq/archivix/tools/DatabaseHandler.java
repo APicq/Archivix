@@ -39,8 +39,8 @@ public class DatabaseHandler {
                 log.warning("Class org.sqlite.JDBC not foud.");
                 return false ;
             }
-            return true;
         }
+        return true ;
     }
 
     // todo
