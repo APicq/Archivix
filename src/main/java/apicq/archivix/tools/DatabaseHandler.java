@@ -1,5 +1,6 @@
 package apicq.archivix.tools;
 
+import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
 /**
@@ -11,7 +12,13 @@ public class DatabaseHandler {
 
     private String databaseFullPathName ;
     private static Logger log = Logger.getLogger("Archivix");
-    private static boolean init = false ;
+
+    // bool to launch init method only once.
+    private static boolean initIsDone = false ;
+
+    // initOK == true if database initialised.
+    private static boolean initOK = false ;
+
 
     public DatabaseHandler(){
 
@@ -22,19 +29,23 @@ public class DatabaseHandler {
      * @return
      */
     private static boolean init(){
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            log.warning("Class org.sqlite.JDBC not foud.");
-            return false ;
+
+        if( initIsDone == false ){
+            initIsDone = true ;
+            try {
+                Class.forName("org.sqlite.JDBC");
+                initOK = true ;
+            } catch (ClassNotFoundException e) {
+                log.warning("Class org.sqlite.JDBC not foud.");
+                return false ;
+            }
+            return true;
         }
-        init = true;
-        return true;
     }
 
-    // todo    Statement -> update
-    public boolean update(){
-        return false ;
+    // todo
+    public PreparedStatement getPreparedStatement(String SQL) {
+        return null ;
     }
 
 

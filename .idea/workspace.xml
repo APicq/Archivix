@@ -76,8 +76,10 @@
       <file leaf-file-name="DatabaseHandler.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/DatabaseHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="34" selection-start="738" selection-end="738" vertical-scroll-proportion="0.54749566" vertical-offset="193" max-vertical-offset="795">
-              <folding />
+            <state line="46" column="60" selection-start="1073" selection-end="1073" vertical-scroll-proportion="0.53367877" vertical-offset="381" max-vertical-offset="960">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -602,7 +604,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1366" height="746" extended-state="6" />
+    <frame x="0" y="0" width="1366" height="746" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -662,7 +664,9 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/DatabaseHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="34" column="34" selection-start="738" selection-end="738" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="795">
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -806,8 +810,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/apicq/archivix/tools/DatabaseHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="34" selection-start="738" selection-end="738" vertical-scroll-proportion="0.54749566" vertical-offset="193" max-vertical-offset="795">
-          <folding />
+        <state line="46" column="60" selection-start="1073" selection-end="1073" vertical-scroll-proportion="0.53367877" vertical-offset="381" max-vertical-offset="960">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
