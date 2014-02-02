@@ -87,7 +87,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="17" selection-start="1006" selection-end="1006" vertical-scroll-proportion="0.56692916" vertical-offset="264" max-vertical-offset="645">
+            <state line="35" column="26" selection-start="1116" selection-end="1116" vertical-scroll-proportion="0.68503934" vertical-offset="264" max-vertical-offset="660">
               <folding />
             </state>
           </provider>
@@ -613,7 +613,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1366" height="746" extended-state="7" />
+    <frame x="0" y="0" width="1366" height="746" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -840,7 +840,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="17" selection-start="1006" selection-end="1006" vertical-scroll-proportion="0.56692916" vertical-offset="264" max-vertical-offset="645">
+        <state line="35" column="26" selection-start="1116" selection-end="1116" vertical-scroll-proportion="0.68503934" vertical-offset="264" max-vertical-offset="660">
           <folding />
         </state>
       </provider>
