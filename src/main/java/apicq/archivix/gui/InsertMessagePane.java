@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by pic on 1/28/14.
+ * todo : delete.
  */
 public class InsertMessagePane extends JPanel {
 

@@ -20,20 +20,46 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>apicq.archivix.Main</mainClass>
+                            <mainClass>apicq.archivix.gui.MainFrame</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+
+            </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources/META-INF</directory>
+            </resource>
+        </resources>
     </build>
 
 
-<dependencies>
-    <dependency>
-        <groupId>org.xerial</groupId>
-        <artifactId>sqlite-jdbc</artifactId>
-        <version>3.7.15-M1</version>
-    </dependency>
-</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.7.15-M1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-swing</artifactId>
+            <version>4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.10-beta2</version>
+        </dependency>
+    </dependencies>
 </project>
