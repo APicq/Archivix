@@ -1,5 +1,7 @@
 package apicq.archivix;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -15,12 +17,11 @@ public class Test {
 
 
     public void test(){
-        log.info(""+getClass().getClassLoader());
-        Locale currentLocale = Locale.getDefault();
-        log.info(""+currentLocale);
-        //ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle");
-        ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
-        log.info(messages.getString("message1"));
+        Calendar c = Calendar.getInstance();
+        //c.add(Calendar.DATE,1);
+        log.info(""+c.getTime());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        log.info(""+format.format(c.getTime()));
     }
 
     public static void main(String[] args){
