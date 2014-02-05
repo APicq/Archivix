@@ -26,6 +26,9 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     // log
     public static final Logger log = Logger.getLogger("Archivix");
 
+    // String separator
+    private static final String SEP = System.getProperty("line.separator");
+
     // Array of files to be inserted into database
     private File[] messageFiles ;
 
@@ -72,9 +75,11 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     } // constructor
 
 
-
-
-
+    /**
+     * archive message and attachments
+     * @return
+     * @throws Exception
+     */
     //todo : block gui while insert
     @Override
     protected Integer doInBackground() throws Exception {
@@ -88,6 +93,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             progressMonitor.setProgress(++index);
             progressMonitor.setNote(""+index+"/"+messageFiles.length+" "+messageFile.getName());
             if(progressMonitor.isCanceled()) {
+                dibError("Archiving canceled");
                 status = resultCANCEL ;
                 return resultCANCEL;
             }
@@ -118,7 +124,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             // ** Check duplicate messages :
             int messageID = -1 ;
             try {
-                messageID = checkDuplicate(mapiMessage);
+                messageID = dibCheckDuplicate(mapiMessage);
             }
             catch (SQLException e){//Signal error,next message
                 log.warning("Erreur duplicate SQL "+messageFile.getAbsolutePath());
@@ -136,7 +142,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             // If new message,insert it :
             if( messageID != -1 ){
                 try {
-                    messageID = insertMessage(mapiMessage);
+                    messageID = dibInsertMessage(mapiMessage);
                 }
                 catch (SQLException e){
                     log.warning("Erreur insert message SQL "+messageFile.getAbsolutePath());
@@ -179,8 +185,8 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                 String md5 = "" ;
                 boolean attachAlreadySaved ;
                 try {
-                md5 = md5Sum(attach.getEmbeddedAttachmentObject());
-                attachAlreadySaved = isAttachAlreadySaved(attach,md5);
+                md5 = dibMd5Sum(attach.getEmbeddedAttachmentObject());
+                attachAlreadySaved = dibIsAttachAlreadySaved(attach, md5);
                 }
                 catch(IOException e){
                     log.warning("Erreur attach IO "+messageFile.getAbsolutePath());
@@ -215,7 +221,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
                 // update attachment table
                 try {
-                    insertAttachToDatabase(attach, messageID, md5);
+                    dibInsertAttachToDatabase(attach, messageID, md5);
                 }
                 catch (SQLException e){
                     log.warning("Error SQL insert "+messageFile.getAbsolutePath());
@@ -233,10 +239,10 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
 
     /**
-     * Insert attach parameters into table
+     * do in background : Insert attach parameters into table
      * @param attach
      */
-    private void insertAttachToDatabase(AttachmentChunks attach,int messageID,String md5)
+    private void dibInsertAttachToDatabase(AttachmentChunks attach, int messageID, String md5)
             throws SQLException {
         PreparedStatement pStatement = con.prepareStatement(
                 "INSERT INTO attach(msgid,name,size,md5sum) " +
@@ -256,10 +262,10 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @throws NoSuchAlgorithmException
      * @throws IOException
      */
-    private boolean isAttachAlreadySaved(AttachmentChunks attach,String md5)
+    private boolean dibIsAttachAlreadySaved(AttachmentChunks attach, String md5)
             throws NoSuchAlgorithmException, IOException {
         List<String> listOfNames =
-                buildCleanFileNames(mainFrame.attachmentDirectory());
+                dibBuildCleanFileNames(mainFrame.attachmentDirectory());
         for (String name : listOfNames) {
             if (md5.equals(name)) {
                 return true;
@@ -274,7 +280,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @param mapiMessage
      * @return
      */
-    private int insertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
+    private int dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
         PreparedStatement pStatement = con.prepareStatement(
                 "INSERT INTO messages "+      // todo change schema
                         "(AUTEUR,SUJET,CORPS,DATE,DEST,PJ,CC,BCC)" +
@@ -307,7 +313,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @param mapiMessage
      * @return
      */
-    private int checkDuplicate(MAPIMessage mapiMessage) throws SQLException,
+    private int dibCheckDuplicate(MAPIMessage mapiMessage) throws SQLException,
             ChunkNotFoundException {
 
         PreparedStatement pStatement = con.prepareStatement(
@@ -336,7 +342,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @return         md5 string
      * @throws NoSuchAlgorithmException
      */
-    private String md5Sum(byte[] content) throws NoSuchAlgorithmException {
+    private String dibMd5Sum(byte[] content) throws NoSuchAlgorithmException {
 
         MessageDigest md = MessageDigest.getInstance("MD5");
 
@@ -354,7 +360,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @return
      * @throws IOException
      */
-    private List<String> buildCleanFileNames(String directory) throws IOException {
+    private List<String> dibBuildCleanFileNames(String directory) throws IOException {
 
         List<String> listOfNames = new ArrayList<String>();
 
@@ -382,5 +388,14 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
         //close the progress dialog
         // check errors
         // show dialog if errors
+    }
+
+    /**
+     * Error management :
+     * @param s string to print
+     */
+    private void dibError(String s){
+        log.warning(s);
+        notifications.add(s+SEP);
     }
 }

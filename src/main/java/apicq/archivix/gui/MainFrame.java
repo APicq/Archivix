@@ -14,21 +14,28 @@ import java.awt.event.ActionListener;
 public class MainFrame extends JFrame {
 
     // Full path to sqlite database :
-    private String dabataseFile ;
-    public String databaseFile() { return dabataseFile; }
+    private String dabataseFile;
+
+    public String databaseFile() {
+        return dabataseFile;
+    }
 
     // Full path to attachment directory
     private String attachmentDirectory;
-    public String attachmentDirectory() { return  attachmentDirectory; }
 
-    public MainFrame(){
+    public String attachmentDirectory() {
+        return attachmentDirectory;
+    }
+
+    public MainFrame() {
 
         // Disable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
         setLayout(new MigLayout("", "[grow,fill]", "[][grow]"));
         setTitle("-- Archivix --");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Menu
+
+        // Setup menu
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Fichier");
         JMenuItem insertMessageItem = new JMenuItem("Insert message files");
@@ -44,13 +51,13 @@ public class MainFrame extends JFrame {
 
         // Components
         SearchPanel searchPanel = new SearchPanel();
-        add(searchPanel,"wrap");
+        add(searchPanel, "wrap");
         String[] someElemStrings = new String[3];
-        someElemStrings[0]="aaa";
-        someElemStrings[1]="bbb";
-        someElemStrings[2]="ccc";
+        someElemStrings[0] = "aaa";
+        someElemStrings[1] = "bbb";
+        someElemStrings[2] = "ccc";
         MessageJList messageJList = new MessageJList(someElemStrings);
-        add(messageJList,"grow");
+        add(messageJList, "grow");
 
         // Finalize
         pack();
@@ -64,8 +71,7 @@ public class MainFrame extends JFrame {
         quitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // todo : save some datas
-                System.exit(0);
+                actionQuit();
             }
         });
 
@@ -82,7 +88,7 @@ public class MainFrame extends JFrame {
         databaseChooseItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 actionConnectDatabase();
+                actionConnectDatabase();
             }
         });
 
@@ -98,6 +104,11 @@ public class MainFrame extends JFrame {
         debug();
     }// constructor
 
+    private void actionQuit() {
+        // todo : save some datas
+        System.exit(0);
+    }
+
     /**
      * Select directory where all attachment files lie.
      */
@@ -105,7 +116,7 @@ public class MainFrame extends JFrame {
         final JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = chooser.showOpenDialog(this);
-        if(returnValue==JFileChooser.APPROVE_OPTION){
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
             attachmentDirectory = chooser.getSelectedFile().getAbsolutePath();
         }
     }
@@ -113,23 +124,24 @@ public class MainFrame extends JFrame {
     /**
      * Connect to SQlite database
      */
-    private void actionConnectDatabase(){
+    private void actionConnectDatabase() {
         final JFileChooser chooser = new JFileChooser();
         int returnValue = chooser.showOpenDialog(MainFrame.this);
-        if(returnValue==JFileChooser.APPROVE_OPTION){
-            dabataseFile=(chooser.getSelectedFile().getAbsolutePath());
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            dabataseFile = (chooser.getSelectedFile().getAbsolutePath());
             MainFrame.this.setTitle(chooser.getSelectedFile().getName());
             // init database :
             new InitBaseWorker(MainFrame.this).execute();
-            //todo update search,show first result.
+            //todo update search,show first result, freeze main frame
         }
     }
 
     /**
      * Program entry point
+     *
      * @param args
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -147,9 +159,9 @@ public class MainFrame extends JFrame {
     }
 
     // todo : delete after,only for debugging
-    public void debug(){
+    public void debug() {
         dabataseFile = "/home/pic/testbase.sqlite";
-        attachmentDirectory = "/home/pic/attach/" ;
+        attachmentDirectory = "/home/pic/attach/";
         new InitBaseWorker(this).execute();
     }
 
