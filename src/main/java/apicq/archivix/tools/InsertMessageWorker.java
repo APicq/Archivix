@@ -67,6 +67,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
         // select files to push into db :
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choisissez un ou des fichiers messages outlook (.msg)");
         fileChooser.setMultiSelectionEnabled(true);
         if(fileChooser.showOpenDialog(mainFrame)==JFileChooser.APPROVE_OPTION){
             messageFiles = fileChooser.getSelectedFiles();
@@ -88,11 +89,11 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     @Override
     protected Integer doInBackground() throws Exception {
 
-        int index = 0;
+        int index = 0; // only used for showing partial results in progressDialog
 
         for(File messageFile:messageFiles) {
 
-            // Show informations :
+            // Show infos on dialog :
             log.info("parsing "+messageFile.toString());
             progressMonitor.setProgress(++index);
             progressMonitor.setNote(""+index+"/"+messageFiles.length+" "+messageFile.getName());
@@ -246,14 +247,27 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      */
     private void dibInsertAttachToDatabase(AttachmentChunks attach, int messageID, String md5)
             throws SQLException {
+
+        // Check if already saved ;
         PreparedStatement pStatement = con.prepareStatement(
-                "INSERT INTO attach(msgid,name,size,md5sum) " +
-                        " VALUES(?,?,?,?)");
-        pStatement.setInt(1, messageID);
+                "SELECT id from attach where msgid=? and name=? and md5sum =?");
+        pStatement.setInt(1,messageID);
         pStatement.setString(2, attach.attachLongFileName.toString());
-        pStatement.setInt(3, attach.getEmbeddedAttachmentObject().length);
-        pStatement.setString(4,md5);
-        pStatement.execute();
+        pStatement.setString(3,md5);
+        ResultSet rs = pStatement.executeQuery();
+        if(rs.next()){
+            log.info("attach "+attach.attachLongFileName+" already in database,msgid="+messageID);
+        }
+        else {
+            pStatement = con.prepareStatement(
+                    "INSERT INTO attach(msgid,name,size,md5sum) " +
+                            " VALUES(?,?,?,?)");
+            pStatement.setInt(1, messageID);
+            pStatement.setString(2, attach.attachLongFileName.toString());
+            pStatement.setInt(3, attach.getEmbeddedAttachmentObject().length);
+            pStatement.setString(4,md5);
+            pStatement.execute();
+        }
     }
 
 
