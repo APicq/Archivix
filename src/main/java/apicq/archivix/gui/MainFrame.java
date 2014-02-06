@@ -163,6 +163,7 @@ public class MainFrame extends JFrame {
         dabataseFile = "/home/pic/testbase.sqlite";
         attachmentDirectory = "/home/pic/attach/";
         new InitBaseWorker(this).execute();
+        new InsertMessageWorker(this);
     }
 
 

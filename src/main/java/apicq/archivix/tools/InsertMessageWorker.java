@@ -6,6 +6,7 @@ import org.apache.poi.hsmf.datatypes.AttachmentChunks;
 import org.apache.poi.hsmf.exceptions.ChunkNotFoundException;
 
 import javax.swing.*;
+import javax.swing.text.StringContent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,6 +29,9 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
     // String separator
     private static final String SEP = System.getProperty("line.separator");
+
+    // User name
+    private static final String USER = System.getProperty("user.name");
 
     // Array of files to be inserted into database
     private File[] messageFiles ;
@@ -105,18 +109,18 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                 log.info("parse message OK : "+messageFile.getAbsolutePath());
             }
             catch (IOException e){
-                log.warning(e.toString());
+                dibError(messageFile.getAbsolutePath()+" not a message file");
                 status = resultERROR ;
                 continue;
             }
 
-            // ** init connection :
+            // init connection, or exit in case of error
             try {
                 con = DriverManager.getConnection(
                         "jdbc:sqlite:" + mainFrame.databaseFile() );
             }
             catch(SQLException e){   // no connection : abort
-                notifications.add("Erreur : ouverture connexion impossible "+e.getMessage());
+                dibError("SQL open connection error : "+e.getMessage());
                 status = resultERROR ;
                 return null;
             }
@@ -125,34 +129,31 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             int messageID = -1 ;
             try {
                 messageID = dibCheckDuplicate(mapiMessage);
+                log.info("messageID "+messageID);
             }
             catch (SQLException e){//Signal error,next message
-                log.warning("Erreur duplicate SQL "+messageFile.getAbsolutePath());
-                notifications.add("SQL " + messageFile.getName() + " " + e.getMessage());
+                dibError("Duplicate error : "+e.getMessage());
                 status=resultERROR;
                 continue;
             }
             catch (ChunkNotFoundException e){  //idem
-                log.warning("Erreur duplicate Chunk "+messageFile.getAbsolutePath());
-                notifications.add("Chunk " + messageFile.getName() + " " + e.getMessage());
+                dibError("Duplicate chunk error : "+e.getMessage());
                 status=resultERROR;
                 continue;
             }
 
             // If new message,insert it :
-            if( messageID != -1 ){
+            if( messageID == -1 ){
                 try {
                     messageID = dibInsertMessage(mapiMessage);
                 }
                 catch (SQLException e){
-                    log.warning("Erreur insert message SQL "+messageFile.getAbsolutePath());
-                    notifications.add("SQL " + messageFile.getName()+" "+e.getMessage());
+                    dibError("Insert error : "+e.getMessage());
                     status=resultERROR;
                     continue;
                 }
                 catch (ChunkNotFoundException e){
-                    log.warning("Erreur duplicate chunk "+messageFile.getAbsolutePath());
-                    notifications.add("chunk " + messageFile.getName()+" "+e.getMessage());
+                    dibError("Chunk error : "+e.getMessage());
                     status=resultERROR;
                     continue;
                 }
@@ -167,16 +168,17 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             for (AttachmentChunks attach : attachmentChunksList) {
 
                 if(progressMonitor.isCanceled()) {
+                    dibError("Cancelled");
                     status = resultCANCEL ;
                     return  resultCANCEL ;
                 }
 
-                log.info("Attachment : "+attach.attachFileName);
+                log.info("Processing attachment file : "+attach.attachLongFileName);
 
                 // ignore embedded outlook messages :
                 if (attach.getEmbeddedAttachmentObject() == null) {
-                    log.warning("Embedded outlook message");
-                    notifications.add("Embedded outlook message in "+messageFile.getName());
+                    dibError("Embedded outlook message in " + messageFile.getName());
+                    // add to error string todo
                     continue;
                 }
 
@@ -185,37 +187,38 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                 String md5 = "" ;
                 boolean attachAlreadySaved ;
                 try {
-                md5 = dibMd5Sum(attach.getEmbeddedAttachmentObject());
-                attachAlreadySaved = dibIsAttachAlreadySaved(attach, md5);
+                    md5 = dibMd5Sum(attach.getEmbeddedAttachmentObject());
+                    attachAlreadySaved = dibIsAttachAlreadySaved(attach, md5);
                 }
                 catch(IOException e){
-                    log.warning("Erreur attach IO "+messageFile.getAbsolutePath());
-                    notifications.add("attach IO " + messageFile.getName()+" "+e.getMessage());
+                    dibError("Erreur attach IO "+messageFile.getName()+" "+e.getMessage());
                     status=resultERROR;
                     continue;
                 }
                 catch (NoSuchAlgorithmException e){
-                    log.warning("Erreur duplicate chunk "+messageFile.getAbsolutePath());
-                    notifications.add("chunk " + messageFile.getName()+" "+e.getMessage());
+                    dibError("Erreur md5sum "+messageFile.getName()+" "+e.getMessage());
                     status=resultERROR;
                     continue;
                 }
 
                 // New attach,copy it :
                 if(!attachAlreadySaved){
+                    log.info("New attachment");
                     String finalName = md5 + attach.attachExtension.toString();
                     try {
-                    File inputFile = new File(mainFrame.attachmentDirectory(),finalName);
-                    FileOutputStream fos = new FileOutputStream(inputFile);
-                    fos.write(attach.getEmbeddedAttachmentObject());
-                    fos.close();
+                        File inputFile = new File(mainFrame.attachmentDirectory(),finalName);
+                        FileOutputStream fos = new FileOutputStream(inputFile);
+                        fos.write(attach.getEmbeddedAttachmentObject());
+                        fos.close();
                     }
                     catch (Exception e){
-                        log.warning("Error copy "+messageFile.getAbsolutePath());
-                        notifications.add("Error copy " + messageFile.getName()+" "+e.getMessage());
+                        dibError("Error copy" + messageFile.getName());
                         status=resultERROR;
                         continue;
                     }
+                }
+                else {
+                    log.warning("Attachment file "+attach.attachLongFileName+" already saved.");
                 }
 
 
@@ -224,8 +227,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                     dibInsertAttachToDatabase(attach, messageID, md5);
                 }
                 catch (SQLException e){
-                    log.warning("Error SQL insert "+messageFile.getAbsolutePath());
-                    notifications.add("Error insert " + messageFile.getName()+" "+e.getMessage());
+                    dibError("Error SQL insert " + messageFile.getName());
                     status=resultERROR;
                     continue;
                 }
@@ -239,14 +241,14 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
 
     /**
-     * do in background : Insert attach parameters into table
+     * do in background : Insert attach parameters into table,if not exists
      * @param attach
      */
     private void dibInsertAttachToDatabase(AttachmentChunks attach, int messageID, String md5)
             throws SQLException {
         PreparedStatement pStatement = con.prepareStatement(
                 "INSERT INTO attach(msgid,name,size,md5sum) " +
-                " VALUES(?,?,?,?)");
+                        " VALUES(?,?,?,?)");
         pStatement.setInt(1, messageID);
         pStatement.setString(2, attach.attachLongFileName.toString());
         pStatement.setInt(3, attach.getEmbeddedAttachmentObject().length);
@@ -283,17 +285,19 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     private int dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
         PreparedStatement pStatement = con.prepareStatement(
                 "INSERT INTO messages "+      // todo change schema
-                        "(AUTEUR,SUJET,CORPS,DATE,DEST,PJ,CC,BCC)" +
-                        " VALUES(?,?,?,?,?,?,?,?)");
+                        "(author,subject,body,date,recip,attach,cc,bcc,username)" +
+                        " VALUES(?,?,?,?,?,?,?,?,?)");
         pStatement.setString(1, mapiMessage.getDisplayFrom());
         pStatement.setString(2, mapiMessage.getSubject());
-        pStatement.setString(3, mapiMessage.getTextBody());
+        pStatement.setString(3, mapiMessage.getRtfBody());
         pStatement.setString(4,new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
                 mapiMessage.getMessageDate().getTime()));
         pStatement.setString(5, mapiMessage.getDisplayTo());
-        pStatement.setInt(   6, mapiMessage.getAttachmentFiles().length);
+        pStatement.setInt(6, mapiMessage.getAttachmentFiles().length);
         pStatement.setString(7, mapiMessage.getDisplayCC());
         pStatement.setString(8, mapiMessage.getDisplayBCC());
+        pStatement.setString(9, USER);
+
         pStatement.execute();
 
         // pick up message id :
@@ -317,14 +321,14 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             ChunkNotFoundException {
 
         PreparedStatement pStatement = con.prepareStatement(
-                "SELECT id FROM messages WHERE from=? AND date=? AND subject=? AND text=? AND to=?");
-
+                "SELECT id FROM messages WHERE "+
+                        "author=? AND date=? AND subject=? AND body=? AND recip=?");
         pStatement.setString(1, mapiMessage.getDisplayFrom());
         pStatement.setString(2,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
                         mapiMessage.getMessageDate().getTime()));
         pStatement.setString(3, mapiMessage.getSubject());
-        pStatement.setString(4, mapiMessage.getHtmlBody());
+        pStatement.setString(4, mapiMessage.getRtfBody());
         pStatement.setString(5, mapiMessage.getDisplayTo());
 
         ResultSet rs = pStatement.executeQuery();
@@ -386,6 +390,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     protected void done() {
         log.info("Done");
         //close the progress dialog
+
         // check errors
         // show dialog if errors
     }
