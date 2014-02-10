@@ -10,6 +10,9 @@ import java.awt.*;
  */
 public class SearchPanel extends JPanel {
 
+    private JButton searchWordsButton ;
+    public JButton searchWordsButton() { return searchWordsButton; };
+
     public SearchPanel(){
         super();
         setLayout(new MigLayout("", "[][grow,fill][]", ""));

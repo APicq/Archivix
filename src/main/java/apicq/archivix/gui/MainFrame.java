@@ -52,12 +52,17 @@ public class MainFrame extends JFrame {
         // Components
         SearchPanel searchPanel = new SearchPanel();
         add(searchPanel, "wrap");
-        String[] someElemStrings = new String[3];
-        someElemStrings[0] = "aaa";
-        someElemStrings[1] = "bbb";
-        someElemStrings[2] = "ccc";
-        MessageJList messageJList = new MessageJList(someElemStrings);
+        //String[] someElemStrings = new String[3];
+        //someElemStrings[0] = "aaa";
+        //someElemStrings[1] = "bbb";
+        //someElemStrings[2] = "ccc";
+        //MessageJList messageJList = new MessageJList(someElemStrings);
+        JScrollPane messageListScroller = new JScrollPane();
+
+        MessageJList messageJList = new MessageJList();
+        messageListScroller.add(messageJList);
         add(messageJList, "grow");
+        //add(messageListScroller, "grow");
 
         // Finalize
         pack();
@@ -101,7 +106,7 @@ public class MainFrame extends JFrame {
         });
 
         // DEBUG
-        debug();
+        //debug();
     }// constructor
 
     private void actionQuit() {
