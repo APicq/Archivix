@@ -383,16 +383,10 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     private List<String> dibBuildCleanFileNames(String directory) throws IOException {
 
         List<String> listOfNames = new ArrayList<String>();
-
         File[] files = new File(directory).listFiles();
-        //DirectoryStream<Path> attachDirStream = Files.newDirectoryStream(source);
-
         String separator = ".";
-
         for (File oneFile : files) {
-
             int extensionIndex  = oneFile.getName().toString().lastIndexOf(separator);
-            //attachPath.getFileName().toString().lastIndexOf(separator);
             if (extensionIndex == -1) {
                 listOfNames.add(oneFile.getName().toString());
             } else {
@@ -412,14 +406,15 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     }
 
     /**
-     * Try to clean strings from outlook. Totally blind guess.
+     * Try to clean strings from outlook CRLF->SEP and
+     * remove extra lines.
      * @param inputString
      * @return
      */
     private String purge(final String inputString){
         return inputString.replaceAll(
-                "" + (char)(0x0d) + (char)(0x0a) , SEP ).replaceAll(
-                "" + (char)(0x0a)+"+" + ".{0,1}" + (char)(0x0a)+"+" , SEP
+                "" + (char)(0x0d) , "" ).replaceAll(
+                "" + (char) (0x0a) + "+" + ".{0,1}" + (char) (0x0a) + "+", SEP
         );
     }
 
@@ -427,7 +422,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     protected void done() {
         log.info("Done");
         //close the progress dialog
-
         // check errors
         // show dialog if errors
     }
