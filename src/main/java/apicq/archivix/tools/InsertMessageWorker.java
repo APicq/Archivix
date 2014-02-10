@@ -110,7 +110,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
         for(File messageFile:messageFiles) {
 
             // Show infos on dialog :
-            log.info("parsing "+messageFile.toString());
             progressMonitor.setProgress(++index);
             progressMonitor.setNote(
                     "" + index + "/" + messageFiles.length + " " + messageFile.getName());
@@ -124,10 +123,10 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             MAPIMessage mapiMessage;
             try {
                 mapiMessage = new MAPIMessage(messageFile.getAbsolutePath());
-                log.info("parse message OK : "+messageFile.getAbsolutePath());
             }
             catch (IOException e){
                 dibError(messageFile.getAbsolutePath()+" not a message file");
+                log.warning(messageFile.getAbsolutePath()+" not a message file");
                 status = resultERROR ;
                 continue;
             }
@@ -138,7 +137,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             int messageID = -1 ;
             try {
                 messageID = dibCheckDuplicate(mapiMessage);
-                log.info("messageID "+messageID);
             }
             catch (SQLException e){//Signal error,next message
                 dibError("Duplicate error : "+e.getMessage());
@@ -182,8 +180,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                     return  resultCANCEL ;
                 }
 
-                log.info("Processing attachment file : "+attach.attachLongFileName);
-
                 // ignore embedded outlook messages :
                 if (attach.getEmbeddedAttachmentObject() == null) {
                     dibError("Embedded outlook message in " + messageFile.getName());
@@ -212,7 +208,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
                 // New attach,copy it :
                 if(!attachAlreadySaved){
-                    log.info("New attachment");
                     String finalName = md5 + attach.attachExtension.toString();
                     try {
                         File inputFile = new File(mainFrame.attachmentDirectory(),finalName);
@@ -264,7 +259,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
         pStatement.setString(3,md5);
         ResultSet rs = pStatement.executeQuery();
         if(rs.next()){
-            log.info("attach "+attach.attachLongFileName+" already in database,msgid="+messageID);
+            log.warning("attach "+attach.attachLongFileName+" already in database,msgid="+messageID);
         }
         else {
             pStatement = mainFrame.pConnection().prepareStatement(
