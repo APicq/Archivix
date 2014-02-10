@@ -10,11 +10,15 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  * todo delete
  */
 public class MainFrame extends JFrame {
+
+    public static final Logger log = Logger.getLogger("Archivix");
 
     // Full path to sqlite database :
     private String dabataseFile;
@@ -40,6 +44,8 @@ public class MainFrame extends JFrame {
      * Constructor
      */
     public MainFrame() {
+
+        pConnection = new ProtectedConnection(this);
 
         // Disable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
@@ -135,6 +141,12 @@ public class MainFrame extends JFrame {
 
     private void actionQuit() {
         // todo : save some datas
+        try {
+        pConnection.close();
+        }
+        catch (SQLException e){
+            log.warning("SQL error close "+e.toString());
+        }
         System.exit(0);
     }
 

@@ -92,6 +92,21 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
         int index = 0; // only used for showing partial results in progressDialog
 
+
+        // init connection, or exit in case of error
+        try {
+                /*con = DriverManager.getConnection(
+                        "jdbc:sqlite:" + mainFrame.databaseFile() );*/
+            //DbConnection.init(mainFrame);
+            mainFrame.pConnection().init();
+        }
+        catch(SQLException e){   // no connection : abort
+            dibError("SQL open connection error : "+e.getMessage());
+            status = resultERROR ;
+            return null;
+        }
+
+
         for(File messageFile:messageFiles) {
 
             // Show infos on dialog :
@@ -117,17 +132,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                 continue;
             }
 
-            // init connection, or exit in case of error
-            try {
-                /*con = DriverManager.getConnection(
-                        "jdbc:sqlite:" + mainFrame.databaseFile() );*/
-                DbConnection.init(mainFrame);
-            }
-            catch(SQLException e){   // no connection : abort
-                dibError("SQL open connection error : "+e.getMessage());
-                status = resultERROR ;
-                return null;
-            }
+
 
             // ** Check duplicate messages :
             int messageID = -1 ;
@@ -236,14 +241,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                     continue;
                 }
             }  // for each attachment
-            try {
-                DbConnection.close();
-            }
-            catch (SQLException e){
-                dibError("Error SQL insert " + messageFile.getName());
-                status=resultERROR;
-                return resultERROR ;
-            }
         } // for each fileMessage
 
         status = resultOK ;
@@ -260,7 +257,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             throws SQLException {
 
         // Check if already saved ;
-        PreparedStatement pStatement = DbConnection.prepareStatement(
+        PreparedStatement pStatement = mainFrame.pConnection().prepareStatement(
                 "SELECT id from attach where msgid=? and name=? and md5sum =?");
         pStatement.setInt(1,messageID);
         pStatement.setString(2, attach.attachLongFileName.toString());
@@ -270,7 +267,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             log.info("attach "+attach.attachLongFileName+" already in database,msgid="+messageID);
         }
         else {
-            pStatement = DbConnection.prepareStatement(
+            pStatement = mainFrame.pConnection().prepareStatement(
                     "INSERT INTO attach(msgid,name,size,md5sum) " +
                             " VALUES(?,?,?,?)");
             pStatement.setInt(1, messageID);
@@ -308,7 +305,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @return
      */
     private int dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
-        PreparedStatement pStatement = DbConnection.prepareStatement(
+        PreparedStatement pStatement = mainFrame.pConnection().prepareStatement(
                 "INSERT INTO messages "+      // todo change schema
                         "(author,subject,body,date,recip,attach,cc,bcc,username)" +
                         " VALUES(?,?,?,?,?,?,?,?,?)");
@@ -327,10 +324,12 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
         pStatement.execute();
 
         // pick up message id :
-        pStatement = DbConnection.prepareStatement("SELECT last_insert_rowid()");
+        pStatement = mainFrame.pConnection().
+                prepareStatement("SELECT last_insert_rowid()");
         ResultSet rs = pStatement.executeQuery();
         if (rs.next()) {
-            pStatement = DbConnection.prepareStatement("SELECT id FROM messages WHERE rowid=?");
+            pStatement = mainFrame.pConnection().
+                    prepareStatement("SELECT id FROM messages WHERE rowid=?");
             pStatement.setInt(1, rs.getInt(1));
             rs = pStatement.executeQuery();
             rs.next();
@@ -346,7 +345,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     private int dibCheckDuplicate(MAPIMessage mapiMessage) throws SQLException,
             ChunkNotFoundException {
 
-        PreparedStatement pStatement = DbConnection.prepareStatement(
+        PreparedStatement pStatement = mainFrame.pConnection().prepareStatement(
                 "SELECT id FROM messages WHERE "+
                         "author=? AND date=? AND subject=? AND body=? AND recip=?");
         pStatement.setString(1, mapiMessage.getDisplayFrom());

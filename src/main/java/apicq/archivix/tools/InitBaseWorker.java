@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
- * Created by pic on 2/3/14.
+ * Initialize database
  */
 public class InitBaseWorker extends SwingWorker<Boolean,String> {
 
@@ -37,11 +37,9 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
     protected Boolean doInBackground() throws Exception {
 
         try {
-
-            Connection con = mainFrame.connection();
-            con = DriverManager.getConnection("jdbc:sqlite:" +
-                    mainFrame.databaseFile());
-            PreparedStatement pStmt = con.prepareStatement(
+            mainFrame.pConnection().close();
+            mainFrame.pConnection().init();
+            PreparedStatement pStmt = mainFrame.pConnection().prepareStatement(
                     "CREATE TABLE IF NOT EXISTS messages(" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                             "author TEXT," +
@@ -54,14 +52,13 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
                             "bcc TEXT,"+
                             "username TEXT)");
             pStmt.execute();
-            pStmt = DbConnection.prepareStatement("CREATE TABLE IF NOT EXISTS attach (" +
+            pStmt = mainFrame.pConnection().prepareStatement("CREATE TABLE IF NOT EXISTS attach (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "msgid INTEGER," +
                     "name TEXT," +
                     "size INTEGER," +
                     "md5sum TEXT)");
             pStmt.execute();
-            DbConnection.close();
             // todo : create table tags
         } catch (SQLException e) {
             log.warning(e.toString());
