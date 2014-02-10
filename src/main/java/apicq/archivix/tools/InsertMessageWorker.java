@@ -10,6 +10,7 @@ import javax.swing.text.StringContent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -85,7 +86,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      * @return
      * @throws Exception
      */
-    //todo : block gui while insert
+    //todo ?: block gui while insert
     @Override
     protected Integer doInBackground() throws Exception {
 
@@ -96,7 +97,8 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
             // Show infos on dialog :
             log.info("parsing "+messageFile.toString());
             progressMonitor.setProgress(++index);
-            progressMonitor.setNote(""+index+"/"+messageFiles.length+" "+messageFile.getName());
+            progressMonitor.setNote(
+                    "" + index + "/" + messageFiles.length + " " + messageFile.getName());
             if(progressMonitor.isCanceled()) {
                 dibError("Archiving canceled");
                 status = resultCANCEL ;
@@ -303,7 +305,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                         " VALUES(?,?,?,?,?,?,?,?,?)");
         pStatement.setString(1, mapiMessage.getDisplayFrom());
         pStatement.setString(2, mapiMessage.getSubject());
-        pStatement.setString(3, mapiMessage.getRtfBody());
+        pStatement.setString(3, purge(mapiMessage.getTextBody()));
         pStatement.setString(4,new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
                 mapiMessage.getMessageDate().getTime()));
         pStatement.setString(5, mapiMessage.getDisplayTo());
@@ -342,7 +344,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
                         mapiMessage.getMessageDate().getTime()));
         pStatement.setString(3, mapiMessage.getSubject());
-        pStatement.setString(4, mapiMessage.getRtfBody());
+        pStatement.setString(4, purge(mapiMessage.getTextBody()));
         pStatement.setString(5, mapiMessage.getDisplayTo());
 
         ResultSet rs = pStatement.executeQuery();
@@ -400,15 +402,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
         return listOfNames;
     }
 
-    @Override
-    protected void done() {
-        log.info("Done");
-        //close the progress dialog
-
-        // check errors
-        // show dialog if errors
-    }
-
     /**
      * Error management :
      * @param s string to print
@@ -416,5 +409,26 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     private void dibError(String s){
         log.warning(s);
         notifications.add(s+SEP);
+    }
+
+    /**
+     * Try to clean strings from outlook. Totally blind guess.
+     * @param inputString
+     * @return
+     */
+    private String purge(final String inputString){
+        return inputString.replaceAll(
+                "" + (char)(0x0d) + (char)(0x0a) , SEP ).replaceAll(
+                "" + (char)(0x0a)+"+" + ".{0,1}" + (char)(0x0a)+"+" , SEP
+        );
+    }
+
+    @Override
+    protected void done() {
+        log.info("Done");
+        //close the progress dialog
+
+        // check errors
+        // show dialog if errors
     }
 }
