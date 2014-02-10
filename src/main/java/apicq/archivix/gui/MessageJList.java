@@ -1,12 +1,11 @@
 package apicq.archivix.gui;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by pic on 2/2/14.
  */
-public class MessageJList extends JList<MessageListModelElement> {
+public class MessageJList extends JList<MessageElement> {
 
     private MessageListModel messageListModel ;
 
@@ -20,7 +19,7 @@ public class MessageJList extends JList<MessageListModelElement> {
     }
 
     private void debug(){
-    messageListModel.add(new MessageListModelElement(
+    messageListModel.add(new MessageElement(
             "2013-28-10","toto","tata"));
     }
 }

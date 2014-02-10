@@ -1,5 +1,6 @@
 package apicq.archivix.gui;
 
+import apicq.archivix.tools.FindMessagesWorker;
 import apicq.archivix.tools.InitBaseWorker;
 import apicq.archivix.tools.InsertMessageWorker;
 import net.miginfocom.swing.MigLayout;
@@ -16,13 +17,31 @@ public class MainFrame extends JFrame {
     // Full path to sqlite database :
     private String dabataseFile;
 
+    // Full path to attachment directory
+    private String attachmentDirectory;
+
+    // JTable to print messages :
+    private final MessageTable messageTable ;
+
+    public MessageTable messageTable(){ return messageTable ;}
+
+    // Panel with buttons, to search elements
+    private final SearchPanel searchPanel;
+
+    public SearchPanel searchPanel(){ return searchPanel ;}
+
+    /**
+     * Getter
+     * @return
+     */
     public String databaseFile() {
         return dabataseFile;
     }
 
-    // Full path to attachment directory
-    private String attachmentDirectory;
-
+    /**
+     * Getter
+     * @return
+     */
     public String attachmentDirectory() {
         return attachmentDirectory;
     }
@@ -50,19 +69,16 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
 
         // Components
-        SearchPanel searchPanel = new SearchPanel();
+        searchPanel = new SearchPanel();
         add(searchPanel, "wrap");
-        //String[] someElemStrings = new String[3];
-        //someElemStrings[0] = "aaa";
-        //someElemStrings[1] = "bbb";
-        //someElemStrings[2] = "ccc";
-        //MessageJList messageJList = new MessageJList(someElemStrings);
+
         JScrollPane messageListScroller = new JScrollPane();
 
-        MessageJList messageJList = new MessageJList();
-        messageListScroller.add(messageJList);
-        add(messageJList, "grow");
+        //MessageJList messageJList = new MessageJList();
+        messageTable = new MessageTable();
+        //messageListScroller.add(messageTable);
         //add(messageListScroller, "grow");
+        add(messageTable, "grow");
 
         // Finalize
         pack();
@@ -105,9 +121,24 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // DEBUG
-        //debug();
+        // Find and print messages
+        searchPanel.searchWordsButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actionSearchInMessages();
+            }
+        });
+       debug();
     }// constructor
+
+
+    /**
+     * Search in messages
+     */
+    private void actionSearchInMessages() {
+        new FindMessagesWorker(this).execute();
+
+    }
 
     private void actionQuit() {
         // todo : save some datas
@@ -168,7 +199,7 @@ public class MainFrame extends JFrame {
         dabataseFile = "/home/pic/testbase.sqlite";
         attachmentDirectory = "/home/pic/attach/";
         new InitBaseWorker(this).execute();
-        new InsertMessageWorker(this);
+        //new InsertMessageWorker(this);
     }
 
 
