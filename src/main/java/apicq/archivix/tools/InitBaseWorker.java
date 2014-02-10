@@ -37,12 +37,11 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
     protected Boolean doInBackground() throws Exception {
 
         try {
-            /*
-            Connection con = DriverManager.getConnection("jdbc:sqlite:" +
+
+            Connection con = mainFrame.connection();
+            con = DriverManager.getConnection("jdbc:sqlite:" +
                     mainFrame.databaseFile());
-            */
-            DbConnection.init(mainFrame);
-            PreparedStatement pStmt = DbConnection.prepareStatement(
+            PreparedStatement pStmt = con.prepareStatement(
                     "CREATE TABLE IF NOT EXISTS messages(" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                             "author TEXT," +
@@ -54,7 +53,6 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
                             "cc TEXT," +
                             "bcc TEXT,"+
                             "username TEXT)");
-            log.info("balise");
             pStmt.execute();
             pStmt = DbConnection.prepareStatement("CREATE TABLE IF NOT EXISTS attach (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +

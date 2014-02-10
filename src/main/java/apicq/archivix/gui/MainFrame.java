@@ -3,11 +3,13 @@ package apicq.archivix.gui;
 import apicq.archivix.tools.FindMessagesWorker;
 import apicq.archivix.tools.InitBaseWorker;
 import apicq.archivix.tools.InsertMessageWorker;
+import apicq.archivix.tools.ProtectedConnection;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 /**
  * todo delete
@@ -16,36 +18,27 @@ public class MainFrame extends JFrame {
 
     // Full path to sqlite database :
     private String dabataseFile;
+    public String databaseFile() {return dabataseFile;}
 
     // Full path to attachment directory
     private String attachmentDirectory;
+    public String attachmentDirectory() {return attachmentDirectory;}
+
+    // Database protected connection
+    private ProtectedConnection pConnection ;
+    public ProtectedConnection pConnection(){ return pConnection ;}
 
     // JTable to print messages :
     private final MessageTable messageTable ;
-
     public MessageTable messageTable(){ return messageTable ;}
 
     // Panel with buttons, to search elements
     private final SearchPanel searchPanel;
-
     public SearchPanel searchPanel(){ return searchPanel ;}
 
     /**
-     * Getter
-     * @return
+     * Constructor
      */
-    public String databaseFile() {
-        return dabataseFile;
-    }
-
-    /**
-     * Getter
-     * @return
-     */
-    public String attachmentDirectory() {
-        return attachmentDirectory;
-    }
-
     public MainFrame() {
 
         // Disable renaming in file chooser :
