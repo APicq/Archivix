@@ -72,7 +72,7 @@ public class MainFrame extends JFrame {
         add(searchPanel, "wrap");
 
 
-        //MessageJList messageJList = new MessageJList();
+        //OldMessageJList messageJList = new OldMessageJList();
         messageTable = new MessageTable();
         JScrollPane messageListScroller = new JScrollPane(messageTable);
         //messageListScroller.add(messageTable);
