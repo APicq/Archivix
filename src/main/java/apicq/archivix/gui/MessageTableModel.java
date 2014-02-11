@@ -14,7 +14,13 @@ public class MessageTableModel extends AbstractTableModel {
     private static final int AUTHORCOL   = 1;
     private static final int SUBJECTCOL  = 2;
     private static final int RECIPCOL    = 3;
+    private static final int BODYCOL   = 4;
     private static final int ATTACHCOL   = 4;
+    private static final int MAILRECIPCOL   = 4;
+    private static final int CCCOL   = 4;
+    private static final int BCCCOL   = 4;
+    private static final int USERNAMECOL   = 4;
+    private static final int INSERTDATECOL   = 4;
 
 
     /**

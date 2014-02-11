@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -300,20 +301,33 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      */
     private int dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
         PreparedStatement pStatement = mainFrame.pConnection().prepareStatement(
-                "INSERT INTO messages "+      // todo change schema
-                        "(author,subject,body,date,recip,attach,cc,bcc,username)" +
-                        " VALUES(?,?,?,?,?,?,?,?,?)");
-        pStatement.setString(1, mapiMessage.getDisplayFrom());
-        pStatement.setString(2, mapiMessage.getSubject());
-        pStatement.setString(3, purge(mapiMessage.getTextBody()));
-        pStatement.setString(4,
+                "INSERT INTO messages("+      // todo change schema
+                        "date," +
+                        "author,"+
+                        "subject,"+
+                        "recip,"+
+                        "body,"+
+                        "attach,"+
+                        "mailrecip,"+
+                        "cc,"+
+                        "bcc)" +
+                        "username,"+
+                        "insertdate "+
+                        "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+        pStatement.setString(1,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
                         mapiMessage.getMessageDate().getTime()));
-        pStatement.setString(5, mapiMessage.getDisplayTo());
+        pStatement.setString(2, mapiMessage.getDisplayFrom());
+        pStatement.setString(3, mapiMessage.getSubject());
+        pStatement.setString(4, mapiMessage.getDisplayTo());
+        pStatement.setString(5, purge(mapiMessage.getTextBody()));
         pStatement.setInt(6, mapiMessage.getAttachmentFiles().length);
-        pStatement.setString(7, mapiMessage.getDisplayCC());
-        pStatement.setString(8, mapiMessage.getDisplayBCC());
-        pStatement.setString(9, USER);
+        pStatement.setString(7,mapiMessage.getRecipientEmailAddress());
+        pStatement.setString(8, mapiMessage.getDisplayCC());
+        pStatement.setString(9, mapiMessage.getDisplayBCC());
+        pStatement.setString(10, USER);
+        pStatement.setString(11,
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
         pStatement.execute();
 
