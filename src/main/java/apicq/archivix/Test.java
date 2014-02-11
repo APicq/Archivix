@@ -24,18 +24,9 @@ public class Test {
 
 
     public void test() throws Exception  {
-
-        String SEP = System.getProperty("line.separator");
-        MAPIMessage msg= new MAPIMessage("/home/pic/a_effacer.msg");
-        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/pic/test2.txt"));
-        String s1 = msg.getRtfBody();
-        bw.write(s1+SEP+"===================================================================="+SEP);
-        //s1 = s1.replaceAll( "" + (char)(0x0d) + (char)(0x0a) + ".{0,1}" + (char)(0x0d) + (char)(0x0a),SEP );
-
-        s1 = s1.replaceAll( "" + (char)(0x0d) , "" );
-        s1 = s1.replaceAll( "" + (char)(0x0a)+"+" + ".{0,1}" + (char)(0x0a)+"+" , SEP);
-        bw.write(s1);
-        bw.close();
+        MAPIMessage msg = new MAPIMessage("/home/pic/a_effacer.msg");
+        System.out.println(msg.getDisplayTo());
+        System.out.println(msg.getRecipientEmailAddress());
     }
 
     public static void main(String[] args){

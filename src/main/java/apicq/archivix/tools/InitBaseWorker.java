@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
- * Initialize database
+ * Initialize database, create necessary tables.
  */
 public class InitBaseWorker extends SwingWorker<Boolean,String> {
 
@@ -42,15 +42,17 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
             PreparedStatement pStmt = mainFrame.pConnection().prepareStatement(
                     "CREATE TABLE IF NOT EXISTS messages(" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "date TEXT," +
                             "author TEXT," +
                             "subject TEXT," +
-                            "body TEXT," +
-                            "date TEXT," +
                             "recip TEXT," +
+                            "body TEXT," +
                             "attach INTEGER," +
+                            "mailrecip TEXT," +
                             "cc TEXT," +
                             "bcc TEXT,"+
-                            "username TEXT)");
+                            "username TEXT,"+
+                            "insertDate TEXT)");
             pStmt.execute();
             pStmt = mainFrame.pConnection().prepareStatement("CREATE TABLE IF NOT EXISTS attach (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +

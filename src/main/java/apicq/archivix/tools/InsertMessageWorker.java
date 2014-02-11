@@ -92,7 +92,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
         int index = 0; // only used for showing partial results in progressDialog
 
-
         // init connection, or exit in case of error
         try {
                 /*con = DriverManager.getConnection(
