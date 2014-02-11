@@ -47,19 +47,46 @@ public class MessageTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return SUMCOL;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if(columnIndex==0){
+        if(columnIndex==IDCOL){
+            return messages.get(rowIndex).id();
+        }
+        if(columnIndex==DATECOL){
             return messages.get(rowIndex).date();
         }
-        if(columnIndex==1){
+        if(columnIndex==AUTHORCOL){
             return messages.get(rowIndex).author();
         }
-        if(columnIndex==2){
+        if(columnIndex==SUBJECTCOL){
             return messages.get(rowIndex).subject();
+        }
+        if(columnIndex==RECIPCOL){
+            return messages.get(rowIndex).recip();
+        }
+        if(columnIndex==BODYCOL){
+            return messages.get(rowIndex).body();
+        }
+        if(columnIndex==ATTACHCOL){
+            return messages.get(rowIndex).attach();
+        }
+        if(columnIndex==MAILRECIPCOL){
+            return messages.get(rowIndex).mailrecip();
+        }
+        if(columnIndex==CCCOL){
+            return messages.get(rowIndex).cc();
+        }
+        if(columnIndex==BCCCOL){
+            return messages.get(rowIndex).bcc();
+        }
+        if(columnIndex==USERNAMECOL){
+            return messages.get(rowIndex).username();
+        }
+        if(columnIndex==INSERTDATECOL){
+            return messages.get(rowIndex).insertDate();
         }
         return null ;
     }

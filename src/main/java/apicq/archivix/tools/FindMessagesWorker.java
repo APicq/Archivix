@@ -30,9 +30,20 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
     protected Boolean doInBackground() throws Exception {
 
         try {
-
             mainFrame.pConnection().init();
-            String sqlRequest =  "select id,date,author,subject,body " +
+            String sqlRequest =  "select "+
+                    "id," +
+                    "date," +
+                    "author," +
+                    "subject," +
+                    "recip," +
+                    "body," +
+                    "attach," +
+                    "mailrecip," +
+                    "cc," +
+                    "bcc," +
+                    "username," +
+                    "insertdate " +
                     "from messages ";
             // rest of string :
             String searchWords = mainFrame.searchPanel().searchWordsTextField().getText();
@@ -56,9 +67,20 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
 
             while(rs.next()){
                 MessageElement me = new MessageElement(
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4));
+                        rs.getInt(1),// id
+                        rs.getString(2),// date
+                        rs.getString(3),// author
+                        rs.getString(4),// subject
+                        rs.getString(5),// recip
+                        rs.getString(6),// body
+                        rs.getInt(7),// attach
+                        rs.getString(8),// mailrecip
+                        rs.getString(9),// cc
+                        rs.getString(10),// bcc
+                        rs.getString(11),// username
+                        rs.getString(12));// insertdate
+
+
                 messageTableModel.add(me);
             }
 

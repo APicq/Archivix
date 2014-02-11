@@ -310,9 +310,9 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
                         "attach,"+
                         "mailrecip,"+
                         "cc,"+
-                        "bcc)" +
+                        "bcc," +
                         "username,"+
-                        "insertdate "+
+                        "insertdate) "+
                         "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
         pStatement.setString(1,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
