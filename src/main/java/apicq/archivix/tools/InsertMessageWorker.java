@@ -301,7 +301,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
      */
     private int dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
         PreparedStatement pStatement = mainFrame.pConnection().prepareStatement(
-                "INSERT INTO messages("+      // todo change schema
+                "INSERT INTO messages("+
                         "date," +
                         "author,"+
                         "subject,"+

@@ -11,6 +11,9 @@ import java.awt.*;
 public class SearchPanel extends JPanel {
 
     private final JTextField searchWordsTextField;
+
+    private final JButton selectTagsButton;
+
     public JTextField searchWordsTextField(){ return searchWordsTextField ;}
     private final JButton searchWordsButton ;
     public JButton searchWordsButton() { return searchWordsButton; };
@@ -19,16 +22,16 @@ public class SearchPanel extends JPanel {
         searchWordsButton = new JButton("Rechercher");
         searchWordsTextField = new JTextField("");
         //super();
-        setLayout(new MigLayout("", "[][grow,fill][]", ""));
+        setLayout(new MigLayout("", "[][][grow,fill][]", ""));
         setBackground(Color.YELLOW);
-        JLabel searchLabel = new JLabel("Mots à rechercher :");
+        JLabel searchLabel = new JLabel("Rechercher dans ");
         add(searchLabel);
+        JComboBox<String> fieldComboBox = new JComboBox<String>(
+                new String[]{"corps","sujet","destinataires","auteur"});
+        add(fieldComboBox);
         add(searchWordsTextField, "grow");
         add(searchWordsButton,"wrap");
-        JCheckBox bodyCheckBox = new JCheckBox("corps");
-        add(bodyCheckBox);
-        JCheckBox subjectCheckBox = new JCheckBox("destinataire");
-        add(subjectCheckBox);
-
+        selectTagsButton = new JButton("Tags");
+        add(selectTagsButton);
     }
 }

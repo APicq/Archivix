@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
- * todo delete
+ * Main Program Window
  */
 public class MainFrame extends JFrame {
 
@@ -140,7 +140,7 @@ public class MainFrame extends JFrame {
     }
 
     private void actionQuit() {
-        // todo : save some datas
+        // todo : save some datas as properties
         try {
         pConnection.close();
         }
@@ -173,7 +173,7 @@ public class MainFrame extends JFrame {
             MainFrame.this.setTitle(chooser.getSelectedFile().getName());
             // init database :
             new InitBaseWorker(MainFrame.this).execute();
-            //todo update search,show first result, freeze main frame
+            // todo freeze main frame
         }
     }
 
@@ -204,7 +204,6 @@ public class MainFrame extends JFrame {
         dabataseFile = "/home/pic/testbase.sqlite";
         attachmentDirectory = "/home/pic/attach/";
         new InitBaseWorker(this).execute();
-        //new InsertMessageWorker(this);
     }
 
 

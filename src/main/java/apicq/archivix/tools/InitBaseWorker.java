@@ -54,6 +54,8 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
                             "username TEXT,"+
                             "insertDate TEXT)");
             pStmt.execute();
+
+            // Create attachement table :
             pStmt = mainFrame.pConnection().prepareStatement("CREATE TABLE IF NOT EXISTS attach (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "msgid INTEGER," +
@@ -61,7 +63,14 @@ public class InitBaseWorker extends SwingWorker<Boolean,String> {
                     "size INTEGER," +
                     "md5sum TEXT)");
             pStmt.execute();
-            // todo : create table tags
+
+            // Create tags table :
+            pStmt = mainFrame.pConnection().prepareStatement("CREATE TABLE IF NOT EXISTS tags("+
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "msgid INTEGER," +
+                    "tag TEXT)");
+            pStmt.execute();
+
         } catch (SQLException e) {
             log.warning(e.toString());
         }
