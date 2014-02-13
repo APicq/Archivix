@@ -20,6 +20,7 @@ public class MessageTable extends JTable {
 
 
         // todo : right-clikc menu
+        /*
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -30,6 +31,6 @@ public class MessageTable extends JTable {
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
-        });
+        });*/
     }
 }

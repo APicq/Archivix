@@ -8,8 +8,6 @@ import java.util.ArrayList;
  */
 public class MessageTableModel extends AbstractTableModel {
 
-    private ArrayList<MessageElement> messages ;
-
     private static final int IDCOL           = 0;
     private static final int DATECOL         = 1;
     private static final int AUTHORCOL       = 2;
@@ -23,6 +21,21 @@ public class MessageTableModel extends AbstractTableModel {
     private static final int USERNAMECOL     = 10;
     private static final int INSERTDATECOL   = 11;
     private static final int SUMCOL          = 12; // number of columns
+
+    // messageElement container
+    private ArrayList<MessageElement> messages ;
+
+    /**
+     * Getter
+     * @param index
+     * @return
+     */
+    public MessageElement get(int index){
+        if(index <0 || index>=messages.size()) return null ;
+        return messages.get(index);
+    }
+
+
 
     /**
      * Constructor

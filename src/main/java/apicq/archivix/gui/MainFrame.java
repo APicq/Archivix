@@ -9,6 +9,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -128,6 +130,20 @@ public class MainFrame extends JFrame {
             }
         });
        debug();
+
+        // double click open message :
+        messageTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount()==2){
+                    int rowIndex = messageTable.getSelectedRow();
+                    log.info(""+rowIndex);
+                    MessageTableModel mtm = (MessageTableModel) messageTable.getModel();
+                    MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
+                    msd.setVisible(true);
+                }
+            }
+        });
     }// constructor
 
 
