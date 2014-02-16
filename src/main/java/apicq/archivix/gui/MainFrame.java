@@ -72,13 +72,8 @@ public class MainFrame extends JFrame {
         // Components
         searchPanel = new SearchPanel();
         add(searchPanel, "wrap");
-
-
-        //OldMessageJList messageJList = new OldMessageJList();
-        messageTable = new MessageTable();
+        messageTable = new MessageTable(this);
         JScrollPane messageListScroller = new JScrollPane(messageTable);
-        //messageListScroller.add(messageTable);
-        //add(messageListScroller, "grow");
         add(messageListScroller, "grow");
 
         // Finalize
@@ -136,11 +131,8 @@ public class MainFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
-                    int rowIndex = messageTable.getSelectedRow();
-                    log.info(""+rowIndex);
-                    MessageTableModel mtm = (MessageTableModel) messageTable.getModel();
-                    MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
-                    msd.setVisible(true);
+                    actionShowMessageDialog();
+
                 }
             }
         });
@@ -155,6 +147,9 @@ public class MainFrame extends JFrame {
 
     }
 
+    /**
+     * Quit
+     */
     private void actionQuit() {
         // todo : save some datas as properties
         try {
@@ -191,6 +186,16 @@ public class MainFrame extends JFrame {
             new InitBaseWorker(MainFrame.this).execute();
             // todo freeze main frame
         }
+    }
+
+
+
+    private void actionShowMessageDialog(){
+        int rowIndex = messageTable.getSelectedRow();
+        log.info("rowIndex : "+rowIndex);
+        MessageTableModel mtm = (MessageTableModel) messageTable.getModel();
+        MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
+        msd.setVisible(true);
     }
 
     /**

@@ -1,12 +1,11 @@
 package apicq.archivix.gui;
 
 import javax.swing.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.logging.Logger;
 
 /**
- * Created by pic on 2/10/14.
+ * Table containing messages, plus events management
  */
 public class MessageTable extends JTable {
 
@@ -14,23 +13,45 @@ public class MessageTable extends JTable {
 
     private MessageTableModel messageTableModel ;
 
-    public MessageTable() {
+    private JPopupMenu popupMenu ;
+   // private JMenuItem addNewTagItem ;
+   // private JMenuItem modifyTagsItem ;
+   // private JMenuItem deleteMessagesItem ;
+
+    public MessageTable(MainFrame mainFrame) {
+
         messageTableModel = new MessageTableModel();
         setModel(messageTableModel);
 
+        // Menu definition and actions :
+        popupMenu = new JPopupMenu("Choisissez une action sur le(s) message(s)");
+        JMenuItem addNewTagItem = new JMenuItem("Ajouter un nouveau tag");
+        JMenuItem modifyTagsItem = new JMenuItem("Modifier les tags");
+        JMenuItem deleteMessagesItem = new JMenuItem("Effacer le(s) message(s)");
+        popupMenu.add(addNewTagItem);
+        popupMenu.add(modifyTagsItem);
+        popupMenu.add(deleteMessagesItem);
 
-        // todo : right-clikc menu
-        /*
+        // Actions
+        addNewTagItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actionAddNewTag();
+            }
+        });
+
+        // Right-click : menu appears
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e) {
-                if(e.getButton() == e.BUTTON3){// instanceof MessageTable){
-                    JPopupMenu popup = new JPopupMenu("qdsmfkjq");
-                    popup.add("dsqfqsdf");
-                    popup.add("aAAAAAA");
-                    popup.show(e.getComponent(), e.getX(), e.getY());
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == e.BUTTON3) {// instanceof MessageTable){
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
-        });*/
+        });
+    }
+
+    private void actionAddNewTag() {
+        // todo
     }
 }

@@ -1,5 +1,7 @@
 package apicq.archivix.gui;
 
+import java.util.ArrayList;
+
 /**
  * Created by pic on 2/10/14.
  */
@@ -29,6 +31,8 @@ public class MessageElement {
     public String username(){ return username;}
     private String insertDate ;
     public String insertDate() { return insertDate;}
+    private ArrayList<String> tags ;
+    public  ArrayList<String> tags() { return tags ;}
 
 
 
@@ -46,7 +50,8 @@ public class MessageElement {
             String cc ,
             String bcc ,
             String username ,
-            String insertDate ){
+            String insertDate,
+            ArrayList<String> tags){
 
         this.id = id ;
         this.date = date ;
@@ -60,5 +65,6 @@ public class MessageElement {
         this.bcc = bcc ;
         this.username = username ;
         this.insertDate = insertDate ;
+        this.tags = tags ;
     }
 }

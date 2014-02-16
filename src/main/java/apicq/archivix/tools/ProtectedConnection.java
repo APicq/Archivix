@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -50,5 +51,19 @@ public class ProtectedConnection {
             throw new SQLException("connection is closed");
         }
         return  con.prepareStatement(sql);
+    }
+
+    public static String merge(List<String> words,String sep){
+        if( words==null || words.size()==0 ) return "" ;
+        if( words.size()==1 ) return words.get(0).trim();
+        StringBuilder sb = new StringBuilder();
+        sb.append(words.get(0).trim());
+        for( int i=1 ; i<words.size() ; i++ ){
+            if(!words.get(i).trim().isEmpty()) {
+                sb.append(sep);
+                sb.append(words.get(i).trim());
+            }
+        }
+        return sb.toString();
     }
 }

@@ -35,7 +35,7 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
     // User name
     private static final String USER = System.getProperty("user.name");
 
-    // Array of files to be inserted into database
+    // Array of outlook msg files to be inserted into database
     private File[] messageFiles ;
 
     // Show a progressbar

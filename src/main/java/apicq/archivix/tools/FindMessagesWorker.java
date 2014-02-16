@@ -7,6 +7,7 @@ import apicq.archivix.gui.MessageTableModel;
 
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -64,8 +65,14 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
 
             MessageTableModel messageTableModel = new MessageTableModel();
 
-
             while(rs.next()){
+                // retrieve tags :
+                PreparedStatement tagsStatement = mainFrame.pConnection().
+                        prepareStatement("SELECT tag FROM tags where msgid=?");
+                tagsStatement.setInt(1,rs.getInt(1));
+                ResultSet tagsResultSet = tagsStatement.executeQuery();
+                ArrayList<String> tags = new ArrayList<String>();
+                while(tagsResultSet.next()) tags.add(tagsResultSet.getString(1));
                 MessageElement me = new MessageElement(
                         rs.getInt(1),// id
                         rs.getString(2),// date
@@ -78,21 +85,17 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
                         rs.getString(9),// cc
                         rs.getString(10),// bcc
                         rs.getString(11),// username
-                        rs.getString(12));// insertdate
-
-
+                        rs.getString(12),// insertdate
+                        tags);
                 messageTableModel.add(me);
             }
-
             mainFrame.messageTable().setModel(messageTableModel);
             mainFrame.invalidate();
-
         }
         catch(SQLException e){   // no connection : abort
             log.warning(e.toString());
             return Boolean.FALSE;
         }
-
         return null;
     }
 }
