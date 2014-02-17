@@ -70,7 +70,7 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
 
         // Components
-        searchPanel = new SearchPanel();
+        searchPanel = new SearchPanel(this);
         add(searchPanel, "wrap");
         messageTable = new MessageTable(this);
         JScrollPane messageListScroller = new JScrollPane(messageTable);

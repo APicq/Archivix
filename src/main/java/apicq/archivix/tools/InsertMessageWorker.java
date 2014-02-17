@@ -95,9 +95,6 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
         // init connection, or exit in case of error
         try {
-                /*con = DriverManager.getConnection(
-                        "jdbc:sqlite:" + mainFrame.databaseFile() );*/
-            //DbConnection.init(mainFrame);
             mainFrame.pConnection().init();
         }
         catch(SQLException e){   // no connection : abort
