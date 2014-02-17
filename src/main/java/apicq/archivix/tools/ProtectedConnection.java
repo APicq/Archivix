@@ -53,6 +53,12 @@ public class ProtectedConnection {
         return  con.prepareStatement(sql);
     }
 
+    /**
+     * Convenient method dor queries and others.
+     * @param words
+     * @param sep
+     * @return
+     */
     public static String merge(List<String> words,String sep){
         if( words==null || words.size()==0 ) return "" ;
         if( words.size()==1 ) return words.get(0).trim();

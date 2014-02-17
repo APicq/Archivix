@@ -73,7 +73,5 @@ public class SearchPanel extends JPanel {
                 }
             }
         });
-
-
     }
 }

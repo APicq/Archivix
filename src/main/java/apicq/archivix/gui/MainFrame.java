@@ -208,7 +208,8 @@ public class MainFrame extends JFrame {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.warning(e.toString());
+            return ;
         }
 
         SwingUtilities.invokeLater(new Runnable() {
