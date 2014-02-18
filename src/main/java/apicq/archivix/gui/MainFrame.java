@@ -1,9 +1,6 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.FindMessagesWorker;
-import apicq.archivix.tools.InitBaseWorker;
-import apicq.archivix.tools.InsertMessageWorker;
-import apicq.archivix.tools.ProtectedConnection;
+import apicq.archivix.tools.*;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -225,7 +222,12 @@ public class MainFrame extends JFrame {
     public void debug() {
         dabataseFile = "/home/pic/testbase.sqlite";
         attachmentDirectory = "/home/pic/attach/";
-        new InitBaseWorker(this).execute();
+        //new InitBaseWorker(this).execute();
+        TestSpecializedWorker tsw = new TestSpecializedWorker(this);
+        //tsw.execute();
+        //tsw.showDialog();
+        tsw.start();
+
     }
 
 
