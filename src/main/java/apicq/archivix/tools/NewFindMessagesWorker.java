@@ -26,12 +26,12 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
 
     /**
-     *
-     * @param prefix
-     * @param suffix
-     * @param separator
-     * @param args
-     * @return
+     * method used to build sql strings.
+     * @param prefix  prefix
+     * @param suffix suffix
+     * @param separator separator
+     * @param args args
+     * @return a string
      */
     public static String stringify(String prefix,
                                    String suffix,
@@ -102,7 +102,9 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         }
         System.out.println("part2 "+part2);
 
+        //----------------
         // tag managment :
+        //----------------
         String part3 = "";
         if(unTagged) {
             part3 = " id NOT IN (SELECT DISTINCT msgid FROM tags)";
