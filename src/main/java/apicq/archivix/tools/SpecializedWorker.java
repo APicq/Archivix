@@ -2,7 +2,6 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
 import net.miginfocom.swing.MigLayout;
-import sun.applet.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +14,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -50,9 +48,9 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
          */
         ProgressDialog(MainFrame mainFrame,String subject) {
             super(mainFrame);
+            setModal(true);
             setLayout(new MigLayout());
             setTitle("Tâche en cours...");
-            setModal(true);
             messageField = new JLabel(subject);
             add(messageField,"wrap");
             progressBar = new JProgressBar();
@@ -153,6 +151,8 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
                 addError("Impossible de fermer la connection");
             }
         }
+
+        // In case of error, show a dialog with all errors
         if(error){
             final JDialog dialog = new JDialog(mainFrame);
             dialog.setLayout(new MigLayout());
@@ -184,7 +184,7 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
      * @param errorString
      */
     protected void addError(String errorString){
-        if(error==false) error=true;
+        error=true; // an error string means there is an error.
         errorBuilder.append(errorString+"\n");
     }
     /**
