@@ -2,6 +2,8 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
 
+import java.sql.SQLException;
+
 /**
  * Created by pic on 2/19/14.
  */
@@ -21,13 +23,14 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
     @Override
     protected Void doInBackground() throws Exception {
-        /*
         try {
             String sqlFindString = buildMessageRequest(
                     mainFrame.getSearchPanel().searchWordsTextField(),
-
+//where i am
             )
-        }*/
+        } catch (SQLException e){
+
+        }
         return null ;
     }
 
