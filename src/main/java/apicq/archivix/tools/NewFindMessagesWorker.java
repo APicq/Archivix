@@ -2,7 +2,10 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
 
+import javax.swing.*;
+import java.awt.*;
 import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  * Created by pic on 2/19/14.
@@ -23,11 +26,51 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
     @Override
     protected Void doInBackground() throws Exception {
+
+
+        // column name for searhing words :
+
+        String fieldToSearch="" ;
+
+        if(mainFrame.getSearchPanel().getFieldComboBox().equals("corps")){
+            fieldToSearch = "body";
+        }
+        if(mainFrame.getSearchPanel().getFieldComboBox().equals("sujet")){
+            fieldToSearch = "subjet";
+        }
+        if(mainFrame.getSearchPanel().getFieldComboBox().equals("destinataires")){
+            fieldToSearch = "mailrecip";
+        }
+        if(mainFrame.getSearchPanel().getFieldComboBox().equals("auteur")){
+            fieldToSearch = "author";
+        }
+
+        log.warning("fieldToSearch " + fieldToSearch);
+
+
+        // search by tags : prepare array of tags
+
+        Vector<String> tagVector = new Vector<String>();
+        for(Component c : mainFrame.getSearchPanel().getSelectedTagsPanel().getComponents()){
+            JLabel jLabel = (JLabel) c;
+            tagVector.add(((JLabel) c).getText());
+        }
+        String[] tagArray = new String[tagVector.size()];
+        for( int index=0 ; index <tagVector.size() ; index++ ){
+            tagArray[index]=tagVector.get(index);
+        }
+
         try {
             String sqlFindString = buildMessageRequest(
-                    mainFrame.getSearchPanel().searchWordsTextField(),
+                    mainFrame.getSearchPanel().searchWordsTextField(),//words to search
+                    fieldToSearch,
+                    mainFrame.getSearchPanel().isOnlyUntagged(),
+                    tagArray,
+                    mainFrame.getSearchPanel().isPerUserSelection(),
+
+
 //where i am
-            )
+            );
         } catch (SQLException e){
 
         }

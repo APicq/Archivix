@@ -188,6 +188,8 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
         error=true; // an error string means there is an error.
         errorBuilder.append(errorString+"\n");
     }
+
+
     /**
      * Override in subclasses
      * @return

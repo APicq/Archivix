@@ -18,27 +18,9 @@ public class SearchPanel extends JPanel {
 
     public static final Logger log = Logger.getLogger("Archivix");
     private final JTextField searchWordsTextField;
-    private final JButton selectTagsButton;
+    private final JComboBox<String> fieldComboBox;
     private final JButton searchWordsButton ;
     private final MainFrame mainFrame ;
-    private JPanel selectedTagsPanel ;
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setPerUserSelection(boolean perUserSelection) {
-        this.perUserSelection = perUserSelection;
-    }
-
-    public boolean isPerUserSelection() {
-
-        return perUserSelection;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
 
     // if true, only untagged messages are searched
     private boolean onlyUntagged = false ;
@@ -49,23 +31,53 @@ public class SearchPanel extends JPanel {
     // If true, enable search by users
     private boolean perUserSelection = false ;
 
+    // Page number, used by next/previous
     private static int pageNumber;
 
-    /**
-     * Getter
-     * @return
-     */
+
+    // -------------------
+    // Getters and setters
+    // -------------------
+
+    public JPanel getSelectedTagsPanel() {
+        return selectedTagsPanel;
+    }
+
+    private JPanel selectedTagsPanel ;
+
+    public JComboBox<String> getFieldComboBox() {
+        return fieldComboBox;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPerUserSelection(boolean perUserSelection) {
+        this.perUserSelection = perUserSelection;
+    }
+
+    public boolean isPerUserSelection() {
+        return perUserSelection;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public boolean isOnlyUntagged() {
+        return onlyUntagged;
+    }
+
     public JTextField searchWordsTextField(){
         return searchWordsTextField ;
     }
 
-    /**
-     * Getter
-     * @return
-     */
     public JButton searchWordsButton() {
         return searchWordsButton;
     };
+
+
 
     /**
      * Constructor
@@ -81,17 +93,17 @@ public class SearchPanel extends JPanel {
         JLabel searchLabel = new JLabel("Rechercher dans ");
         add(searchLabel,"");
         searchWordsTextField = new JTextField("");
-        JComboBox<String> fieldComboBox = new JComboBox<String>(
-                new String[]{"corps","sujet","destinataires","auteur"});
+        fieldComboBox = new JComboBox<String>(
+        new String[]{"corps","sujet","destinataires","auteur"});
         add(fieldComboBox);
-        add(searchWordsTextField, "grow");
+        add(searchWordsTextField,"grow");
         searchWordsButton = new JButton("Rechercher");
         add(searchWordsButton,"wrap");
 
         // Line 2
         // todo : actions from mainFrame here.
         // Button to choose tags :
-        selectTagsButton = new JButton("Tags");
+        JButton selectTagsButton = new JButton("Tags");
         add(selectTagsButton,"grow");
         // panel with all the tags :
         selectedTagsPanel = new JPanel();
@@ -160,7 +172,5 @@ public class SearchPanel extends JPanel {
 
     }
 
-    public static void main(String[] args){
-
-    }
+    
 }
