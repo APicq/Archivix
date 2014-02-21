@@ -121,7 +121,7 @@ public class MainFrame extends JFrame {
                 actionSearchInMessages();
             }
         });
-       debug();
+        debug();
 
         // double click open message :
         messageTable.addMouseListener(new MouseAdapter() {
@@ -150,7 +150,7 @@ public class MainFrame extends JFrame {
     private void actionQuit() {
         // todo : save some datas as properties
         try {
-        pConnection.close();
+            pConnection.close();
         }
         catch (SQLException e){
             log.warning("SQL error close "+e.toString());
@@ -222,10 +222,7 @@ public class MainFrame extends JFrame {
     public void debug() {
         dabataseFile = "/home/pic/testbase.sqlite";
         attachmentDirectory = "/home/pic/attach/";
-        //new InitBaseWorker(this).execute();
         TestSpecializedWorker tsw = new TestSpecializedWorker(this);
-        //tsw.execute();
-        //tsw.showDialog();
         tsw.start();
 
     }

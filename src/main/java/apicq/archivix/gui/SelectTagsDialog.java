@@ -20,16 +20,23 @@ import java.util.logging.Logger;
 public class SelectTagsDialog extends JDialog {
 
     public static final Logger log = Logger.getLogger("Archivix");
+
     private MainFrame mainFrame ;
-
     private JList tagList ;
-
+    private TagListModel tagListModel ;
     private JPanel selectedTagsPanel ;
+    private final JCheckBox untaggedMessagesCheckBox ;
+
+    // Return value :
     public static final int CANCEL=0;
     public static final int OK=1;
-    private int returnValue=CANCEL ;
+    public static final int UNTAGGED=2;
+
+    private int returnValue=CANCEL ;//todo delete
+
+
     /**
-     * Return value : OK or CANCEL
+     * Return value : OK or CANCEL or UNTAGGED
      * @return
      */
     public int returnValue(){
@@ -66,10 +73,9 @@ public class SelectTagsDialog extends JDialog {
         }
     }
 
-    private TagListModel tagListModel ;
 
     /**
-     * Listener for tagList
+     * Listener for tagList // todo put into tagList
      */
     class MySelectionListener implements ListSelectionListener {
         @Override
@@ -132,15 +138,37 @@ public class SelectTagsDialog extends JDialog {
         });
         add(delSelectionButton, "wrap");
 
+        // Line 4 Only tagged messages
+        untaggedMessagesCheckBox = new JCheckBox("Afficher seulement les messages non taggés");
+        untaggedMessagesCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tagList.setEnabled(untaggedMessagesCheckBox.isEnabled());
+                /*
+                if(untaggedMessagesCheckBox.isSelected()){
+                   // tagList.setEnabled(false);
+                    //tagList.setEnabled(false);
+                }
+               /* else {
+                    tagList.setEnabled(true);
+                }*/
+            }
+        });
+        add(untaggedMessagesCheckBox);
+
         // Line 4
         JButton OKButton = new JButton("OK");
         OKButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                returnValue = OK ;
+                if(untaggedMessagesCheckBox.isSelected()) returnValue = UNTAGGED ;
+                else returnValue = OK ;
                 setVisible(false);
+                log.info("return value :"+returnValue);
             }
         });
+
+        // OK button :
         add(OKButton);
         JButton QuitButton = new JButton("Quitter");
         QuitButton.addActionListener(new ActionListener() {
@@ -148,6 +176,7 @@ public class SelectTagsDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 returnValue = CANCEL ;
                 setVisible(false);
+                log.info("return value :"+returnValue);
             }
         });
         add(QuitButton, "cell 2 3");

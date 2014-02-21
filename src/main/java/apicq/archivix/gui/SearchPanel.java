@@ -25,6 +25,11 @@ public class SearchPanel extends JPanel {
     private final MainFrame mainFrame ;
     private JPanel selectedTagsPanel ;
 
+    // iftrue, only untagged messages are searched
+    private boolean onlyUntagged = false ;
+
+    private static int pageNumber;
+
     /**
      * Getter
      * @return
@@ -77,6 +82,8 @@ public class SearchPanel extends JPanel {
                 SelectTagsDialog std = new SelectTagsDialog(SearchPanel.this.mainFrame);
                 std.setVisible(true);
                 if( std.returnValue()==std.OK ){
+                    onlyUntagged = false ;
+                    selectedTagsPanel.setEnabled(true);
                     selectedTagsPanel.removeAll();
                     for(Component c : std.selectedTagsPanel().getComponents()){
                         selectedTagsPanel.add(c);
@@ -84,25 +91,17 @@ public class SearchPanel extends JPanel {
                     selectedTagsPanel.revalidate();
                     selectedTagsPanel.repaint();
                 }
+                if(std.returnValue()==std.UNTAGGED){
+                    onlyUntagged = true ;
+                    selectedTagsPanel.removeAll();
+                    selectedTagsPanel.add(new JLabel("Seulement les messages non taggés"));
+                    selectedTagsPanel.revalidate();
+                    selectedTagsPanel.repaint();
+                    selectedTagsPanel.setEnabled(false);//todo check if useful
+                }
             }
         });
 
-        // Line 3
-        final JCheckBox untaggedMessagesCheckBox = new JCheckBox("Afficher les messages non taggés");
-        untaggedMessagesCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(untaggedMessagesCheckBox.isSelected()){
-                    selectTagsButton.setEnabled(false);
-                    selectedTagsPanel.setEnabled(false);
-                }
-                else {
-                    selectTagsButton.setEnabled(true);
-                    selectedTagsPanel.setEnabled(true);
-                }
-            }
-        });
-        add(untaggedMessagesCheckBox,"span 2");
         add(new JLabel("Trier par :"),"");
         JComboBox<String> sortComboBox = new JComboBox<String>(
                 new String[]{"date","sujet","destinataires","auteur"});
@@ -125,6 +124,10 @@ public class SearchPanel extends JPanel {
         maxResultNumberField.setText("100");
         add(maxResultNumberField, "");
         add(new JLabel("résultats maximum par page"), "");
+
+    }
+
+    public static void main(String[] args){
 
     }
 }

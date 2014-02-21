@@ -16,7 +16,7 @@ public class TestSpecializedWorker extends SpecializedWorker  {
      * @param mainFrame
      */
     public TestSpecializedWorker(MainFrame mainFrame){//} mainFrame, String subject, int max) {
-        super(mainFrame,"Recherche des messages", 10);
+        super(mainFrame,"Recherche des messages");
         getProgressDialog().getProgressBar().setMaximum(100);
     }
 

@@ -21,7 +21,14 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
     @Override
     protected Void doInBackground() throws Exception {
-        return null;
+        /*
+        try {
+            String sqlFindString = buildMessageRequest(
+                    mainFrame.searchPanel().searchWordsTextField(),
+//where i am
+            )
+        }*/
+        return null ;
     }
 
 
@@ -56,8 +63,6 @@ public class NewFindMessagesWorker extends SpecializedWorker {
     }
 
 
-
-
     /**
      *
      * @param wordsTofind   words in message, ex : "meeting London"
@@ -69,11 +74,11 @@ public class NewFindMessagesWorker extends SpecializedWorker {
      * @return // sql string
      */
     private  static String buildMessageRequest(String wordsTofind, // words in message, ex : "meeting London"
-                                        String fieldForWords,// field to seach for words
-                                        boolean unTagged,
-                                        String[] tags,
-                                        boolean perUserSelection,
-                                        String userName){
+                                               String fieldForWords,// field to seach for words
+                                               boolean unTagged,
+                                               String[] tags,
+                                               boolean perUserSelection,
+                                               String userName){
         // -------
         // Header
         // -------
@@ -103,7 +108,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         System.out.println("part2 "+part2);
 
         //----------------
-        // tag managment :
+        // tag management :
         //----------------
         String part3 = "";
         if(unTagged) {
@@ -118,7 +123,10 @@ public class NewFindMessagesWorker extends SpecializedWorker {
             }
         }
         System.out.println("part3 "+part3);
+
+        // -----------------
         // user management :
+        // -----------------
         String part4="";
         if(perUserSelection && userName!=null && userName.length()>0){
             part4=" userName="+"'"+userName+"'";
@@ -131,7 +139,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         String part1234 = stringify("",""," WHERE ",part1,part234);
         System.out.println("part1234 : "+part1234);
 
-        return null;
+        return part1234;
     }
 
 }

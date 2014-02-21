@@ -73,7 +73,7 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
 
 
     public static final Logger log = Logger.getLogger("Archivix");
-    private final MainFrame mainFrame;
+    protected final MainFrame mainFrame;
     private final ProgressDialog progressDialog ;
     private boolean error = false ;
     private StringBuilder errorBuilder = new StringBuilder();
