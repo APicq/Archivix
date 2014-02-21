@@ -1,6 +1,6 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.FindTagsNamesWorker;
+import apicq.archivix.tools.FindTagNamesWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 /**
@@ -108,7 +107,7 @@ public class SelectTagsDialog extends JDialog {
         // Line 2
         // pick up tags from database
         ArrayList<String> tagStringList = null ;
-        FindTagsNamesWorker ftnw = new FindTagsNamesWorker(mainFrame);
+        FindTagNamesWorker ftnw = new FindTagNamesWorker(mainFrame);
         ftnw.execute();
         try {
             tagStringList = ftnw.get();

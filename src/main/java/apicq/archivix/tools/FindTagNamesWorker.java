@@ -12,14 +12,14 @@ import java.util.logging.Logger;
 /**
  * e
  */
-public class FindTagsNamesWorker extends SwingWorker<ArrayList<String>,Void> {
+public class FindTagNamesWorker extends SwingWorker<ArrayList<String>,Void> {
 
     public static final Logger log = Logger.getLogger("Archivix");
 
     private final MainFrame mainFrame ;
     private final ProgressMonitor progressMonitor ;
 
-    public FindTagsNamesWorker(MainFrame mainFrame) {
+    public FindTagNamesWorker(MainFrame mainFrame) {
         this.mainFrame = mainFrame ;
         progressMonitor = new ProgressMonitor(mainFrame,"Recherche des tags","Recherche des tags en cours...",0,1);
     }

@@ -1,6 +1,5 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.FindTagsNamesWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -9,8 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 /**
