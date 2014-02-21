@@ -62,11 +62,12 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
         try {
             String sqlFindString = buildMessageRequest(
-                    mainFrame.getSearchPanel().searchWordsTextField(),//words to search
-                    fieldToSearch,
-                    mainFrame.getSearchPanel().isOnlyUntagged(),
-                    tagArray,
+                    mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
+                    fieldToSearch,// column name
+                    mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
+                    tagArray, // tags to search for
                     mainFrame.getSearchPanel().isPerUserSelection(),
+                    mainFrame.getSearchPanel().getUserName());
 
 
 //where i am
