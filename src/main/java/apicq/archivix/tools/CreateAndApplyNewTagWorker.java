@@ -4,7 +4,6 @@ import apicq.archivix.gui.MainFrame;
 import apicq.archivix.gui.MessageTableModel;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -27,7 +26,7 @@ public class CreateAndApplyNewTagWorker extends SwingWorker<Void,Void> {
                 "Insertion du nouveau tag",
                 "Insertion du tag "+newTag+" pour chaque message",
                 0,
-                mainFrame.messageTable().getSelectedRowCount());
+                mainFrame.getMessageTable().getSelectedRowCount());
     }
     @Override
     protected Void doInBackground() throws Exception {
@@ -35,11 +34,11 @@ public class CreateAndApplyNewTagWorker extends SwingWorker<Void,Void> {
         try {
             PreparedStatement insertNewTagMsg = mainFrame.pConnection().prepareStatement(
                     "INSERT INTO tags(msgid,tag) VALUES(?,?)");
-            for( int i=0 ; i < mainFrame.messageTable().getSelectedRows().length ; i++) {
+            for( int i=0 ; i < mainFrame.getMessageTable().getSelectedRows().length ; i++) {
                 progressMonitor.setProgress(i);
-                int selectionIndex = mainFrame.messageTable().getSelectedRows()[i];
+                int selectionIndex = mainFrame.getMessageTable().getSelectedRows()[i];
                 MessageTableModel mtm = (MessageTableModel) mainFrame.
-                        messageTable().getModel();
+                        getMessageTable().getModel();
                 int messageId = mtm.get(selectionIndex).id();
                 progressMonitor.setNote("message "+messageId);
                 insertNewTagMsg.setInt(1,messageId);

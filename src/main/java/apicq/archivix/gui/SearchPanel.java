@@ -1,5 +1,6 @@
 package apicq.archivix.gui;
 
+import apicq.archivix.tools.FindUserWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -22,8 +23,31 @@ public class SearchPanel extends JPanel {
     private final MainFrame mainFrame ;
     private JPanel selectedTagsPanel ;
 
-    // iftrue, only untagged messages are searched
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPerUserSelection(boolean perUserSelection) {
+        this.perUserSelection = perUserSelection;
+    }
+
+    public boolean isPerUserSelection() {
+
+        return perUserSelection;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    // if true, only untagged messages are searched
     private boolean onlyUntagged = false ;
+
+    // username for search :
+    private String userName = "" ;
+
+    // If true, enable search by users
+    private boolean perUserSelection = false ;
 
     private static int pageNumber;
 
@@ -121,6 +145,18 @@ public class SearchPanel extends JPanel {
         maxResultNumberField.setText("100");
         add(maxResultNumberField, "");
         add(new JLabel("résultats maximum par page"), "");
+
+
+        // user selection :
+        JButton userSelectionButton = new JButton("Utilisateur");
+        userSelectionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FindUserWorker fuw = new FindUserWorker(mainFrame);
+                fuw.start();
+            }
+        });
+        add(userSelectionButton);
 
     }
 

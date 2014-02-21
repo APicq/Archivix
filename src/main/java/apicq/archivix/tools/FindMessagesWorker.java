@@ -2,7 +2,6 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
 import apicq.archivix.gui.MessageElement;
-import apicq.archivix.gui.MessageTable;
 import apicq.archivix.gui.MessageTableModel;
 
 import javax.swing.*;
@@ -47,7 +46,7 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
                     "insertdate " +
                     "from messages ";
             // rest of string :
-            String searchWords = mainFrame.searchPanel().searchWordsTextField().getText();
+            String searchWords = mainFrame.getSearchPanel().searchWordsTextField().getText();
             String[] wordsTofind = searchWords.split(" +");
             for( int x=0 ; x<wordsTofind.length ; x++ ){
                 if(x==0){
@@ -89,7 +88,7 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
                         tags);
                 messageTableModel.add(me);
             }
-            mainFrame.messageTable().setModel(messageTableModel);
+            mainFrame.getMessageTable().setModel(messageTableModel);
             mainFrame.invalidate();
         }
         catch(SQLException e){   // no connection : abort

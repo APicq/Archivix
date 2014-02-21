@@ -171,6 +171,7 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
             dialog.setMinimumSize(new Dimension(400,300));
             dialog.pack();
             dialog.setVisible(true);
+            return ;
         }
     }
 

@@ -24,8 +24,8 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         /*
         try {
             String sqlFindString = buildMessageRequest(
-                    mainFrame.searchPanel().searchWordsTextField(),
-//where i am
+                    mainFrame.getSearchPanel().searchWordsTextField(),
+
             )
         }*/
         return null ;

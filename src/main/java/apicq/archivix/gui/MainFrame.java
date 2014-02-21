@@ -28,16 +28,16 @@ public class MainFrame extends JFrame {
     public String attachmentDirectory() {return attachmentDirectory;}
 
     // Database protected connection
-    private ProtectedConnection pConnection ;
+    private ProtectedConnection pConnection ; // todo maybe delete
     public ProtectedConnection pConnection(){ return pConnection ;}
 
     // JTable to print messages :
     private final MessageTable messageTable ;
-    public MessageTable messageTable(){ return messageTable ;}
+    public MessageTable getMessageTable(){ return messageTable ;}
 
     // Panel with buttons, to search elements
     private final SearchPanel searchPanel;
-    public SearchPanel searchPanel(){ return searchPanel ;}
+    public SearchPanel getSearchPanel(){ return searchPanel ;}
 
     /**
      * Constructor
@@ -48,6 +48,8 @@ public class MainFrame extends JFrame {
 
         // Disable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+
+        // Misc frame configuration
         setLayout(new MigLayout("", "[grow,fill]", "[][grow]"));
         setTitle("-- Archivix --");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
