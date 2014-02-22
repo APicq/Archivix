@@ -384,6 +384,8 @@ public class InsertMessageWorker extends SwingWorker<Integer,String> {
 
         BigInteger bigInt = new BigInteger(1, digest);
 
+        //todo : zero fill result : so all filenames have same chars number
+
         return bigInt.toString(16);
     }
 

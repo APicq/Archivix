@@ -1,10 +1,14 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
+import apicq.archivix.gui.MessageElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -18,35 +22,35 @@ public class NewFindMessagesWorker extends SpecializedWorker {
      * Constructor
      *
      * @param mainFrame
-     * @param subject
      */
-    public NewFindMessagesWorker(MainFrame mainFrame, String subject) {
-        super(mainFrame, subject);
+    public NewFindMessagesWorker(MainFrame mainFrame) {
+        super(mainFrame, "Recherche des messages en cours");
     }
+
+
 
     @Override
     protected Void doInBackground() throws Exception {
 
+        // column name for searhing words : todo : change
 
-        // column name for searhing words :
+        String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
 
-        String fieldToSearch="" ;
-
-        if(mainFrame.getSearchPanel().getFieldComboBox().equals("corps")){
+        if(fieldToSearch.equals("corps")){
             fieldToSearch = "body";
         }
-        if(mainFrame.getSearchPanel().getFieldComboBox().equals("sujet")){
+        if(fieldToSearch.equals("sujet")){
             fieldToSearch = "subjet";
         }
-        if(mainFrame.getSearchPanel().getFieldComboBox().equals("destinataires")){
+        if(fieldToSearch.equals("destinataires")){
             fieldToSearch = "mailrecip";
         }
-        if(mainFrame.getSearchPanel().getFieldComboBox().equals("auteur")){
+        if(fieldToSearch.equals("auteur")){
             fieldToSearch = "author";
         }
 
-        log.warning("fieldToSearch " + fieldToSearch);
-
+        log.warning("fieldToSearch:getselecteditem :"+mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem());
+        log.warning("fieldToSearch =" + fieldToSearch);
 
         // search by tags : prepare array of tags
 
@@ -60,20 +64,54 @@ public class NewFindMessagesWorker extends SpecializedWorker {
             tagArray[index]=tagVector.get(index);
         }
 
+        int limit = Integer.parseInt(mainFrame.getSearchPanel().getMaxResultNumberField().getText());
+        int offset = mainFrame.getSearchPanel().getPageNumber() * limit ;
+
+        // Build request :
+
+        String sqlFindString = buildMessageRequest(
+                mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
+                fieldToSearch,// column name
+                mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
+                tagArray, // tags to search for
+                mainFrame.getSearchPanel().isPerUserSelection(),
+                mainFrame.getSearchPanel().getUserName(),
+                limit, // limit
+                offset); // offset
         try {
-            String sqlFindString = buildMessageRequest(
-                    mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
-                    fieldToSearch,// column name
-                    mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
-                    tagArray, // tags to search for
-                    mainFrame.getSearchPanel().isPerUserSelection(),
-                    mainFrame.getSearchPanel().getUserName());
+            PreparedStatement pstmt = pStatement(sqlFindString);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
 
+                // pick up tags
+                PreparedStatement tagsStatement =
+                        pStatement("SELECT tag FROM tags where msgid=?");
+                tagsStatement.setInt(1,rs.getInt(1));
+                ResultSet tagsResultSet = tagsStatement.executeQuery();
+                ArrayList<String> tags = new ArrayList<String>();
+                while(tagsResultSet.next()) tags.add(tagsResultSet.getString(1));
 
-//where i am
-            );
-        } catch (SQLException e){
-
+                // pickup attachments :
+                //where i am
+                MessageElement me = new MessageElement(
+                        rs.getInt(1),       //id
+                        rs.getString(2),    //date
+                        rs.getString(3),    //author
+                        rs.getString(4),    //subject
+                        rs.getString(5),    //recip
+                        rs.getString(6),    //body
+                        rs.getInt(7),       //attach
+                        rs.getString(8),    //mailrecip
+                        rs.getString(9),    //cc
+                        rs.getString(10),   //bcc
+                        rs.getString(10),   //username
+                        rs.getString(11),   //insertdate
+                        tags);              //tags
+            }
+        }
+        catch (SQLException e){
+            addError(e.toString());
+            return null ;
         }
         return null ;
     }
@@ -118,6 +156,8 @@ public class NewFindMessagesWorker extends SpecializedWorker {
      * @param tags // String[] of tags
      * @param perUserSelection // true if search for one particular username
      * @param userName // username to search for
+     * @param limit
+     * @param offset
      * @return // sql string
      */
     private  static String buildMessageRequest(String wordsTofind, // words in message, ex : "meeting London"
@@ -125,7 +165,9 @@ public class NewFindMessagesWorker extends SpecializedWorker {
                                                boolean unTagged,
                                                String[] tags,
                                                boolean perUserSelection,
-                                               String userName){
+                                               String userName,
+                                               int limit,
+                                               int offset){
         // -------
         // Header
         // -------
@@ -143,7 +185,6 @@ public class NewFindMessagesWorker extends SpecializedWorker {
                 "username," +
                 "insertdate " +
                 "FROM messages ";
-        System.out.println("part1 "+part1);
 
         // -----------------
         // Words selection :
@@ -152,7 +193,6 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         if(wordsTofind!=null && wordsTofind.length()>0){
             part2 = stringify(fieldForWords+" like '%","%'"," and ",wordsTofind.split(" +"));
         }
-        System.out.println("part2 "+part2);
 
         //----------------
         // tag management :
@@ -169,7 +209,6 @@ public class NewFindMessagesWorker extends SpecializedWorker {
                 part3="";
             }
         }
-        System.out.println("part3 "+part3);
 
         // -----------------
         // user management :
@@ -185,6 +224,8 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
         String part1234 = stringify("",""," WHERE ",part1,part234);
         System.out.println("part1234 : "+part1234);
+
+        String part5 = " LIMIT " + limit + " OFFSET " + offset  ;
 
         return part1234;
     }

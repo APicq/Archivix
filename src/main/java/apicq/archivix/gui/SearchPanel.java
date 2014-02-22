@@ -1,6 +1,7 @@
 package apicq.archivix.gui;
 
 import apicq.archivix.tools.FindUserWorker;
+import apicq.archivix.tools.NewFindMessagesWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -34,10 +35,25 @@ public class SearchPanel extends JPanel {
     // Page number, used by next/previous
     private static int pageNumber;
 
+    // Number of results per page :
+    JFormattedTextField maxResultNumberField ;
+
+
+
+    // -------------------
 
     // -------------------
     // Getters and setters
-    // -------------------
+
+
+    public static int getPageNumber() {
+        return pageNumber;
+    }
+
+
+    public JFormattedTextField getMaxResultNumberField() {
+        return maxResultNumberField;
+    }
 
     public JPanel getSelectedTagsPanel() {
         return selectedTagsPanel;
@@ -98,13 +114,21 @@ public class SearchPanel extends JPanel {
         add(fieldComboBox);
         add(searchWordsTextField,"grow");
         searchWordsButton = new JButton("Rechercher");
-        add(searchWordsButton,"wrap");
+        searchWordsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                NewFindMessagesWorker nfmw = new NewFindMessagesWorker(mainFrame);
+                nfmw.start();
+            }
+        });
+        add(searchWordsButton, "wrap");
 
         // Line 2
         // todo : actions from mainFrame here.
         // Button to choose tags :
         JButton selectTagsButton = new JButton("Tags");
         add(selectTagsButton,"grow");
+
         // panel with all the tags :
         selectedTagsPanel = new JPanel();
         selectedTagsPanel.setLayout(new MigLayout());
@@ -152,7 +176,8 @@ public class SearchPanel extends JPanel {
         formatter.setMinimum(0);
         formatter.setMaximum(1000);
         formatter.setCommitsOnValidEdit(true);
-        JFormattedTextField maxResultNumberField = new JFormattedTextField(formatter);
+        //JFormattedTextField maxResultNumberField = new JFormattedTextField(formatter);//extract
+        maxResultNumberField = new JFormattedTextField(formatter);//extract
         maxResultNumberField.setColumns(4);
         maxResultNumberField.setText("100");
         add(maxResultNumberField, "");

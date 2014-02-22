@@ -7,36 +7,62 @@ import java.util.ArrayList;
  */
 public class MessageElement {
 
+    class ArchivedMessage {
+
+        private final String name ;
+        private final String md5 ;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getMd5() {
+            return md5;
+        }
+
+        public ArchivedMessage(String name,String md5){
+            this.name = name ;
+            this.md5 = md5 ;
+        }
+    } // class
+
+    //where i am : add list of attach + list of md5sum
+
     private int id ;
-    public int id() { return id;}
     private String date ;
-    public String date() { return date ;}
     private String author ;
-    public String author() { return author;}
+
     private String subject ;
-    public String subject() { return subject;}
+
     private String recip ;
-    public String recip() { return recip;}
+
     private String body ;
-    public String body() { return body;}
-    private int attach ;
-    public int attach() { return  attach;}
+
+    private int attach;
     private String mailrecip ;
-    public String mailrecip() {return  mailrecip;}
     private String cc ;
-    public String cc() {return cc;}
+
     private String bcc ;
-    public String bcc() { return bcc;}
     private String username ;
-    public String username(){ return username;}
     private String insertDate ;
-    public String insertDate() { return insertDate;}
+
     private ArrayList<String> tags ;
+    private ArrayList<ArchivedMessage> archivedMessages ;
+
+    public String username(){ return username;}
+    public int attach() { return  attach;}
+    public String date() { return date ;}
+    public int id() { return id;}
+    public String author() { return author;}
+
+    public String subject() { return subject;}
+    public String recip() { return recip;}
+    public String body() { return body;}
+    public String mailrecip() {return  mailrecip;}
+    public String cc() {return cc;}
+    public String bcc() { return bcc;}
+    public String insertDate() { return insertDate;}
     public  ArrayList<String> tags() { return tags ;}
-
-
-
-    // private String body ;
 
     public MessageElement(
             int id,
@@ -51,7 +77,8 @@ public class MessageElement {
             String bcc ,
             String username ,
             String insertDate,
-            ArrayList<String> tags){
+            ArrayList<String> tags,
+            ArrayList<ArchivedMessage> archivedMessages){
 
         this.id = id ;
         this.date = date ;
@@ -66,5 +93,6 @@ public class MessageElement {
         this.username = username ;
         this.insertDate = insertDate ;
         this.tags = tags ;
+        this.archivedMessages = archivedMessages ;
     }
 }

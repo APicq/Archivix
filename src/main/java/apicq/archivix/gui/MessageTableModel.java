@@ -23,6 +23,7 @@ public class MessageTableModel extends AbstractTableModel {
     private static final int USERNAMECOL     = 10;
     private static final int INSERTDATECOL   = 11;
     private static final int TAGSCOL         = 12;
+
     private static final int SUMCOL          = 13; // number of columns
 
     // messageElement container
