@@ -142,7 +142,7 @@ public class MainFrame extends JFrame {
      * Search in messages
      */
     private void actionSearchInMessages() {
-        new FindMessagesWorker(this).execute();
+        new NewFindMessagesWorker(this).execute();
 
     }
 

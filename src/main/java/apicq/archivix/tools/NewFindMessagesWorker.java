@@ -2,6 +2,7 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.AttachmentSignature;
 import apicq.archivix.gui.MainFrame;
+import apicq.archivix.gui.MessageTableModel;
 import apicq.archivix.gui.TextMessage;
 
 import javax.swing.*;
@@ -17,7 +18,7 @@ import java.util.Vector;
  */
 public class NewFindMessagesWorker extends SpecializedWorker {
 
-
+    private final MessageTableModel messageTableModel = new MessageTableModel();
 
     /**
      * Constructor
@@ -105,8 +106,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
                                     attachResultSet.getString(2)));
                 }
 
-                // pickup attachments :
-                //where i am
+
                 TextMessage me = new TextMessage(
                         rs.getInt(1),       // id
                         rs.getString(2),    // date
@@ -122,6 +122,8 @@ public class NewFindMessagesWorker extends SpecializedWorker {
                         rs.getString(11),   // insertdate
                         tags,               // tags
                         attachmentSignatures);// attachments
+
+                messageTableModel.add(me);
             }
         }
         catch (SQLException e){
@@ -131,6 +133,12 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         return null ;
     }
 
+
+    @Override
+    protected void done() {
+        mainFrame.getMessageTable().setModel(messageTableModel);
+        mainFrame.invalidate();
+    }
 
     /**
      * method used to build sql strings.
