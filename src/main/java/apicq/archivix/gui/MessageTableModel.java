@@ -27,14 +27,14 @@ public class MessageTableModel extends AbstractTableModel {
     private static final int SUMCOL          = 13; // number of columns
 
     // messageElement container
-    private ArrayList<MessageElement> messages ;
+    private ArrayList<TextMessage> messages ;
 
     /**
      * Getter
      * @param index
      * @return
      */
-    public MessageElement get(int index){
+    public TextMessage get(int index){
         if(index <0 || index>=messages.size()) return null ;
         return messages.get(index);
     }
@@ -45,14 +45,14 @@ public class MessageTableModel extends AbstractTableModel {
      * Constructor
      */
     public MessageTableModel() {
-        messages = new ArrayList<MessageElement>();
+        messages = new ArrayList<TextMessage>();
     }
 
     /**
      * Add one element in table
      * @param me
      */
-    public void add(MessageElement me){
+    public void add(TextMessage me){
         if(me!=null) messages.add(me);
     }
 

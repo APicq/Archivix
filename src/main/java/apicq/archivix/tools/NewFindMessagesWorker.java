@@ -1,7 +1,8 @@
 package apicq.archivix.tools;
 
+import apicq.archivix.gui.AttachmentSignature;
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageElement;
+import apicq.archivix.gui.TextMessage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,22 +92,36 @@ public class NewFindMessagesWorker extends SpecializedWorker {
                 ArrayList<String> tags = new ArrayList<String>();
                 while(tagsResultSet.next()) tags.add(tagsResultSet.getString(1));
 
+                // pick up attachments :
+                PreparedStatement attachStatement =
+                        pStatement("SELECT name,md5sum FROM attach WHERE msgid=?");
+                attachStatement.setInt(1,rs.getInt(1));
+                ResultSet attachResultSet = attachStatement.executeQuery();
+                ArrayList<AttachmentSignature> attachmentSignatures = new ArrayList<AttachmentSignature>();
+                while(attachResultSet.next()){
+                    attachmentSignatures.add(
+                            new AttachmentSignature(
+                                    attachResultSet.getString(1),
+                                    attachResultSet.getString(2)));
+                }
+
                 // pickup attachments :
                 //where i am
-                MessageElement me = new MessageElement(
-                        rs.getInt(1),       //id
-                        rs.getString(2),    //date
-                        rs.getString(3),    //author
-                        rs.getString(4),    //subject
-                        rs.getString(5),    //recip
-                        rs.getString(6),    //body
-                        rs.getInt(7),       //attach
-                        rs.getString(8),    //mailrecip
-                        rs.getString(9),    //cc
-                        rs.getString(10),   //bcc
-                        rs.getString(10),   //username
-                        rs.getString(11),   //insertdate
-                        tags);              //tags
+                TextMessage me = new TextMessage(
+                        rs.getInt(1),       // id
+                        rs.getString(2),    // date
+                        rs.getString(3),    // author
+                        rs.getString(4),    // subject
+                        rs.getString(5),    // recip
+                        rs.getString(6),    // body
+                        rs.getInt(7),       // attach
+                        rs.getString(8),    // mailrecip
+                        rs.getString(9),    // cc
+                        rs.getString(10),   // bcc
+                        rs.getString(10),   // username
+                        rs.getString(11),   // insertdate
+                        tags,               // tags
+                        attachmentSignatures);// attachments
             }
         }
         catch (SQLException e){

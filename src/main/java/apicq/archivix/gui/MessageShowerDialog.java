@@ -1,12 +1,9 @@
 package apicq.archivix.gui;
 
-import javafx.scene.paint.*;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.DimensionUIResource;
-import java.awt.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +23,7 @@ public class MessageShowerDialog extends JDialog {
         }
     }
 
-    public  MessageShowerDialog(MessageElement me){
+    public  MessageShowerDialog(TextMessage me){
        // where i am : retrieve attachments
         setModal(true);
 

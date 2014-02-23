@@ -1,7 +1,7 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageElement;
+import apicq.archivix.gui.TextMessage;
 import apicq.archivix.gui.MessageTableModel;
 
 import javax.swing.*;
@@ -72,7 +72,7 @@ public class FindMessagesWorker extends SwingWorker<Boolean,String>{
                 ResultSet tagsResultSet = tagsStatement.executeQuery();
                 ArrayList<String> tags = new ArrayList<String>();
                 while(tagsResultSet.next()) tags.add(tagsResultSet.getString(1));
-                MessageElement me = new MessageElement(
+                TextMessage me = new TextMessage(
                         rs.getInt(1),// id
                         rs.getString(2),// date
                         rs.getString(3),// author
