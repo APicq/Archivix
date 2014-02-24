@@ -1,15 +1,10 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.FindMessagesWorker;
-import apicq.archivix.tools.FindUserWorker;
-import apicq.archivix.tools.NewFindTagsWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
 
@@ -21,7 +16,7 @@ public class SearchPanel extends JPanel {
     public static final Logger log = Logger.getLogger("Archivix");
     private final JTextField searchWordsTextField;
     private final JComboBox<String> fieldComboBox;
-    private final JButton searchWordsButton ;
+    //private final JButton searchWordsButton ;
     private final MainFrame mainFrame ;
 
     // if true, only untagged messages are searched
@@ -94,9 +89,10 @@ public class SearchPanel extends JPanel {
         return searchWordsTextField ;
     }
 
+    /*
     public JButton searchWordsButton() {
         return searchWordsButton;
-    };
+    };*/
 
 
 
@@ -120,7 +116,7 @@ public class SearchPanel extends JPanel {
         add(searchWordsTextField,"grow");
 
         // Button to find messages
-        searchWordsButton = new JButton("Rechercher");
+        JButton searchWordsButton = new JButton("Rechercher");
         searchWordsButton.setActionCommand("findMessagesAction");
         searchWordsButton.addActionListener(mainFrame);
         add(searchWordsButton, "wrap");

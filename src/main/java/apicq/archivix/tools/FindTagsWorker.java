@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by pic on 2/23/14.
  */
-public class NewFindTagsWorker extends SpecializedWorker {
+public class FindTagsWorker extends SpecializedWorker {
 
     private final ArrayList<String> tagList = new ArrayList<String>();
 
@@ -21,7 +21,7 @@ public class NewFindTagsWorker extends SpecializedWorker {
      *
      * @param mainFrame
      */
-    public NewFindTagsWorker(MainFrame mainFrame) {
+    public FindTagsWorker(MainFrame mainFrame) {
         super(mainFrame, "Recherche des tags");
     }
 

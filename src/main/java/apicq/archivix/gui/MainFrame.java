@@ -6,8 +6,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -192,7 +190,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("selectTagsAction".equals(e.getActionCommand())){
-            NewFindTagsWorker nftw = new NewFindTagsWorker(MainFrame.this);
+            FindTagsWorker nftw = new FindTagsWorker(MainFrame.this);
             nftw.start();
         }
         if("previousAction".equals(e.getActionCommand())){

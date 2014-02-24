@@ -1,9 +1,7 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageTable;
 import apicq.archivix.gui.MessageTableModel;
-import apicq.archivix.gui.TextMessage;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -12,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by pic on 2/23/14.
+ *
  */
 public class DeleteMessagesWorker extends SpecializedWorker {
 
@@ -50,10 +48,11 @@ public class DeleteMessagesWorker extends SpecializedWorker {
             for(String md5str : md5List){
                 String directory = mainFrame.attachmentDirectory();
                 File[] files = new File(directory).listFiles();
+                if(files==null) continue ;
                 for(File file : files){
                     String md5file = "" ;
-                    int extensionIndex  = file.getName().toString().lastIndexOf(".");
-                    if(extensionIndex==-1) md5file = file.getName().toString();
+                    int extensionIndex  = file.getName().lastIndexOf(".");
+                    if(extensionIndex==-1) md5file = file.getName();
                     else md5file = file.getName().toString().substring(0, extensionIndex);
                     if(md5str.equals(md5file)){
                         if(!file.delete()){
@@ -64,7 +63,7 @@ public class DeleteMessagesWorker extends SpecializedWorker {
 
                 }
             }
-
+            try {
             // delete attach table rows :
             PreparedStatement removeAttachStmt = pStatement(
                     "DELETE FROM ATTACH WHERE msgid="+messageId);
@@ -77,6 +76,12 @@ public class DeleteMessagesWorker extends SpecializedWorker {
             PreparedStatement removeMessageStmt = pStatement(
                     "DELETE FROM TAGS WHERE msgid="+messageId);
             removeMessageStmt.execute();
+            } catch (SQLException e){
+                addError("Erreur dans la mise à jour de la base de donnée");
+                addError("Message id : "+messageId);
+                addError(e.getMessage());
+            }
+
         } // for each message id
         return null ;
     }
