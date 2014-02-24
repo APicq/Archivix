@@ -20,85 +20,29 @@ import java.util.logging.Logger;
  * A Worker with a Dialog for monitoring progression.
  * Adds SQL request support. All workers must subclass this class.
  */
-public class SpecializedWorker extends SwingWorker<Void,String> {
-
-
-    /**
-     * dialog to show and watch result :
-     * pickup progress bound property from swingworker
-     */
-    class ProgressDialog extends JDialog implements PropertyChangeListener{
-
-        private final JProgressBar progressBar ;
-        private final JButton cancelButton ;
-        private final JLabel messageField ;
-
-        public JProgressBar getProgressBar() {
-            return progressBar;
-        }
-
-        public JButton getCancelButton(){
-            return cancelButton;
-        }
-
-        /**
-         * Constructor
-         * @param mainFrame
-         * @param subject
-         */
-        ProgressDialog(MainFrame mainFrame,String subject) {
-            super(mainFrame);
-            setModal(true);
-            setLayout(new MigLayout());
-            setTitle("Tâche en cours...");
-            messageField = new JLabel(subject);
-            add(messageField,"wrap");
-            progressBar = new JProgressBar();
-            progressBar.setMaximum(100);
-            progressBar.setIndeterminate(true);
-            progressBar.setStringPainted(true);
-            add(progressBar, "grow");
-            cancelButton = new JButton("Annuler");
-            add(cancelButton,"");
-            pack();
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if("progress".equals(evt.getPropertyName())){
-                progressBar.setValue((Integer) evt.getNewValue());
-            }
-        }
-    }//class
+public class SpecializedWorker extends SwingWorker<Void, String> {
 
 
     public static final Logger log = Logger.getLogger("Archivix");
+    private static Connection con;
     protected final MainFrame mainFrame;
-    private final ProgressDialog progressDialog ;
-    private boolean error = false ;
+    private final ProgressDialog progressDialog;
+    private boolean error = false;
     private StringBuilder errorBuilder = new StringBuilder();
-    private static Connection con ;
-
-    /**
-     * Getter
-     * @return
-     */
-    protected ProgressDialog getProgressDialog(){
-        return progressDialog;
-    }
 
     /**
      * Constructor
+     *
      * @param mainFrame
      * @param subject
      */
     public SpecializedWorker(MainFrame mainFrame,
-                             String subject){
+                             String subject) {
 
-        this.mainFrame = mainFrame ;
+        this.mainFrame = mainFrame;
 
         // configure progressDialog :
-        progressDialog = new ProgressDialog(mainFrame,subject);
+        progressDialog = new ProgressDialog(mainFrame, subject);
         progressDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -108,15 +52,66 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
         addPropertyChangeListener(progressDialog);
     }
 
+
+    /**
+     * Sets the value of the progress string
+     * @param s : the value of the progress string
+     */
+    public void setString(String s){
+        progressDialog.getProgressBar().setString(s);
+    }
+
+
+
+    /**
+     * method used to build sql strings.
+     *
+     * @param prefix    prefix
+     * @param suffix    suffix
+     * @param separator separator
+     * @param args      args
+     * @return a string
+     */
+    public static String stringify(String prefix,
+                                   String suffix,
+                                   String separator,
+                                   String... args) {
+        if (args == null) return "";
+        StringBuilder sb = new StringBuilder();
+        boolean isSecond = false;
+        for (String arg : args) {
+            String trimmedArg = arg.trim();
+            if (trimmedArg.length() > 0) {
+                if (isSecond) {
+                    sb.append(separator + prefix + trimmedArg + suffix);
+                } else {
+                    isSecond = true;
+                    sb.append(prefix + trimmedArg + suffix);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Getter
+     *
+     * @return
+     */
+    protected ProgressDialog getProgressDialog() {
+        return progressDialog;
+    }
+
     /**
      * Returns a preparedStatement, prevents connection problem
+     *
      * @param sql
      * @return
      * @throws SQLException
      */
     public PreparedStatement pStatement(String sql) throws SQLException {
-        if(con==null || con.isClosed() ){
-            con= DriverManager.getConnection("jdbc:sqlite:" +
+        if (con == null || con.isClosed()) {
+            con = DriverManager.getConnection("jdbc:sqlite:" +
                     mainFrame.databaseFile());
         }
         return con.prepareStatement(sql);
@@ -125,12 +120,11 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
     /**
      * Start worker, show dialog,manage errors:
      */
-    public final void start(){
+    public final void start() {
         try {
             execute();
-        }
-        catch (Exception e){
-            error = true ;
+        } catch (Exception e) {
+            error = true;
             addError(e.toString());
             log.warning(e.toString());
         }
@@ -141,11 +135,10 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
     protected void done() {
         progressDialog.setVisible(false);
         // Try to close connection :
-        if(con!=null){
+        if (con != null) {
             try {
                 con.close();
-            }
-            catch(SQLException e){
+            } catch (SQLException e) {
                 log.warning(e.toString());
                 error = true;
                 addError("Impossible de fermer la connection");
@@ -153,11 +146,11 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
         }
 
         // In case of error, show a dialog with all errors
-        if(error){
+        if (error) {
             final JDialog dialog = new JDialog(mainFrame);
             dialog.setLayout(new MigLayout());
             dialog.setModal(true);
-            JTextArea textArea = new JTextArea(20,30);
+            JTextArea textArea = new JTextArea(20, 30);
             textArea.setText(errorBuilder.toString());
             dialog.add(new JScrollPane(textArea));
             JButton quitButton = new JButton("Fermer");
@@ -168,30 +161,32 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
                 }
             });
             dialog.add(quitButton);
-            dialog.setMinimumSize(new Dimension(400,300));
+            dialog.setMinimumSize(new Dimension(400, 300));
             dialog.pack();
             dialog.setVisible(true);
-            return ;
+            return;
         }
     }
 
     @Override
     protected void process(List<String> chunks) {
-        for(String str : chunks) progressDialog.getProgressBar().setString(str);
+        for (String str : chunks) progressDialog.getProgressBar().setString(str);
     }
 
     /**
      * Report errors:
+     *
      * @param errorString
      */
-    protected void addError(String errorString){
-        error=true; // an error string means there is an error.
-        errorBuilder.append(errorString+"\n");
+    protected void addError(String errorString) {
+        error = true; // an error string means there is an error.
+        errorBuilder.append(errorString + "\n");
     }
 
 
     /**
      * Override in subclasses
+     *
      * @return
      * @throws Exception
      */
@@ -199,4 +194,55 @@ public class SpecializedWorker extends SwingWorker<Void,String> {
     protected Void doInBackground() throws Exception {
         return null;
     }
+
+    /**
+     * dialog to show and watch result :
+     * pickup progress bound property from swingworker
+     */
+    class ProgressDialog extends JDialog implements PropertyChangeListener {
+
+        private final JProgressBar progressBar;
+        private final JButton cancelButton;
+        private final JLabel messageField;
+
+        /**
+         * Constructor
+         *
+         * @param mainFrame
+         * @param subject
+         */
+        ProgressDialog(MainFrame mainFrame, String subject) {
+            super(mainFrame);
+            setModal(true);
+            setLayout(new MigLayout());
+            setTitle("Tâche en cours...");
+            messageField = new JLabel(subject);
+            add(messageField, "wrap");
+            progressBar = new JProgressBar();
+            progressBar.setMaximum(100);
+            progressBar.setIndeterminate(false);
+            progressBar.setStringPainted(true);
+            add(progressBar, "grow");
+            cancelButton = new JButton("Annuler");
+            add(cancelButton, "");
+            pack();
+        }
+
+        public JProgressBar getProgressBar() {
+            return progressBar;
+        }
+
+        public JButton getCancelButton() {
+            return cancelButton;
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("progress".equals(evt.getPropertyName())) {
+                progressBar.setValue((Integer) evt.getNewValue());
+            }
+        }
+    }//class
+
+
 }

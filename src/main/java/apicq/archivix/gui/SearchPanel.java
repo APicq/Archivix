@@ -2,6 +2,7 @@ package apicq.archivix.gui;
 
 import apicq.archivix.tools.FindUserWorker;
 import apicq.archivix.tools.NewFindMessagesWorker;
+import apicq.archivix.tools.NewFindTagsWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -81,6 +82,10 @@ public class SearchPanel extends JPanel {
         return userName;
     }
 
+    public void setOnlyUntagged(boolean onlyUntagged) {
+        this.onlyUntagged = onlyUntagged;
+    }
+
     public boolean isOnlyUntagged() {
         return onlyUntagged;
     }
@@ -136,6 +141,10 @@ public class SearchPanel extends JPanel {
         selectTagsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                NewFindTagsWorker nftw = new NewFindTagsWorker(mainFrame);
+                nftw.start();
+                /*
                 SelectTagsDialog std = new SelectTagsDialog(SearchPanel.this.mainFrame);
                 std.setVisible(true);
                 if( std.returnValue()==std.OK ){
@@ -156,6 +165,7 @@ public class SearchPanel extends JPanel {
                     selectedTagsPanel.repaint();
                     selectedTagsPanel.setEnabled(false);//todo check if useful
                 }
+                */
             }
         });
 
@@ -176,7 +186,6 @@ public class SearchPanel extends JPanel {
         formatter.setMinimum(0);
         formatter.setMaximum(1000);
         formatter.setCommitsOnValidEdit(true);
-        //JFormattedTextField maxResultNumberField = new JFormattedTextField(formatter);//extract
         maxResultNumberField = new JFormattedTextField(formatter);//extract
         maxResultNumberField.setColumns(4);
         maxResultNumberField.setText("100");

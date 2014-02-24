@@ -34,7 +34,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
-        // column name for searhing words : todo : change
+        // column name for searching words : todo : change
 
         String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
 
@@ -128,7 +128,6 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         }
         catch (SQLException e){
             addError(e.toString());
-            return null ;
         }
         return null ;
     }
@@ -136,39 +135,12 @@ public class NewFindMessagesWorker extends SpecializedWorker {
 
     @Override
     protected void done() {
+        super.done();
         mainFrame.getMessageTable().setModel(messageTableModel);
         mainFrame.invalidate();
     }
 
-    /**
-     * method used to build sql strings.
-     * @param prefix  prefix
-     * @param suffix suffix
-     * @param separator separator
-     * @param args args
-     * @return a string
-     */
-    public static String stringify(String prefix,
-                                   String suffix,
-                                   String separator,
-                                   String... args){
-        if(args==null) return "";
-        StringBuilder sb = new StringBuilder();
-        boolean isSecond = false ;
-        for(String arg:args){
-            String trimmedArg = arg.trim();
-            if(trimmedArg.length()>0) {
-                if(isSecond) {
-                    sb.append(separator+prefix+trimmedArg+suffix);
-                }
-                else {
-                    isSecond = true ;
-                    sb.append(prefix+trimmedArg+suffix);
-                }
-            }
-        }
-        return sb.toString();
-    }
+
 
 
     /**
@@ -183,7 +155,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
      * @param offset
      * @return // sql string
      */
-    private  static String buildMessageRequest(String wordsTofind, // words in message, ex : "meeting London"
+    private String buildMessageRequest(String wordsTofind, // words in message, ex : "meeting London"
                                                String fieldForWords,// field to seach for words
                                                boolean unTagged,
                                                String[] tags,
@@ -227,7 +199,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
         else {
             String tagString = stringify("'","'",",",tags);
             if(tagString.length()>0){
-                part3 = " id in (select msgid from tags where tag in("+tagString+")";
+                part3 = " id in (select msgid from tags where tag in("+tagString+"))";
             }else {
                 part3="";
             }

@@ -1,6 +1,5 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.FindTagNamesWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -20,13 +19,13 @@ public class SelectTagsDialog extends JDialog {
 
     public static final Logger log = Logger.getLogger("Archivix");
 
-    private MainFrame mainFrame ;
-    private JList tagList ;
-    private TagListModel tagListModel ;
-    private JPanel selectedTagsPanel ;
+    private final MainFrame mainFrame ;
+    private final JList tagList ;
+    private final TagListModel tagListModel ;
+    private final JPanel selectedTagsPanel ;
     private final JCheckBox untaggedMessagesCheckBox ;
 
-    // Return value :
+    // Return value : // todo delete
     public static final int CANCEL=0;
     public static final int OK=1;
     public static final int UNTAGGED=2;
@@ -96,25 +95,14 @@ public class SelectTagsDialog extends JDialog {
      * Constructor
      * @param mainFrame
      */
-    public SelectTagsDialog(MainFrame mainFrame) {
+    public SelectTagsDialog(final MainFrame mainFrame,
+                            final ArrayList<String> tagStringList) {
         setModal(true);
         setLayout(new MigLayout("","[][grow][]","[][grow 95][grow 5][]")); // layout,column,row
         this.mainFrame = mainFrame ;
 
         // Line 1
         add(new JLabel("tags disponibles :"), "wrap");
-
-        // Line 2
-        // pick up tags from database
-        ArrayList<String> tagStringList = null ;
-        FindTagNamesWorker ftnw = new FindTagNamesWorker(mainFrame);
-        ftnw.execute();
-        try {
-            tagStringList = ftnw.get();
-        } catch (Exception e) {
-            log.warning(e.toString());
-            tagStringList = new ArrayList<String>(); // creates an empty taglist in case of exception
-        }
 
         tagListModel = new TagListModel(tagStringList);
         tagList = new JList<String>(tagListModel);
@@ -143,14 +131,7 @@ public class SelectTagsDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tagList.setEnabled(untaggedMessagesCheckBox.isEnabled());
-                /*
-                if(untaggedMessagesCheckBox.isSelected()){
-                   // tagList.setEnabled(false);
-                    //tagList.setEnabled(false);
-                }
-               /* else {
-                    tagList.setEnabled(true);
-                }*/
+
             }
         });
         add(untaggedMessagesCheckBox);
@@ -160,10 +141,21 @@ public class SelectTagsDialog extends JDialog {
         OKButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(untaggedMessagesCheckBox.isSelected()) returnValue = UNTAGGED ;
-                else returnValue = OK ;
+                if(untaggedMessagesCheckBox.isSelected()){
+                    mainFrame.getSearchPanel().setOnlyUntagged(true);
+                    mainFrame.getSearchPanel().getSelectedTagsPanel().removeAll();
+                    mainFrame.getSearchPanel().getSelectedTagsPanel().add(new JLabel("Seulement les messages non taggés"));
+                }
+                else {
+                    mainFrame.getSearchPanel().setOnlyUntagged(false);
+                    mainFrame.getSearchPanel().getSelectedTagsPanel().removeAll();
+                    for(Component c : selectedTagsPanel().getComponents()){
+                        mainFrame.getSearchPanel().getSelectedTagsPanel().add(c);
+                    }
+                }
+                mainFrame.getSearchPanel().getSelectedTagsPanel().revalidate();
+                mainFrame.getSearchPanel().getSelectedTagsPanel().repaint();
                 setVisible(false);
-                log.info("return value :"+returnValue);
             }
         });
 
@@ -173,9 +165,8 @@ public class SelectTagsDialog extends JDialog {
         QuitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                returnValue = CANCEL ;
+                //returnValue = CANCEL ;
                 setVisible(false);
-                log.info("return value :"+returnValue);
             }
         });
         add(QuitButton, "cell 2 3");

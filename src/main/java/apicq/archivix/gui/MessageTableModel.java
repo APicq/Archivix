@@ -1,6 +1,6 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.ProtectedConnection;
+import apicq.archivix.tools.SpecializedWorker;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -129,10 +129,14 @@ public class MessageTableModel extends AbstractTableModel {
             case INSERTDATECOL :
                 return messages.get(rowIndex).insertDate();
             case TAGSCOL :
-                return ProtectedConnection.merge(
-                        messages.get(rowIndex).tags(),"||");
+                String[] tagArray = new String[messages.get(rowIndex).tags().size()];
+                for( int i=0 ; i<messages.get(rowIndex).tags().size() ; i++){
+                    tagArray[i]=messages.get(rowIndex).tags().get(i);
+                }
+                return SpecializedWorker.stringify("", "", " || ", tagArray);
+
             default :
                 return "ERROR" ;
-            } //switch
+        } //switch
     } // get
 } // class

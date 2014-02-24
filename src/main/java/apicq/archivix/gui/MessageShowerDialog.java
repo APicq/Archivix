@@ -24,7 +24,7 @@ public class MessageShowerDialog extends JDialog {
     }
 
     public  MessageShowerDialog(TextMessage me){
-       // where i am : retrieve attachments
+
         setModal(true);
 
         JPanel messagePanel = new JPanel();

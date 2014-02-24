@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Main Program Window
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ActionListener {
 
     public static final Logger log = Logger.getLogger("Archivix");
 
@@ -26,10 +27,6 @@ public class MainFrame extends JFrame {
     // Full path to attachment directory
     private String attachmentDirectory;
     public String attachmentDirectory() {return attachmentDirectory;}
-
-    // Database protected connection
-    private ProtectedConnection pConnection ; // todo maybe delete
-    public ProtectedConnection pConnection(){ return pConnection ;}
 
     // JTable to print messages :
     private final MessageTable messageTable ;
@@ -43,8 +40,6 @@ public class MainFrame extends JFrame {
      * Constructor
      */
     public MainFrame() {
-
-        pConnection = new ProtectedConnection(this);
 
         // Disable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
@@ -95,7 +90,13 @@ public class MainFrame extends JFrame {
         insertMessageItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new InsertMessageWorker(MainFrame.this);
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Choisissez un ou des fichiers messages outlook (.msg)");
+                fileChooser.setMultiSelectionEnabled(true);
+                if(fileChooser.showOpenDialog(MainFrame.this)==JFileChooser.APPROVE_OPTION){
+                    File[] messageFiles = fileChooser.getSelectedFiles();
+                    new NewInsertMessageWorker(MainFrame.this,messageFiles);
+                }
             }
         });
 
@@ -142,7 +143,7 @@ public class MainFrame extends JFrame {
      * Search in messages
      */
     private void actionSearchInMessages() {
-        new NewFindMessagesWorker(this).execute();
+        new NewFindMessagesWorker(this).start();
 
     }
 
@@ -151,12 +152,13 @@ public class MainFrame extends JFrame {
      */
     private void actionQuit() {
         // todo : save some datas as properties
+        /*
         try {
             pConnection.close();
         }
         catch (SQLException e){
             log.warning("SQL error close "+e.toString());
-        }
+        }*/
         System.exit(0);
     }
 
@@ -182,7 +184,6 @@ public class MainFrame extends JFrame {
             dabataseFile = (chooser.getSelectedFile().getAbsolutePath());
             MainFrame.this.setTitle(chooser.getSelectedFile().getName());
             // init database :
-            new InitBaseWorker(MainFrame.this).execute();
             // todo freeze main frame
         }
     }
@@ -224,10 +225,31 @@ public class MainFrame extends JFrame {
     public void debug() {
         dabataseFile = "/home/pic/testbase.sqlite";
         attachmentDirectory = "/home/pic/attach/";
-        TestSpecializedWorker tsw = new TestSpecializedWorker(this);
-        tsw.start();
 
     }
 
-
+    /**
+     * All actions are dispatched here :
+     * @param e
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if("deleteMessagesAction".equals(e.getActionCommand())){
+            new DeleteMessagesWorker(MainFrame.this).start();
+            return ;
+        }
+        if("addNewTagAction".equals(e.getActionCommand())){
+            String newTag = JOptionPane.showInputDialog(
+                    MainFrame.this,
+                    "Entrez un nouveau tag :",
+                    "Nouveau tag",
+                    JOptionPane.INFORMATION_MESSAGE);
+            if(newTag!=null && newTag.trim().length()>0){
+                new AddNewTagWorker(MainFrame.this,newTag).execute();
+            }
+        }
+        if("modifyTagsAction".equals(e.getActionCommand())){
+            //todo
+        }
+    }
 }
