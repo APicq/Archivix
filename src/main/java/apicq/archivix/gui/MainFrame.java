@@ -190,7 +190,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("selectTagsAction".equals(e.getActionCommand())){
-            FindTagsWorker nftw = new FindTagsWorker(MainFrame.this);
+            FindTagsWorker nftw = new FindTagsWorker(MainFrame.this,true);
             nftw.start();
         }
         if("previousAction".equals(e.getActionCommand())){

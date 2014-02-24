@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 
 /**
  * Open a dialog, user can select tags from database.
+ * This dialog is used by two actions, so it has two modes:
+ * searchPanelMode = true : used for tag selection in message research
+ * searchPanelMode = false : used to apply tags to selected messages
  */
 public class SelectTagsDialog extends JDialog {
 
@@ -24,22 +27,6 @@ public class SelectTagsDialog extends JDialog {
     private final TagListModel tagListModel ;
     private final JPanel selectedTagsPanel ;
     private final JCheckBox untaggedMessagesCheckBox ;
-
-    // Return value : // todo delete
-    public static final int CANCEL=0;
-    public static final int OK=1;
-    public static final int UNTAGGED=2;
-
-    private int returnValue=CANCEL ;//todo delete
-
-
-    /**
-     * Return value : OK or CANCEL or UNTAGGED
-     * @return
-     */
-    public int returnValue(){
-        return returnValue;
-    }
 
     /**
      * Getter for selected tags
@@ -96,7 +83,8 @@ public class SelectTagsDialog extends JDialog {
      * @param mainFrame
      */
     public SelectTagsDialog(final MainFrame mainFrame,
-                            final ArrayList<String> tagStringList) {
+                            final ArrayList<String> tagStringList,
+                            final boolean searchPanelMode) {
         setModal(true);
         setLayout(new MigLayout("","[][grow][]","[][grow 95][grow 5][]")); // layout,column,row
         this.mainFrame = mainFrame ;
@@ -125,47 +113,58 @@ public class SelectTagsDialog extends JDialog {
         });
         add(delSelectionButton, "wrap");
 
-        // Line 4 Only tagged messages
+        // Line 4  : only tagged messages
         untaggedMessagesCheckBox = new JCheckBox("Afficher seulement les messages non taggés");
         untaggedMessagesCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tagList.setEnabled(untaggedMessagesCheckBox.isEnabled());
-
             }
         });
-        add(untaggedMessagesCheckBox);
+        if(searchPanelMode){
+            add(untaggedMessagesCheckBox);
+        }
 
-        // Line 4
+        // Line 5
+        // OK Button
         JButton OKButton = new JButton("OK");
         OKButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(untaggedMessagesCheckBox.isSelected()){
-                    mainFrame.getSearchPanel().setOnlyUntagged(true);
-                    mainFrame.getSearchPanel().getSelectedTagsPanel().removeAll();
-                    mainFrame.getSearchPanel().getSelectedTagsPanel().add(new JLabel("Seulement les messages non taggés"));
+                if(searchPanelMode){
+                    if(untaggedMessagesCheckBox.isSelected()){
+                        mainFrame.getSearchPanel().setOnlyUntagged(true);
+                        mainFrame.getSearchPanel().getSelectedTagsPanel().removeAll();
+                        mainFrame.getSearchPanel().getSelectedTagsPanel().add(new JLabel("Seulement les messages non taggés"));
+                    }
+                    else {
+                        mainFrame.getSearchPanel().setOnlyUntagged(false);
+                        mainFrame.getSearchPanel().getSelectedTagsPanel().removeAll();
+                        for(Component c : selectedTagsPanel().getComponents()){
+                            mainFrame.getSearchPanel().getSelectedTagsPanel().add(c);
+                        }
+                    }
+                    mainFrame.getSearchPanel().getSelectedTagsPanel().revalidate();
+                    mainFrame.getSearchPanel().getSelectedTagsPanel().repaint();
+                    setVisible(false);
                 }
                 else {
-                    mainFrame.getSearchPanel().setOnlyUntagged(false);
-                    mainFrame.getSearchPanel().getSelectedTagsPanel().removeAll();
-                    for(Component c : selectedTagsPanel().getComponents()){
-                        mainFrame.getSearchPanel().getSelectedTagsPanel().add(c);
+                    ArrayList<String> newTagsList = new ArrayList<String>();
+                    for(Component c: selectedTagsPanel().getComponents()){
+                        JLabel tagLabel = (JLabel)c;
+                        newTagsList.add(tagLabel.getText());
+
                     }
                 }
-                mainFrame.getSearchPanel().getSelectedTagsPanel().revalidate();
-                mainFrame.getSearchPanel().getSelectedTagsPanel().repaint();
-                setVisible(false);
             }
         });
-
-        // OK button :
         add(OKButton);
+
+        // Quit Button :
         JButton QuitButton = new JButton("Quitter");
         QuitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //returnValue = CANCEL ;
                 setVisible(false);
             }
         });

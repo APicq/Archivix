@@ -15,14 +15,17 @@ import java.util.ArrayList;
 public class FindTagsWorker extends SpecializedWorker {
 
     private final ArrayList<String> tagList = new ArrayList<String>();
+    // if true : mode is for search panel
+    private final boolean searchPanelMode ;
 
     /**
      * Constructor
      *
      * @param mainFrame
      */
-    public FindTagsWorker(MainFrame mainFrame) {
+    public FindTagsWorker(MainFrame mainFrame,boolean searchPanelMode) {
         super(mainFrame, "Recherche des tags");
+        this.searchPanelMode = searchPanelMode ;
     }
 
 
@@ -43,8 +46,7 @@ public class FindTagsWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-        SelectTagsDialog std = new SelectTagsDialog(mainFrame,tagList);
+        SelectTagsDialog std = new SelectTagsDialog(mainFrame,tagList,searchPanelMode);
         std.setVisible(true);
-
     }
 }
