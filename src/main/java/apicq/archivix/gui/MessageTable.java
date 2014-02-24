@@ -54,7 +54,17 @@ public class MessageTable extends JTable {
                 if (e.getButton() == e.BUTTON3 && getSelectedRow() != -1) {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
+                if(e.getClickCount()==2){
+                    int rowIndex = getSelectedRow();
+                    log.info("rowIndex : "+rowIndex);
+                    MessageTableModel mtm = (MessageTableModel) getModel();
+                    MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
+                    msd.setVisible(true);
+                    msd.setLocationRelativeTo(null);
+
+                }
             }
+
         });
     }
 }

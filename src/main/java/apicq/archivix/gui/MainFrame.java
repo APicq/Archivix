@@ -47,21 +47,38 @@ public class MainFrame extends JFrame implements ActionListener {
         setTitle("-- Archivix --");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // -----------
         // Setup menu
+        // -----------
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Fichier");
+
         JMenuItem insertMessageItem = new JMenuItem("Insert message files");
+        insertMessageItem.setActionCommand("insertMessagesAction");
+        insertMessageItem.addActionListener(this);
         fileMenu.add(insertMessageItem);
+
         JMenuItem databaseChooseItem = new JMenuItem("Connecter la base de données");
+        databaseChooseItem.setActionCommand("connectDatabaseAction");
+        databaseChooseItem.addActionListener(this);
         fileMenu.add(databaseChooseItem);
+
         JMenuItem attachDirItem = new JMenuItem("Définir le répertoire des pièces jointes");
+        attachDirItem.setActionCommand("setAttachDirAction");
+        attachDirItem.addActionListener(this);
         fileMenu.add(attachDirItem);
+
         JMenuItem quitItem = new JMenuItem("Quit");
+        quitItem.setActionCommand("quitAction");
+        quitItem.addActionListener(this);
         fileMenu.add(quitItem);
+
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
 
+        // ----------
         // Components
+        // ----------
         searchPanel = new SearchPanel(this);
         add(searchPanel, "wrap");
         messageTable = new MessageTable(this);
@@ -72,129 +89,14 @@ public class MainFrame extends JFrame implements ActionListener {
         pack();
         setMinimumSize(getPreferredSize());
 
-        // -------
-        // Actions
-        // -------
+        setVisible(true);
+        setLocationRelativeTo(null);
 
-        // Quit
-        quitItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actionQuit();
-            }
-        });
-
-        // select outlook message files and insert them into database
-        insertMessageItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle("Choisissez un ou des fichiers messages outlook (.msg)");
-                fileChooser.setMultiSelectionEnabled(true);
-                if(fileChooser.showOpenDialog(MainFrame.this)==JFileChooser.APPROVE_OPTION){
-                    File[] messageFiles = fileChooser.getSelectedFiles();
-                    new InsertMessageWorker(MainFrame.this,messageFiles);
-                }
-            }
-        });
-
-
-        // Connect to a sqlite database
-        databaseChooseItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actionConnectDatabase();
-            }
-        });
-
-        // Select attachment directory
-        attachDirItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actionSelectAttachDir();
-            }
-        });
-
-        // Find and print messages
-        searchPanel.searchWordsButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actionSearchInMessages();
-            }
-        });
+        //todo : delete after
         debug();
-
-        // double click open message :
-        messageTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount()==2){
-                    actionShowMessageDialog();
-
-                }
-            }
-        });
     }// constructor
 
 
-    /**
-     * Search in messages
-     */
-    private void actionSearchInMessages() {
-        new FindMessagesWorker(this).start();
-
-    }
-
-    /**
-     * Quit
-     */
-    private void actionQuit() {
-        // todo : save some datas as properties
-        /*
-        try {
-            pConnection.close();
-        }
-        catch (SQLException e){
-            log.warning("SQL error close "+e.toString());
-        }*/
-        System.exit(0);
-    }
-
-    /**
-     * Select directory where all attachment files lie.
-     */
-    private void actionSelectAttachDir() {
-        final JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnValue = chooser.showOpenDialog(this);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            attachmentDirectory = chooser.getSelectedFile().getAbsolutePath();
-        }
-    }
-
-    /**
-     * Connect to SQlite database
-     */
-    private void actionConnectDatabase() {
-        final JFileChooser chooser = new JFileChooser();
-        int returnValue = chooser.showOpenDialog(MainFrame.this);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            dabataseFile = (chooser.getSelectedFile().getAbsolutePath());
-            MainFrame.this.setTitle(chooser.getSelectedFile().getName());
-            // init database :
-            // todo freeze main frame
-        }
-    }
-
-
-
-    private void actionShowMessageDialog(){
-        int rowIndex = messageTable.getSelectedRow();
-        log.info("rowIndex : "+rowIndex);
-        MessageTableModel mtm = (MessageTableModel) messageTable.getModel();
-        MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
-        msd.setVisible(true);
-    }
 
     /**
      * Program entry point
@@ -214,7 +116,7 @@ public class MainFrame extends JFrame implements ActionListener {
             @Override
             public void run() {
                 MainFrame mainFrame = new MainFrame();
-                mainFrame.setVisible(true);
+                //mainFrame.setVisible(true);
             }
         });
     }
@@ -232,6 +134,7 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        log.info(e.getActionCommand());//debug
         if("deleteMessagesAction".equals(e.getActionCommand())){
             new DeleteMessagesWorker(MainFrame.this).start();
             return ;
@@ -249,5 +152,72 @@ public class MainFrame extends JFrame implements ActionListener {
         if("modifyTagsAction".equals(e.getActionCommand())){
             //todo
         }
+        if("insertMessagesAction".equals(e.getActionCommand())){
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Choisissez un ou des fichiers messages outlook (.msg)");
+            fileChooser.setMultiSelectionEnabled(true);
+            if(fileChooser.showOpenDialog(MainFrame.this)==JFileChooser.APPROVE_OPTION){
+                File[] messageFiles = fileChooser.getSelectedFiles();
+                new InsertMessageWorker(MainFrame.this,messageFiles);
+
+            }
+            return ;
+        }
+        if("connectDatabaseAction".equals(e.getActionCommand())){
+            final JFileChooser chooser = new JFileChooser();
+            int returnValue = chooser.showOpenDialog(MainFrame.this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                dabataseFile = (chooser.getSelectedFile().getAbsolutePath());
+                new CheckDatabaseWorker(MainFrame.this).start();
+                MainFrame.this.setTitle(chooser.getSelectedFile().getName());
+            }
+        }
+
+        if("setAttachDirAction".equals(e.getActionCommand())){
+            final JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnValue = chooser.showOpenDialog(this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                attachmentDirectory = chooser.getSelectedFile().getAbsolutePath();
+            }
+        }
+        if("quitAction".equals(e.getActionCommand())){
+            // todo : save some datas as properties
+            System.exit(0);
+        }
+
+        if("findMessagesAction".equals(e.getActionCommand())){
+            FindMessagesWorker nfmw = new FindMessagesWorker(MainFrame.this);
+            nfmw.start();
+        }
+
+        if("selectTagsAction".equals(e.getActionCommand())){
+            NewFindTagsWorker nftw = new NewFindTagsWorker(MainFrame.this);
+            nftw.start();
+        }
+        if("previousAction".equals(e.getActionCommand())){
+
+        }
+        if("nextAction".equals(e.getActionCommand())){
+
+        }
+        if("findUserAction".equals(e.getActionCommand())){
+            FindUserWorker fuw = new FindUserWorker(MainFrame.this);
+            fuw.start();
+        }
+        if("deleteMessagesAction".equals(e.getActionCommand())){
+            int result = JOptionPane.showConfirmDialog(
+                    MainFrame.this,
+                    "Etes-vous sûr de vouloir effacer les messages sélectionnés ?",
+                    "Effacement des messages",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if( result==JOptionPane.YES_OPTION ){
+                new DeleteMessagesWorker(MainFrame.this).start();
+            }
+        }
+        if("".equals(e.getActionCommand())){
+        }
+
     }
 }

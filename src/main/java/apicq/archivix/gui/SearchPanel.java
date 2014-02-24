@@ -118,56 +118,26 @@ public class SearchPanel extends JPanel {
         new String[]{"corps","sujet","destinataires","auteur"});
         add(fieldComboBox);
         add(searchWordsTextField,"grow");
+
+        // Button to find messages
         searchWordsButton = new JButton("Rechercher");
-        searchWordsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FindMessagesWorker nfmw = new FindMessagesWorker(mainFrame);
-                nfmw.start();
-            }
-        });
+        searchWordsButton.setActionCommand("findMessagesAction");
+        searchWordsButton.addActionListener(mainFrame);
         add(searchWordsButton, "wrap");
 
         // Line 2
         // todo : actions from mainFrame here.
         // Button to choose tags :
         JButton selectTagsButton = new JButton("Tags");
-        add(selectTagsButton,"grow");
+        selectTagsButton.setActionCommand("selectTagsAction");
+        selectTagsButton.addActionListener(mainFrame);
+        add(selectTagsButton, "grow");
 
         // panel with all the tags :
         selectedTagsPanel = new JPanel();
         selectedTagsPanel.setLayout(new MigLayout());
         add(new JScrollPane(selectedTagsPanel),"grow,span");
-        selectTagsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-                NewFindTagsWorker nftw = new NewFindTagsWorker(mainFrame);
-                nftw.start();
-                /*
-                SelectTagsDialog std = new SelectTagsDialog(SearchPanel.this.mainFrame);
-                std.setVisible(true);
-                if( std.returnValue()==std.OK ){
-                    onlyUntagged = false ;
-                    selectedTagsPanel.setEnabled(true);
-                    selectedTagsPanel.removeAll();
-                    for(Component c : std.selectedTagsPanel().getComponents()){
-                        selectedTagsPanel.add(c);
-                    }
-                    selectedTagsPanel.revalidate();
-                    selectedTagsPanel.repaint();
-                }
-                if(std.returnValue()==std.UNTAGGED){
-                    onlyUntagged = true ;
-                    selectedTagsPanel.removeAll();
-                    selectedTagsPanel.add(new JLabel("Seulement les messages non taggés"));
-                    selectedTagsPanel.revalidate();
-                    selectedTagsPanel.repaint();
-                    selectedTagsPanel.setEnabled(false);//todo check if useful
-                }
-                */
-            }
-        });
 
         add(new JLabel("Trier par :"),"");
         JComboBox<String> sortComboBox = new JComboBox<String>(
@@ -177,9 +147,15 @@ public class SearchPanel extends JPanel {
 
         // Line 4
         JButton previousPageButton = new JButton("Page précédente");
-        add(previousPageButton,"");
+        previousPageButton.setActionCommand("previousAction");
+        previousPageButton.addActionListener(mainFrame);
+        add(previousPageButton, "");
+
         JButton nextPageButton = new JButton("Page suivante");
-        add(nextPageButton,"");
+        nextPageButton.setActionCommand("nextAction");
+        nextPageButton.addActionListener(mainFrame);
+        add(nextPageButton, "");
+
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
@@ -195,13 +171,8 @@ public class SearchPanel extends JPanel {
 
         // user selection :
         JButton userSelectionButton = new JButton("Utilisateur");
-        userSelectionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FindUserWorker fuw = new FindUserWorker(mainFrame);
-                fuw.start();
-            }
-        });
+        userSelectionButton.setActionCommand("findUserAction");
+        userSelectionButton.addActionListener(mainFrame);
         add(userSelectionButton);
 
     }
