@@ -16,7 +16,7 @@ import java.util.Vector;
 /**
  * Created by pic on 2/19/14.
  */
-public class NewFindMessagesWorker extends SpecializedWorker {
+public class FindMessagesWorker extends SpecializedWorker {
 
     private final MessageTableModel messageTableModel = new MessageTableModel();
 
@@ -25,7 +25,7 @@ public class NewFindMessagesWorker extends SpecializedWorker {
      *
      * @param mainFrame
      */
-    public NewFindMessagesWorker(MainFrame mainFrame) {
+    public FindMessagesWorker(MainFrame mainFrame) {
         super(mainFrame, "Recherche des messages en cours");
     }
 

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * Created by pic on 2/23/14.
  */
-public class NewInsertMessageWorker extends SpecializedWorker {
+public class InsertMessageWorker extends SpecializedWorker {
 
     public static final Logger log = Logger.getLogger("Archivix");
 
@@ -41,7 +41,7 @@ public class NewInsertMessageWorker extends SpecializedWorker {
      *
      * @param mainFrame
      */
-    public NewInsertMessageWorker(MainFrame mainFrame,File[] messageFiles) {
+    public InsertMessageWorker(MainFrame mainFrame, File[] messageFiles) {
         super(mainFrame,"Insertion des messages en cours");
         this.messageFiles = messageFiles ;
     }
@@ -54,14 +54,14 @@ public class NewInsertMessageWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
-        getProgressDialog().getProgressBar().setMaximum(messageFiles.length);
+        setMaximum(messageFiles.length);
         int cursor = 0 ;
 
         for( File messageFile : messageFiles ){
 
             // Update progress
-            getProgressDialog().getProgressBar().setValue(++cursor);
-            getProgressDialog().getProgressBar().setString(messageFile.getName());
+            setProgress(++cursor);
+            setString(messageFile.getName());
 
             // Parse message file
             MAPIMessage mapiMessage;

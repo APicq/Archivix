@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
@@ -95,7 +93,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 fileChooser.setMultiSelectionEnabled(true);
                 if(fileChooser.showOpenDialog(MainFrame.this)==JFileChooser.APPROVE_OPTION){
                     File[] messageFiles = fileChooser.getSelectedFiles();
-                    new NewInsertMessageWorker(MainFrame.this,messageFiles);
+                    new InsertMessageWorker(MainFrame.this,messageFiles);
                 }
             }
         });
@@ -143,7 +141,7 @@ public class MainFrame extends JFrame implements ActionListener {
      * Search in messages
      */
     private void actionSearchInMessages() {
-        new NewFindMessagesWorker(this).start();
+        new FindMessagesWorker(this).start();
 
     }
 

@@ -24,7 +24,7 @@ public class FindUserWorker extends SpecializedWorker {
     public FindUserWorker(MainFrame mainFrame) {
         super(mainFrame, "Recherche des noms d'utilisateurs");
         nameVector = new Vector<String>();
-        getProgressDialog().getProgressBar().setIndeterminate(true);
+        setIndeterminate(true);
     }
 
     @Override

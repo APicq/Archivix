@@ -1,7 +1,7 @@
 package apicq.archivix.gui;
 
+import apicq.archivix.tools.FindMessagesWorker;
 import apicq.archivix.tools.FindUserWorker;
-import apicq.archivix.tools.NewFindMessagesWorker;
 import apicq.archivix.tools.NewFindTagsWorker;
 import net.miginfocom.swing.MigLayout;
 
@@ -122,7 +122,7 @@ public class SearchPanel extends JPanel {
         searchWordsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                NewFindMessagesWorker nfmw = new NewFindMessagesWorker(mainFrame);
+                FindMessagesWorker nfmw = new FindMessagesWorker(mainFrame);
                 nfmw.start();
             }
         });

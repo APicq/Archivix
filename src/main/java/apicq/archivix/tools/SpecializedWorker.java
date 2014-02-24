@@ -62,6 +62,25 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
     }
 
 
+    /**
+     * sets the maximum value for the progress bar
+     * @param n
+     */
+    public void setMaximum(int n){
+        progressDialog.getProgressBar().setMaximum(n);
+    }
+
+    /**
+     *
+     * @param b
+     */
+    public void setIndeterminate(boolean b){
+        progressDialog.getProgressBar().setIndeterminate(b);
+    }
+
+
+
+
 
     /**
      * method used to build sql strings.

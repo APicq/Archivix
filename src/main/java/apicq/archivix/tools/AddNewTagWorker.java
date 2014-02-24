@@ -24,7 +24,7 @@ public class AddNewTagWorker extends SpecializedWorker {
      */
     public AddNewTagWorker(MainFrame mainFrame, String tag) {
         super(mainFrame, "Vérification des tags");
-        getProgressDialog().getProgressBar().setIndeterminate(true);
+        setIndeterminate(true);
         this.tag = tag ;
 
     }
