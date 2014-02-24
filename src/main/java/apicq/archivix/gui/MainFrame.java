@@ -62,7 +62,6 @@ public class MainFrame extends JFrame implements ActionListener {
 
         // Misc frame configuration
         setLayout(new MigLayout("", "[grow,fill]", "[][grow]"));
-        setTitle("-- Archivix --");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // -----------
@@ -109,6 +108,7 @@ public class MainFrame extends JFrame implements ActionListener {
         add(searchPanel, "wrap");
         messageTable = new MessageTable(this);
         // Load visibility :
+/*
         String visibleColumn = prop.getProperty("idcol","yes");
         if(visibleColumn.equals("no")){
             VisibleColumnDialog.hideColumn(this,MessageTableModel.IDCOL);
@@ -161,7 +161,7 @@ public class MainFrame extends JFrame implements ActionListener {
         if(visibleColumn.equals("no")){
             VisibleColumnDialog.hideColumn(this,MessageTableModel.TAGSCOL);
         }
-
+*/
         JScrollPane messageListScroller = new JScrollPane(messageTable);
         add(messageListScroller, "grow");
 
@@ -264,55 +264,56 @@ public class MainFrame extends JFrame implements ActionListener {
             Properties prop = new Properties();
             prop.setProperty("database",dabataseFile);
             prop.setProperty("attachmentdir",attachmentDirectory);
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.IDCOL)){
+
+            if(VisibleColumnDialog.isHiddenColumn(this,"id")){
                 prop.setProperty("idcol","no");
             }
             else {
                 prop.setProperty("idcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.DATECOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"date")){
                 prop.setProperty("datecol","no");
             }
             else {
                 prop.setProperty("datecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.AUTHORCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"auteur")){
                 prop.setProperty("authorcol","no");
             }
             else {
                 prop.setProperty("authorcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.SUBJECTCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"sujet")){
                 prop.setProperty("subjectcol","no");
             }
             else {
                 prop.setProperty("subjectcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.RECIPCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"destinataires")){
                 prop.setProperty("recipcol","no");
             }
             else {
                 prop.setProperty("recipcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.BODYCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"texte")){
                 prop.setProperty("bodycol","no");
             }
             else {
                 prop.setProperty("bodycol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.ATTACHCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"nombre de pj")){
                 prop.setProperty("attachcol","no");
             }
             else {
                 prop.setProperty("attachcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.MAILRECIPCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"destinataires(complet)")){
                 prop.setProperty("mailrecipcol","no");
             }
             else {
                 prop.setProperty("mailrecipcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.CCCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"")){
                 prop.setProperty("cccol","no");
             }
             else {
@@ -348,6 +349,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,"ERREUR : l'enregistrement des paramètres a échoué.");
                 log.warning(except.getMessage());
             }
+*/
             System.exit(0);
         }
 

@@ -4,6 +4,7 @@ import net.miginfocom.swing.MigLayout;
 import sun.applet.Main;
 
 import javax.swing.*;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,66 +36,67 @@ public class VisibleColumnDialog extends JDialog {
         // ---------------------
         final JCheckBox idCheckBox = new JCheckBox(
                 "clé primaire",
-                !isHiddenColumn(mainFrame,MessageTableModel.IDCOL));
+                !isHiddenColumn(mainFrame,"id"));
         add(idCheckBox,"wrap");
 
         final JCheckBox dateCheckBox = new JCheckBox(
                 "Date et heure",
-                !isHiddenColumn(mainFrame,MessageTableModel.DATECOL));
+                !isHiddenColumn(mainFrame,"date"));
         add(dateCheckBox,"wrap");
 
         final JCheckBox authorCheckBox = new JCheckBox(
                 "Auteur",
-                !isHiddenColumn(mainFrame,MessageTableModel.AUTHORCOL));
+                !isHiddenColumn(mainFrame,"auteur"));
         add(authorCheckBox,"wrap");
 
         final JCheckBox subjectCheckBox = new JCheckBox(
                 "Sujet du message",
-                !isHiddenColumn(mainFrame,MessageTableModel.SUBJECTCOL));
+                !isHiddenColumn(mainFrame,"sujet"));
         add(subjectCheckBox,"wrap");
 
         final JCheckBox recipCheckBox = new JCheckBox(
-                "Destinataires",!isHiddenColumn(mainFrame,MessageTableModel.RECIPCOL));
+                "Destinataires",
+                !isHiddenColumn(mainFrame,"destinataires"));
         add(recipCheckBox,"wrap");
 
         final JCheckBox bodyCheckBox = new JCheckBox(
                 "Corps du message",
-                !isHiddenColumn(mainFrame,MessageTableModel.BODYCOL));
+                !isHiddenColumn(mainFrame,"texte"));
         add(bodyCheckBox,"wrap");
 
         final JCheckBox attachCheckBox = new JCheckBox(
                 "nombre de pièces jointes",
-                !isHiddenColumn(mainFrame,MessageTableModel.ATTACHCOL));
+                !isHiddenColumn(mainFrame,"nombre de pj"));
         add(attachCheckBox,"wrap");
 
         final JCheckBox mailRecipCheckBox = new JCheckBox(
                 "Destinataires (liste complète)",
-                !isHiddenColumn(mainFrame,MessageTableModel.MAILRECIPCOL));
+                !isHiddenColumn(mainFrame,"destinataires(complet)"));
         add(mailRecipCheckBox,"wrap");
 
         final JCheckBox ccCheckBox = new JCheckBox(
                 "Champs cc",
-                !isHiddenColumn(mainFrame,MessageTableModel.CCCOL));
+                !isHiddenColumn(mainFrame,"cc"));
         add(ccCheckBox,"wrap");
 
         final JCheckBox bccCheckBox = new JCheckBox(
                 "Champs bcc",
-                !isHiddenColumn(mainFrame,MessageTableModel.BCCCOL));
+                !isHiddenColumn(mainFrame,"bcc"));
         add(bccCheckBox,"wrap");
 
         final JCheckBox usernameCheckBox = new JCheckBox(
                 "Nom d'utilisateur",
-                !isHiddenColumn(mainFrame,MessageTableModel.USERNAMECOL));
+                !isHiddenColumn(mainFrame,"utilisateur"));
         add(usernameCheckBox,"wrap");
 
         final JCheckBox insertDateCheckBox = new JCheckBox(
                 "Date d'insertion",
-                !isHiddenColumn(mainFrame,MessageTableModel.INSERTDATECOL));
+                !isHiddenColumn(mainFrame,"date insertion"));
         add(insertDateCheckBox,"wrap");
 
         final JCheckBox tagsCheckBox = new JCheckBox(
                 "Tags",
-                !isHiddenColumn(mainFrame,MessageTableModel.TAGSCOL));
+                !isHiddenColumn(mainFrame,"tags"));
         add(tagsCheckBox,"wrap");
 
         //-----------
@@ -105,83 +107,84 @@ public class VisibleColumnDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(idCheckBox.isSelected()){
-                    showColumn(MessageTableModel.IDCOL);
+                    showColumn(mainFrame,"id");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.IDCOL);
+                    hideColumn(mainFrame,"id");
                 }
                 if(dateCheckBox.isSelected()){
-                    showColumn(MessageTableModel.DATECOL);
+                    showColumn(mainFrame,"date");
                 }
                 else {
-                    hideColumn(mainFrame,MessageTableModel.DATECOL);
+                    hideColumn(mainFrame,"date");
                 }
                 if(authorCheckBox.isSelected()){
-                    showColumn(MessageTableModel.AUTHORCOL);
+                    showColumn(mainFrame,"auteur");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.AUTHORCOL);
+                    hideColumn(mainFrame,"auteur");
                 }
                 if(subjectCheckBox.isSelected()){
-                    showColumn(MessageTableModel.SUBJECTCOL);
+                    showColumn(mainFrame,"sujet");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.SUBJECTCOL);
+                    hideColumn(mainFrame,"sujet");
                 }
                 if(recipCheckBox.isSelected()){
-                    showColumn(MessageTableModel.RECIPCOL);
+                    showColumn(mainFrame,"destinataires");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.RECIPCOL);
+                    hideColumn(mainFrame,"destinataires");
                 }
                 if(bodyCheckBox.isSelected()){
-                    showColumn(MessageTableModel.BODYCOL);
+                    showColumn(mainFrame,"texte");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.BODYCOL);
+                    hideColumn(mainFrame,"texte");
                 }
                 if(attachCheckBox.isSelected()){
-                    showColumn(MessageTableModel.ATTACHCOL);
+                    showColumn(mainFrame,"nombre de pj");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.ATTACHCOL);
+                    hideColumn(mainFrame,"nombre de pj");
                 }
                 if(mailRecipCheckBox.isSelected()){
-                    showColumn(MessageTableModel.MAILRECIPCOL);
+                    showColumn(mainFrame,"destinataires(complet)");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.MAILRECIPCOL);
+                    hideColumn(mainFrame,"destinataires(complet)");
                 }
                 if(ccCheckBox.isSelected()){
-                    showColumn(MessageTableModel.CCCOL);
+                    showColumn(mainFrame,"cc");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.CCCOL);
+                    hideColumn(mainFrame,"cc");
                 }
                 if(bccCheckBox.isSelected()){
-                    showColumn(MessageTableModel.BCCCOL);
+                    showColumn(mainFrame,"bcc");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.BCCCOL);
+                    hideColumn(mainFrame,"bcc");
                 }
                 if(usernameCheckBox.isSelected()){
-                    showColumn(MessageTableModel.USERNAMECOL);
+                    showColumn(mainFrame,"utilisateur");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.USERNAMECOL);
+                    hideColumn(mainFrame,"utilisateur");
                 }
                 if(insertDateCheckBox.isSelected()){
-                    showColumn(MessageTableModel.INSERTDATECOL);
+                    showColumn(mainFrame,"date insertion");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.INSERTDATECOL);
+                    hideColumn(mainFrame,"date insertion");
                 }
                 if(tagsCheckBox.isSelected()){
-                    showColumn(MessageTableModel.TAGSCOL);
+                    showColumn(mainFrame,"tags");
                 }
                 else{
-                    hideColumn(mainFrame,MessageTableModel.TAGSCOL);
+                    hideColumn(mainFrame,"tags");
                 }
+
                 mainFrame.revalidate();
                 mainFrame.repaint();
                 setVisible(false);
@@ -210,6 +213,13 @@ public class VisibleColumnDialog extends JDialog {
         mainFrame.getMessageTable().getColumnModel().getColumn(index).setWidth(0);
     }
 
+    public static void hideColumn(MainFrame mainFrame,String name){
+        TableColumnModel tcm = mainFrame.getMessageTable().getColumnModel();
+        tcm.getColumn(tcm.getColumnIndex(name)).setMinWidth(0);
+        tcm.getColumn(tcm.getColumnIndex(name)).setMaxWidth(0);
+        tcm.getColumn(tcm.getColumnIndex(name)).setWidth(0);
+    }
+
     private void showColumn(int index){
         mainFrame.getMessageTable().getColumnModel().getColumn(index).setMinWidth(10);
         mainFrame.getMessageTable().getColumnModel().getColumn(index).setMaxWidth(Integer.MAX_VALUE);
@@ -217,11 +227,27 @@ public class VisibleColumnDialog extends JDialog {
         mainFrame.getMessageTable().getColumnModel().getColumn(index).setPreferredWidth(20);
     }
 
+    private void showColumn(MainFrame mainFrame,String name){
+        TableColumnModel tcm = mainFrame.getMessageTable().getColumnModel();
+        tcm.getColumn(tcm.getColumnIndex(name)).setMinWidth(15);
+        tcm.getColumn(tcm.getColumnIndex(name)).setMaxWidth(Integer.MAX_VALUE);
+        tcm.getColumn(tcm.getColumnIndex(name)).setWidth(20);
+        tcm.getColumn(tcm.getColumnIndex(name)).setPreferredWidth(20);
+    }
+
     public static boolean isHiddenColumn(MainFrame mainFrame,int index){
         int minWidth = mainFrame.getMessageTable().getColumnModel().getColumn(index).getMinWidth();
         int maxWidth = mainFrame.getMessageTable().getColumnModel().getColumn(index).getMaxWidth();
         int width = mainFrame.getMessageTable().getColumnModel().getColumn(index).getWidth();
+        if(minWidth==0 && maxWidth==0 && width==0) return true ;
+        else return false ;
+    }
 
+    public static boolean isHiddenColumn(MainFrame mainFrame,String name){
+        TableColumnModel tcm = mainFrame.getMessageTable().getColumnModel();
+        int minWidth = tcm.getColumn(tcm.getColumnIndex(name)).getMinWidth();
+        int maxWidth = tcm.getColumn(tcm.getColumnIndex(name)).getMaxWidth();
+        int width = tcm.getColumn(tcm.getColumnIndex(name)).getWidth();
         if(minWidth==0 && maxWidth==0 && width==0) return true ;
         else return false ;
     }

@@ -64,6 +64,8 @@ public class MessageTable extends JTable {
                     msd.setVisible(true);
                     msd.setLocationRelativeTo(null);
 
+                    log.info("getColumnIndex(\"date\"" + getColumnModel().getColumnIndex("date"));
+
                 }
             }
 
