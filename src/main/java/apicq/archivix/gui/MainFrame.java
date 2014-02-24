@@ -46,6 +46,9 @@ public class MainFrame extends JFrame implements ActionListener {
             setTitle(dabataseFile);
             attachmentDirectory = prop.getProperty("attachmentdir");
 
+
+
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,"Aucune base de données configurée. Connectez-vous\n"+
@@ -105,6 +108,12 @@ public class MainFrame extends JFrame implements ActionListener {
         searchPanel = new SearchPanel(this);
         add(searchPanel, "wrap");
         messageTable = new MessageTable(this);
+        // Load visibility :
+        String visibleColumn = prop.getProperty("idcol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.IDCOL);
+        }
+        //visibleColumn = prop.getProperty("")
         JScrollPane messageListScroller = new JScrollPane(messageTable);
         add(messageListScroller, "grow");
 
@@ -116,7 +125,7 @@ public class MainFrame extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
 
         //todo : delete after
-        debug();
+        //debug();
     }// constructor
 
 
@@ -146,8 +155,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     // todo : delete after,only for debugging
     public void debug() {
-        dabataseFile = "/home/pic/testbase.sqlite";
-        attachmentDirectory = "/home/pic/attach/";
+        //dabataseFile = "/home/pic/testbase.sqlite";
+ //       attachmentDirectory = "/home/pic/attach/";
 
     }
 
@@ -207,6 +216,84 @@ public class MainFrame extends JFrame implements ActionListener {
             Properties prop = new Properties();
             prop.setProperty("database",dabataseFile);
             prop.setProperty("attachmentdir",attachmentDirectory);
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.IDCOL)){
+                prop.setProperty("idcol","no");
+            }
+            else {
+                prop.setProperty("idcol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.DATECOL)){
+                prop.setProperty("datecol","no");
+            }
+            else {
+                prop.setProperty("datecol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.AUTHORCOL)){
+                prop.setProperty("authorcol","no");
+            }
+            else {
+                prop.setProperty("authorcol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.SUBJECTCOL)){
+                prop.setProperty("subjectcol","no");
+            }
+            else {
+                prop.setProperty("subjectcol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.RECIPCOL)){
+                prop.setProperty("recipcol","no");
+            }
+            else {
+                prop.setProperty("recipcol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.BODYCOL)){
+                prop.setProperty("bodycol","no");
+            }
+            else {
+                prop.setProperty("bodycol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.ATTACHCOL)){
+                prop.setProperty("attachcol","no");
+            }
+            else {
+                prop.setProperty("attachcol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.MAILRECIPCOL)){
+                prop.setProperty("mailrecipcol","no");
+            }
+            else {
+                prop.setProperty("mailrecipcol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.CCCOL)){
+                prop.setProperty("cccol","no");
+            }
+            else {
+                prop.setProperty("cccol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.BCCCOL)){
+                prop.setProperty("bcccol","no");
+            }
+            else {
+                prop.setProperty("bcccol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.)){
+                prop.setProperty("col","no");
+            }
+            else {
+                prop.setProperty("col","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.)){
+                prop.setProperty("col","no");
+            }
+            else {
+                prop.setProperty("col","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.)){
+                prop.setProperty("col","no");
+            }
+            else {
+                prop.setProperty("col","yes");
+            }
             try {
                 prop.store(new FileOutputStream("config.txt"), "properties for Archivix");
             } catch (IOException except) {
