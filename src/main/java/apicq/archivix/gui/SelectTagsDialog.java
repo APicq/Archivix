@@ -1,5 +1,6 @@
 package apicq.archivix.gui;
 
+import apicq.archivix.tools.ApplyTagWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -153,7 +154,9 @@ public class SelectTagsDialog extends JDialog {
                     for(Component c: selectedTagsPanel().getComponents()){
                         JLabel tagLabel = (JLabel)c;
                         newTagsList.add(tagLabel.getText());
-
+                        setVisible(false);
+                        new ApplyTagWorker(mainFrame,newTagsList);
+                        //where i am
                     }
                 }
             }

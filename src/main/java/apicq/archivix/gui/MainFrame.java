@@ -6,7 +6,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -37,6 +38,22 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     public MainFrame() {
 
+        // Load configuration :
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream("config.txt"));
+            dabataseFile = prop.getProperty("database");
+            setTitle(dabataseFile);
+            attachmentDirectory = prop.getProperty("attachmentdir");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,"Aucune base de données configurée. Connectez-vous\n"+
+                    "à une base de données et choisissez un répertoire pour les pièces jointes");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Disable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 
@@ -51,7 +68,7 @@ public class MainFrame extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Fichier");
 
-        JMenuItem insertMessageItem = new JMenuItem("Insert message files");
+        JMenuItem insertMessageItem = new JMenuItem("Insérer des messages");
         insertMessageItem.setActionCommand("insertMessagesAction");
         insertMessageItem.addActionListener(this);
         fileMenu.add(insertMessageItem);
@@ -66,12 +83,20 @@ public class MainFrame extends JFrame implements ActionListener {
         attachDirItem.addActionListener(this);
         fileMenu.add(attachDirItem);
 
-        JMenuItem quitItem = new JMenuItem("Quit");
+        JMenuItem quitItem = new JMenuItem("Sauvegarder la configuration et quitter");
         quitItem.setActionCommand("quitAction");
         quitItem.addActionListener(this);
         fileMenu.add(quitItem);
 
         menuBar.add(fileMenu);
+
+        JMenu configurationMenu = new JMenu("Configuration");
+        JMenuItem configColumnItem = new JMenuItem("Configurer les colonnes visibles");
+        configColumnItem.setActionCommand("configColumnsAction");
+        configColumnItem.addActionListener(this);
+        configurationMenu.add(configColumnItem);
+        menuBar.add(configurationMenu);
+
         setJMenuBar(menuBar);
 
         // ----------
@@ -132,7 +157,6 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        log.info(e.getActionCommand());//debug
         if("deleteMessagesAction".equals(e.getActionCommand())){
             new DeleteMessagesWorker(MainFrame.this).start();
             return ;
@@ -148,7 +172,7 @@ public class MainFrame extends JFrame implements ActionListener {
             }
         }
         if("modifyTagsAction".equals(e.getActionCommand())){
-            //todo
+            new FindTagsWorker(MainFrame.this,false).execute();
         }
         if("insertMessagesAction".equals(e.getActionCommand())){
             JFileChooser fileChooser = new JFileChooser();
@@ -180,7 +204,15 @@ public class MainFrame extends JFrame implements ActionListener {
             }
         }
         if("quitAction".equals(e.getActionCommand())){
-            // todo : save some datas as properties
+            Properties prop = new Properties();
+            prop.setProperty("database",dabataseFile);
+            prop.setProperty("attachmentdir",attachmentDirectory);
+            try {
+                prop.store(new FileOutputStream("config.txt"), "properties for Archivix");
+            } catch (IOException except) {
+                JOptionPane.showMessageDialog(this,"ERREUR : l'enregistrement des paramètres a échoué.");
+                log.warning(except.getMessage());
+            }
             System.exit(0);
         }
 
@@ -214,7 +246,8 @@ public class MainFrame extends JFrame implements ActionListener {
                 new DeleteMessagesWorker(MainFrame.this).start();
             }
         }
-        if("".equals(e.getActionCommand())){
+        if("configColumnsAction".equals(e.getActionCommand())){
+            new VisibleColumnDialog(this).setVisible(true);
         }
 
     }

@@ -43,7 +43,7 @@ public class CheckDatabaseWorker extends SpecializedWorker {
             messageTableStmt.execute();
 
             PreparedStatement attachTableStmt = pStatement(
-            "CREATE TABLE IF NO EXISTS attach ("+
+            "CREATE TABLE IF NOT EXISTS attach ("+
                     "id INTEGER PRIMARY KEY AUTOINCREMENT,"+
                     "msgid INTEGER,"+
                     "name TEXT,"+

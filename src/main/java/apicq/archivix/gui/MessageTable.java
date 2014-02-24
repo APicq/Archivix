@@ -1,12 +1,14 @@
 package apicq.archivix.gui;
 
 import apicq.archivix.tools.AddNewTagWorker;
+import org.apache.poi.ss.formula.functions.Column;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -15,14 +17,14 @@ import java.util.logging.Logger;
 public class MessageTable extends JTable {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    private final MainFrame mainFrame ;
-    private MessageTableModel messageTableModel ;
-
-    private JPopupMenu popupMenu ;
+    private final MessageTableModel messageTableModel ;
+    private final JPopupMenu popupMenu ;
+    private ArrayList<Column> removedColumns ;
 
     public MessageTable(MainFrame mainFrame) {
 
-        this.mainFrame = mainFrame ;
+        removedColumns = new ArrayList<Column>();
+        // todo : load properties
         messageTableModel = new MessageTableModel();
         setModel(messageTableModel);
 

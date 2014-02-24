@@ -60,7 +60,7 @@ public class AddNewTagWorker extends SpecializedWorker {
                 }
                 if(!isAlreadyTagged){
                     PreparedStatement insertTagStmt = pStatement(
-                            "INSERT INTO TAGS(msgid,tag) VALUES(?,?) ");
+                            "INSERT INTO tags(msgid,tag) VALUES(?,?) ");
                     insertTagStmt.setInt(1,id);
                     insertTagStmt.setString(2,tag);
                 }

@@ -10,21 +10,21 @@ import java.util.ArrayList;
  */
 public class MessageTableModel extends AbstractTableModel {
 
-    private static final int IDCOL           = 0;
-    private static final int DATECOL         = 1;
-    private static final int AUTHORCOL       = 2;
-    private static final int SUBJECTCOL      = 3;
-    private static final int RECIPCOL        = 4;
-    private static final int BODYCOL         = 5;
-    private static final int ATTACHCOL       = 6;
-    private static final int MAILRECIPCOL    = 7;
-    private static final int CCCOL           = 8;
-    private static final int BCCCOL          = 9;
-    private static final int USERNAMECOL     = 10;
-    private static final int INSERTDATECOL   = 11;
-    private static final int TAGSCOL         = 12;
+    public static final int IDCOL           = 0;
+    public static final int DATECOL         = 1;
+    public static final int AUTHORCOL       = 2;
+    public static final int SUBJECTCOL      = 3;
+    public static final int RECIPCOL        = 4;
+    public static final int BODYCOL         = 5;
+    public static final int ATTACHCOL       = 6;
+    public static final int MAILRECIPCOL    = 7;
+    public static final int CCCOL           = 8;
+    public static final int BCCCOL          = 9;
+    public static final int USERNAMECOL     = 10;
+    public static final int INSERTDATECOL   = 11;
+    public static final int TAGSCOL         = 12;
 
-    private static final int SUMCOL          = 13; // number of columns
+    public static final int SUMCOL          = 13; // number of columns
 
     // messageElement container
     private ArrayList<TextMessage> messages ;
