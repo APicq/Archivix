@@ -113,7 +113,55 @@ public class MainFrame extends JFrame implements ActionListener {
         if(visibleColumn.equals("no")){
             VisibleColumnDialog.hideColumn(this,MessageTableModel.IDCOL);
         }
-        //visibleColumn = prop.getProperty("")
+        visibleColumn = prop.getProperty("datecol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.DATECOL);
+        }
+        visibleColumn = prop.getProperty("authorcol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.AUTHORCOL);
+        }
+        visibleColumn = prop.getProperty("subjectcol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.SUBJECTCOL);
+        }
+        visibleColumn = prop.getProperty("recipcol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.RECIPCOL);
+        }
+        visibleColumn = prop.getProperty("bodycol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.BODYCOL);
+        }
+        visibleColumn = prop.getProperty("attachcol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.ATTACHCOL);
+        }
+        visibleColumn = prop.getProperty("mailrecipcol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.MAILRECIPCOL);
+        }
+        visibleColumn = prop.getProperty("cccol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.CCCOL);
+        }
+        visibleColumn = prop.getProperty("bcccol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.BCCCOL);
+        }
+        visibleColumn = prop.getProperty("usernamecol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.USERNAMECOL);
+        }
+        visibleColumn = prop.getProperty("insertdatecol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.INSERTDATECOL);
+        }
+        visibleColumn = prop.getProperty("tagscol","yes");
+        if(visibleColumn.equals("no")){
+            VisibleColumnDialog.hideColumn(this,MessageTableModel.TAGSCOL);
+        }
+
         JScrollPane messageListScroller = new JScrollPane(messageTable);
         add(messageListScroller, "grow");
 
@@ -276,23 +324,23 @@ public class MainFrame extends JFrame implements ActionListener {
             else {
                 prop.setProperty("bcccol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.)){
-                prop.setProperty("col","no");
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.USERNAMECOL)){
+                prop.setProperty("usernamecol","no");
             }
             else {
-                prop.setProperty("col","yes");
+                prop.setProperty("usernamecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.)){
-                prop.setProperty("col","no");
-            }
-            else {
-                prop.setProperty("col","yes");
-            }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.)){
-                prop.setProperty("col","no");
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.INSERTDATECOL)){
+                prop.setProperty("insertdatecol","no");
             }
             else {
-                prop.setProperty("col","yes");
+                prop.setProperty("insertdatecol","yes");
+            }
+            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.TAGSCOL)){
+                prop.setProperty("tagscol","no");
+            }
+            else {
+                prop.setProperty("tagscol","yes");
             }
             try {
                 prop.store(new FileOutputStream("config.txt"), "properties for Archivix");
