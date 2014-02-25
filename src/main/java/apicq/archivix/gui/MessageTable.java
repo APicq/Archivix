@@ -18,14 +18,11 @@ import java.util.logging.Logger;
 public class MessageTable extends JXTable {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    //private final MessageTableModel messageTableModel ;
+
     private final JPopupMenu popupMenu ;
 
     public MessageTable(MainFrame mainFrame) {
 
-        //messageTableModel = new MessageTableModel();
-        //setModel(messageTableModel);
-        //setColumnControlVisible(true);
         getTableHeader().setReorderingAllowed(false);
 
         // Menu definition and actions :
@@ -47,8 +44,6 @@ public class MessageTable extends JXTable {
         popupMenu.add(modifyTagsItem);
         popupMenu.add(deleteMessagesItem);
 
-
-
         // Right-click : menu appears
         addMouseListener(new MouseAdapter() {
             @Override
@@ -63,9 +58,6 @@ public class MessageTable extends JXTable {
                     MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
                     msd.setVisible(true);
                     msd.setLocationRelativeTo(null);
-
-                    log.info("getColumnIndex(\"date\"" + getColumnModel().getColumnIndex("date"));
-
                 }
             }
 

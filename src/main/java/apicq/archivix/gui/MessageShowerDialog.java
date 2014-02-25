@@ -1,17 +1,21 @@
 package apicq.archivix.gui;
 
 import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.JXLabel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 /**
  * Created by pic on 2/13/14.
  */
 public class MessageShowerDialog extends JDialog {
+
+    public static final Logger log = Logger.getLogger("Archivix");
 
     /**
      * JLabel with red color
@@ -25,39 +29,67 @@ public class MessageShowerDialog extends JDialog {
 
     public  MessageShowerDialog(TextMessage me){
 
+        setLayout(new MigLayout());
         setModal(true);
+        Dimension screenDim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        int dimX = (int) (screenDim.getWidth()*0.7);
+        int dimY = (int) (screenDim.getHeight()*0.8);
+
 
         JPanel messagePanel = new JPanel();
-        messagePanel.setLayout(new MigLayout("","[right][]",""));// layout,column,row
+        messagePanel.setLayout(new MigLayout("","[right][fill,grow]",""));// layout,column,row
 
         // Line 1
         messagePanel.add(new CustomJLabel("Date :"),"");
-        messagePanel.add(new JLabel(me.date()),"grow,span");
+        messagePanel.add(new JLabel(me.date()),"wrap");
 
         // Line 2
         messagePanel.add(new CustomJLabel("Sujet :"),"");
-        messagePanel.add(new JLabel(me.subject()),"grow,span");
 
+        //messagePanel.add(new JLabel(me.subject()),"grow,span");
+        JTextArea subjectTextArea = new JTextArea(me.subject());
+        subjectTextArea.setEditable(false);
+        subjectTextArea.setBorder(new LineBorder(Color.BLACK));
+        subjectTextArea.setBackground(Color.YELLOW);
+        subjectTextArea.setLineWrap(true);
+        messagePanel.add(subjectTextArea,"wmax "+dimX+",grow,wrap");
         // Line 3
         messagePanel.add(new CustomJLabel("De :"),"");
-        messagePanel.add(new JLabel(me.author()),"grow,span");
+        messagePanel.add(new JLabel(me.author()),"grow,wrap");
 
         // Line 4
         messagePanel.add(new CustomJLabel("A :"),"");
-        messagePanel.add(new JLabel(me.recip()),"grow,span");
+        //messagePanel.add(new JLabel(me.recip()),"grow,span");
+        JTextArea recipTextArea = new JTextArea(me.recip());
+        recipTextArea.setEditable(false);
+        recipTextArea.setBorder(new LineBorder(Color.BLACK));
+        recipTextArea.setLineWrap(true);
+        messagePanel.add(recipTextArea,"wmax "+dimX+",grow,wrap");
+
 
         // Line 5
         messagePanel.add(new CustomJLabel("Tous les destinataires :"),"");
-        messagePanel.add(new JLabel(me.mailrecip()),"grow,span");
+        JTextArea mailRecipTextArea = new JTextArea(me.mailrecip());
+        mailRecipTextArea.setEditable(false);
+        mailRecipTextArea.setBorder(new LineBorder(Color.BLACK));
+        mailRecipTextArea.setLineWrap(true);
+        messagePanel.add(mailRecipTextArea,"wmax "+dimX+",grow,wrap");
 
         // Line 6
         messagePanel.add(new CustomJLabel("Pièces jointes :"),"wrap");
-        //messagePanel.add(new JLabel(me.mailrecip()),"grow,span");
 
         // Line
         JTextArea bodyTextArea = new JTextArea(me.body());
-        bodyTextArea.setBorder(new LineBorder(Color.BLACK));
+        bodyTextArea.setBorder(new LineBorder(Color.RED));
+        bodyTextArea.setLineWrap(true);
+        //messagePanel.add(bodyTextArea,"grow,wrap,wmax "+dimX);
         messagePanel.add(bodyTextArea,"grow,span");
+
+
+        JScrollPane mainScrollPane = new JScrollPane(messagePanel);
+        add(mainScrollPane,"width "+dimX+" ,height "+dimY+",span 2,wrap");
+        //add(new JScrollPane(messagePanel),"grow,span");
+
 
         // Line
         JButton reportButton = new JButton("Sauvegarder le message");
@@ -67,7 +99,8 @@ public class MessageShowerDialog extends JDialog {
                 //todo
             }
         });
-        messagePanel.add(reportButton,"left");
+
+        add(reportButton, "left");
 
         JButton quitButton = new JButton("Quitter");
         quitButton.addActionListener(new ActionListener() {
@@ -76,8 +109,7 @@ public class MessageShowerDialog extends JDialog {
                 setVisible(false);
             }
         });
-        messagePanel.add(quitButton, "left");
-        add(new JScrollPane(messagePanel));
+        add(quitButton, "left");
         pack();
     }
 }

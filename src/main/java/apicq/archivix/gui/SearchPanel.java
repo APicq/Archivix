@@ -89,12 +89,6 @@ public class SearchPanel extends JPanel {
         return searchWordsTextField ;
     }
 
-    /*
-    public JButton searchWordsButton() {
-        return searchWordsButton;
-    };*/
-
-
 
     /**
      * Constructor
@@ -103,12 +97,13 @@ public class SearchPanel extends JPanel {
     public SearchPanel(final MainFrame mainFrame){
 
         this.mainFrame = mainFrame ;
-        setLayout(new MigLayout("", "[][][grow,fill][]", ""));
+        //setLayout(new MigLayout("", "[][][grow,fill][]", ""));
+        setLayout(new MigLayout("", "[][][grow][]", ""));
         setBackground(Color.LIGHT_GRAY);
 
         // Line 1
         JLabel searchLabel = new JLabel("Rechercher dans ");
-        add(searchLabel,"");
+        add(searchLabel, "");
         searchWordsTextField = new JTextField("");
         fieldComboBox = new JComboBox<String>(
         new String[]{"corps","sujet","destinataires","auteur"});
@@ -132,25 +127,25 @@ public class SearchPanel extends JPanel {
         // panel with all the tags :
         selectedTagsPanel = new JPanel();
         selectedTagsPanel.setLayout(new MigLayout());
-        add(new JScrollPane(selectedTagsPanel),"grow,span");
+        add(new JScrollPane(selectedTagsPanel), "grow,span");
 
 
-        add(new JLabel("Trier par :"),"");
+        // Last line :
+        JPanel sortingPanel = new JPanel(new MigLayout());
+        sortingPanel.add(new JLabel("Trier par :"), "");
         JComboBox<String> sortComboBox = new JComboBox<String>(
                 new String[]{"date","sujet","destinataires","auteur"});
-        add(sortComboBox,"");
+        sortingPanel.add(sortComboBox, "");
 
-
-        // Line 4
         JButton previousPageButton = new JButton("Page précédente");
         previousPageButton.setActionCommand("previousAction");
         previousPageButton.addActionListener(mainFrame);
-        add(previousPageButton, "");
+        sortingPanel.add(previousPageButton, "");
 
         JButton nextPageButton = new JButton("Page suivante");
         nextPageButton.setActionCommand("nextAction");
         nextPageButton.addActionListener(mainFrame);
-        add(nextPageButton, "");
+        sortingPanel.add(nextPageButton, "");
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -158,19 +153,19 @@ public class SearchPanel extends JPanel {
         formatter.setMinimum(0);
         formatter.setMaximum(1000);
         formatter.setCommitsOnValidEdit(true);
-        maxResultNumberField = new JFormattedTextField(formatter);//extract
+        maxResultNumberField = new JFormattedTextField(formatter);
         maxResultNumberField.setColumns(4);
         maxResultNumberField.setText("100");
-        add(maxResultNumberField, "");
-        add(new JLabel("résultats maximum par page"), "");
+        sortingPanel.add(maxResultNumberField, "");
+        sortingPanel.add(new JLabel("résultats maximum par page"), "");
+        add(sortingPanel,"span,grow");
 
 
         // user selection :
         JButton userSelectionButton = new JButton("Utilisateur");
         userSelectionButton.setActionCommand("findUserAction");
         userSelectionButton.addActionListener(mainFrame);
-        add(userSelectionButton);
-
+        add(userSelectionButton, "cell 5 0");
     }
 
 

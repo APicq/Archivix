@@ -82,6 +82,7 @@ public class FindMessagesWorker extends SpecializedWorker {
                 mainFrame.getSearchPanel().getUserName(),
                 limit, // limit
                 offset); // offset
+        log.info("sqlFindString "+sqlFindString);
         try {
             PreparedStatement pstmt = pStatement(sqlFindString);
             ResultSet rs = pstmt.executeQuery();
@@ -124,7 +125,6 @@ public class FindMessagesWorker extends SpecializedWorker {
                         rs.getString(12),   // insertdate
                         tags,               // tags
                         attachmentSignatures);// attachments
-
                 mtm.add(me);
 
             }
@@ -140,10 +140,8 @@ public class FindMessagesWorker extends SpecializedWorker {
     protected void done() {
         super.done();
         mainFrame.getMessageTable().setModel(mtm);
-
         mainFrame.getMessageTable().revalidate();
         mainFrame.getMessageTable().repaint();
-        log.info("end done");
     }
 
 
