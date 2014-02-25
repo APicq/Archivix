@@ -111,55 +111,55 @@ public class MainFrame extends JFrame implements ActionListener {
 /*
         String visibleColumn = prop.getProperty("idcol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.IDCOL);
+            VisibleColumnDialog.hideColumn(this,"id");
         }
         visibleColumn = prop.getProperty("datecol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.DATECOL);
+            VisibleColumnDialog.hideColumn(this,"date");
         }
         visibleColumn = prop.getProperty("authorcol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.AUTHORCOL);
+            VisibleColumnDialog.hideColumn(this,"auteur");
         }
         visibleColumn = prop.getProperty("subjectcol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.SUBJECTCOL);
+            VisibleColumnDialog.hideColumn(this,"sujet");
         }
         visibleColumn = prop.getProperty("recipcol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.RECIPCOL);
+            VisibleColumnDialog.hideColumn(this,"destinataires");
         }
         visibleColumn = prop.getProperty("bodycol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.BODYCOL);
+            VisibleColumnDialog.hideColumn(this,"texte");
         }
         visibleColumn = prop.getProperty("attachcol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.ATTACHCOL);
+            VisibleColumnDialog.hideColumn(this,"nombre de pj");
         }
         visibleColumn = prop.getProperty("mailrecipcol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.MAILRECIPCOL);
+            VisibleColumnDialog.hideColumn(this,"destinataires(complet)");
         }
         visibleColumn = prop.getProperty("cccol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.CCCOL);
+            VisibleColumnDialog.hideColumn(this,"cc");
         }
         visibleColumn = prop.getProperty("bcccol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.BCCCOL);
+            VisibleColumnDialog.hideColumn(this,"bcc");
         }
         visibleColumn = prop.getProperty("usernamecol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.USERNAMECOL);
+            VisibleColumnDialog.hideColumn(this,"utilisateur");
         }
         visibleColumn = prop.getProperty("insertdatecol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.INSERTDATECOL);
+            VisibleColumnDialog.hideColumn(this,"date insertion");
         }
         visibleColumn = prop.getProperty("tagscol","yes");
         if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,MessageTableModel.TAGSCOL);
+            VisibleColumnDialog.hideColumn(this,"tags");
         }
 */
         JScrollPane messageListScroller = new JScrollPane(messageTable);
@@ -172,8 +172,6 @@ public class MainFrame extends JFrame implements ActionListener {
         setVisible(true);
         setLocationRelativeTo(null);
 
-        //todo : delete after
-        //debug();
     }// constructor
 
 
@@ -313,31 +311,31 @@ public class MainFrame extends JFrame implements ActionListener {
             else {
                 prop.setProperty("mailrecipcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"")){
+            if(VisibleColumnDialog.isHiddenColumn(this,"cc")){
                 prop.setProperty("cccol","no");
             }
             else {
                 prop.setProperty("cccol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.BCCCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"bcc")){
                 prop.setProperty("bcccol","no");
             }
             else {
                 prop.setProperty("bcccol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.USERNAMECOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"utilisateur")){
                 prop.setProperty("usernamecol","no");
             }
             else {
                 prop.setProperty("usernamecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.INSERTDATECOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"date insertion")){
                 prop.setProperty("insertdatecol","no");
             }
             else {
                 prop.setProperty("insertdatecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,MessageTableModel.TAGSCOL)){
+            if(VisibleColumnDialog.isHiddenColumn(this,"tags")){
                 prop.setProperty("tagscol","no");
             }
             else {
@@ -349,7 +347,6 @@ public class MainFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,"ERREUR : l'enregistrement des paramètres a échoué.");
                 log.warning(except.getMessage());
             }
-*/
             System.exit(0);
         }
 

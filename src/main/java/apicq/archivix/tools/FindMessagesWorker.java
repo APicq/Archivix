@@ -18,7 +18,7 @@ import java.util.Vector;
  */
 public class FindMessagesWorker extends SpecializedWorker {
 
-    private final MessageTableModel messageTableModel = new MessageTableModel();
+    private final MessageTableModel messageTableModel = new MessageTableModel();//debug
 
     /**
      * Constructor
