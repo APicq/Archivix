@@ -2,6 +2,7 @@ package apicq.archivix.gui;
 
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXLabel;
+import sun.applet.Main;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -16,6 +17,9 @@ import java.util.logging.Logger;
 public class ShowMessageDialog extends JDialog {
 
     public static final Logger log = Logger.getLogger("Archivix");
+    private final MainFrame mainFrame ;
+
+
 
     /**
      * JLabel with red color
@@ -27,8 +31,9 @@ public class ShowMessageDialog extends JDialog {
         }
     }
 
-    public ShowMessageDialog(TextMessage me){
+    public ShowMessageDialog(MainFrame mainFrame,TextMessage me){
 
+        this.mainFrame = mainFrame;
         setLayout(new MigLayout());
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -101,12 +106,14 @@ public class ShowMessageDialog extends JDialog {
 
 
         JButton reportButton = new JButton("Sauvegarder le message");
-        reportButton.addActionListener(new ActionListener() {
+        /*reportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo
             }
-        });
+        });*/
+        reportButton.setActionCommand("createReportAction");
+
 
         add(reportButton, "left");
 
