@@ -42,6 +42,33 @@ public class TextMessage {
     public ArrayList<String> tags() { return tags ;}
     public ArrayList<AttachmentSignature> attachmentSignatures() { return attachmentSignatures;}
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=================================================\n");
+        sb.append("id="+id+"\n");
+        sb.append("date="+date+"\n");
+        sb.append("auteur="+author+"\n");
+        sb.append("sujet="+subject()+"\n");
+        sb.append("destinataires="+recip+"\n");
+        sb.append("=================================================\n");
+        sb.append("body="+body+"\n");
+        sb.append("=================================================\n");
+        sb.append("nombre de pièces jointes="+attach+"\n");
+        sb.append("destinataires (complet)="+mailrecip+"\n");
+        sb.append("champs CC="+cc+"\n");
+        sb.append("champs BCC="+bcc+"\n");
+        sb.append("utilisateur="+username()+"\n");
+        sb.append("date d'insertion="+insertDate+"\n");
+        sb.append("tags="+tags+"\n");
+        sb.append("=================================================\n");
+        sb.append("Pièces jointes :\n");
+        for(AttachmentSignature as : attachmentSignatures()){
+        sb.append(as.getName()+"\n");
+        }
+        return  sb.toString();
+    }
+
     /**
      * Constructor
      * @param id
