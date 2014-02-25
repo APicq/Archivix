@@ -2,7 +2,6 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
 import apicq.archivix.gui.SelectTagsDialog;
-import apicq.archivix.gui.SelectUserDialog;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

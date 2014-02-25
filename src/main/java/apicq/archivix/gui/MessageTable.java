@@ -2,6 +2,7 @@ package apicq.archivix.gui;
 
 import apicq.archivix.tools.AddNewTagWorker;
 import org.apache.poi.ss.formula.functions.Column;
+import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,19 +15,18 @@ import java.util.logging.Logger;
 /**
  * Table containing messages, plus events management
  */
-public class MessageTable extends JTable {
+public class MessageTable extends JXTable {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    private final MessageTableModel messageTableModel ;
+    //private final MessageTableModel messageTableModel ;
     private final JPopupMenu popupMenu ;
-    private ArrayList<Column> removedColumns ;
 
     public MessageTable(MainFrame mainFrame) {
 
-        removedColumns = new ArrayList<Column>();
-        // todo : load properties
-        messageTableModel = new MessageTableModel();
-        setModel(messageTableModel);
+        //messageTableModel = new MessageTableModel();
+        //setModel(messageTableModel);
+        //setColumnControlVisible(true);
+        getTableHeader().setReorderingAllowed(false);
 
         // Menu definition and actions :
         JMenuItem addNewTagItem = new JMenuItem("Ajouter un nouveau tag");

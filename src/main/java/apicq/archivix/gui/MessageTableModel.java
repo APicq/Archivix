@@ -67,7 +67,7 @@ public class MessageTableModel extends AbstractTableModel {
         return SUMCOL;
     }
 
-    @Override
+  /*  @Override
     public String getColumnName(int column) {
         switch (column){
             case IDCOL :
@@ -100,7 +100,7 @@ public class MessageTableModel extends AbstractTableModel {
                 return "ERROR" ;
         }
     }
-
+*/
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex){

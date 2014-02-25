@@ -12,13 +12,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  * Created by pic on 2/19/14.
  */
 public class FindMessagesWorker extends SpecializedWorker {
 
-    private final MessageTableModel messageTableModel = new MessageTableModel();//debug
+    public static final Logger log = Logger.getLogger("Archivix");
+    private final MessageTableModel mtm ;
 
     /**
      * Constructor
@@ -27,6 +29,8 @@ public class FindMessagesWorker extends SpecializedWorker {
      */
     public FindMessagesWorker(MainFrame mainFrame) {
         super(mainFrame, "Recherche des messages en cours");
+        //mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+        mtm = new MessageTableModel();
     }
 
 
@@ -34,7 +38,8 @@ public class FindMessagesWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
-        // column name for searching words : todo : change
+       // NewMessageTableModel mtm = (NewMessageTableModel)mainFrame.getMessageTable().getModel();
+        //mtm.clear();
 
         String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
 
@@ -50,9 +55,6 @@ public class FindMessagesWorker extends SpecializedWorker {
         if(fieldToSearch.equals("auteur")){
             fieldToSearch = "author";
         }
-
-        log.warning("fieldToSearch:getselecteditem :"+mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem());
-        log.warning("fieldToSearch =" + fieldToSearch);
 
         // search by tags : prepare array of tags
 
@@ -118,12 +120,13 @@ public class FindMessagesWorker extends SpecializedWorker {
                         rs.getString(8),    // mailrecip
                         rs.getString(9),    // cc
                         rs.getString(10),   // bcc
-                        rs.getString(10),   // username
-                        rs.getString(11),   // insertdate
+                        rs.getString(11),   // username
+                        rs.getString(12),   // insertdate
                         tags,               // tags
                         attachmentSignatures);// attachments
 
-                messageTableModel.add(me);
+                mtm.add(me);
+
             }
         }
         catch (SQLException e){
@@ -136,8 +139,11 @@ public class FindMessagesWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-        mainFrame.getMessageTable().setModel(messageTableModel);
-        mainFrame.invalidate();
+        mainFrame.getMessageTable().setModel(mtm);
+
+        mainFrame.getMessageTable().revalidate();
+        mainFrame.getMessageTable().repaint();
+        log.info("end done");
     }
 
 
@@ -156,13 +162,13 @@ public class FindMessagesWorker extends SpecializedWorker {
      * @return // sql string
      */
     private String buildMessageRequest(String wordsTofind, // words in message, ex : "meeting London"
-                                               String fieldForWords,// field to seach for words
-                                               boolean unTagged,
-                                               String[] tags,
-                                               boolean perUserSelection,
-                                               String userName,
-                                               int limit,
-                                               int offset){
+                                       String fieldForWords,// field to seach for words
+                                       boolean unTagged,
+                                       String[] tags,
+                                       boolean perUserSelection,
+                                       String userName,
+                                       int limit,
+                                       int offset){
         // -------
         // Header
         // -------
@@ -212,13 +218,10 @@ public class FindMessagesWorker extends SpecializedWorker {
         if(perUserSelection && userName!=null && userName.length()>0){
             part4=" userName="+"'"+userName+"'";
         }
-        System.out.println("part4 "+part4);
 
         String part234 = stringify("",""," AND ",part2,part3,part4);
-        System.out.println("part234 : "+part234);
 
         String part1234 = stringify("",""," WHERE ",part1,part234);
-        System.out.println("part1234 : "+part1234);
 
         String part5 = " LIMIT " + limit + " OFFSET " + offset  ;
 

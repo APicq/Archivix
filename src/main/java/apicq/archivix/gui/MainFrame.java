@@ -2,6 +2,7 @@ package apicq.archivix.gui;
 
 import apicq.archivix.tools.*;
 import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.table.ColumnFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,6 +39,9 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     public MainFrame() {
 
+        // Create Column factory :
+        ColumnFactory.setInstance(new MessageColumnFactory());
+
         // Load configuration :
         Properties prop = new Properties();
         try {
@@ -45,10 +49,6 @@ public class MainFrame extends JFrame implements ActionListener {
             dabataseFile = prop.getProperty("database");
             setTitle(dabataseFile);
             attachmentDirectory = prop.getProperty("attachmentdir");
-
-
-
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,"Aucune base de données configurée. Connectez-vous\n"+
@@ -56,6 +56,36 @@ public class MainFrame extends JFrame implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Load visibility :
+
+        if(prop.getProperty("idcol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
+        if(prop.getProperty("datecol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
+        if(prop.getProperty("authorcol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
+        if(prop.getProperty("subjectcol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
+        if(prop.getProperty("recipcol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
+        if(prop.getProperty("bodycol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
+        if(prop.getProperty("attachcol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
+        if(prop.getProperty("mailrecipcol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
+        if(prop.getProperty("cccol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
+        if(prop.getProperty("bcccol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
+        if(prop.getProperty("usernamecol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
+        if(prop.getProperty("insertdatecol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
+        if(prop.getProperty("tagscol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
+
 
         // Disable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
@@ -107,61 +137,8 @@ public class MainFrame extends JFrame implements ActionListener {
         searchPanel = new SearchPanel(this);
         add(searchPanel, "wrap");
         messageTable = new MessageTable(this);
-        // Load visibility :
-/*
-        String visibleColumn = prop.getProperty("idcol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"id");
-        }
-        visibleColumn = prop.getProperty("datecol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"date");
-        }
-        visibleColumn = prop.getProperty("authorcol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"auteur");
-        }
-        visibleColumn = prop.getProperty("subjectcol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"sujet");
-        }
-        visibleColumn = prop.getProperty("recipcol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"destinataires");
-        }
-        visibleColumn = prop.getProperty("bodycol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"texte");
-        }
-        visibleColumn = prop.getProperty("attachcol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"nombre de pj");
-        }
-        visibleColumn = prop.getProperty("mailrecipcol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"destinataires(complet)");
-        }
-        visibleColumn = prop.getProperty("cccol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"cc");
-        }
-        visibleColumn = prop.getProperty("bcccol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"bcc");
-        }
-        visibleColumn = prop.getProperty("usernamecol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"utilisateur");
-        }
-        visibleColumn = prop.getProperty("insertdatecol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"date insertion");
-        }
-        visibleColumn = prop.getProperty("tagscol","yes");
-        if(visibleColumn.equals("no")){
-            VisibleColumnDialog.hideColumn(this,"tags");
-        }
-*/
+
+
         JScrollPane messageListScroller = new JScrollPane(messageTable);
         add(messageListScroller, "grow");
 
@@ -178,8 +155,6 @@ public class MainFrame extends JFrame implements ActionListener {
 
     /**
      * Program entry point
-     *
-     * @param args
      */
     public static void main(String[] args) {
 
@@ -194,17 +169,11 @@ public class MainFrame extends JFrame implements ActionListener {
             @Override
             public void run() {
                 MainFrame mainFrame = new MainFrame();
-                //mainFrame.setVisible(true);
             }
         });
     }
 
-    // todo : delete after,only for debugging
-    public void debug() {
-        //dabataseFile = "/home/pic/testbase.sqlite";
- //       attachmentDirectory = "/home/pic/attach/";
 
-    }
 
     /**
      * All actions are dispatched here :
@@ -212,10 +181,12 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+
         if("deleteMessagesAction".equals(e.getActionCommand())){
             new DeleteMessagesWorker(MainFrame.this).start();
             return ;
         }
+
         if("addNewTagAction".equals(e.getActionCommand())){
             String newTag = JOptionPane.showInputDialog(
                     MainFrame.this,
@@ -226,9 +197,11 @@ public class MainFrame extends JFrame implements ActionListener {
                 new AddNewTagWorker(MainFrame.this,newTag).execute();
             }
         }
+
         if("modifyTagsAction".equals(e.getActionCommand())){
             new FindTagsWorker(MainFrame.this,false).execute();
         }
+
         if("insertMessagesAction".equals(e.getActionCommand())){
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Choisissez un ou des fichiers messages outlook (.msg)");
@@ -240,6 +213,7 @@ public class MainFrame extends JFrame implements ActionListener {
             }
             return ;
         }
+
         if("connectDatabaseAction".equals(e.getActionCommand())){
             final JFileChooser chooser = new JFileChooser();
             int returnValue = chooser.showOpenDialog(MainFrame.this);
@@ -258,89 +232,91 @@ public class MainFrame extends JFrame implements ActionListener {
                 attachmentDirectory = chooser.getSelectedFile().getAbsolutePath();
             }
         }
+
         if("quitAction".equals(e.getActionCommand())){
             Properties prop = new Properties();
             prop.setProperty("database",dabataseFile);
             prop.setProperty("attachmentdir",attachmentDirectory);
 
-            if(VisibleColumnDialog.isHiddenColumn(this,"id")){
-                prop.setProperty("idcol","no");
-            }
-            else {
+            if(MessageColumnFactory.isVisible(MessageTableModel.IDCOL)){
                 prop.setProperty("idcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"date")){
-                prop.setProperty("datecol","no");
-            }
             else {
+                prop.setProperty("idcol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.DATECOL)){
                 prop.setProperty("datecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"auteur")){
-                prop.setProperty("authorcol","no");
-            }
             else {
+                prop.setProperty("datecol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.AUTHORCOL)){
                 prop.setProperty("authorcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"sujet")){
-                prop.setProperty("subjectcol","no");
-            }
             else {
+                prop.setProperty("authorcol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.SUBJECTCOL)){
                 prop.setProperty("subjectcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"destinataires")){
-                prop.setProperty("recipcol","no");
-            }
             else {
+                prop.setProperty("subjectcol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.RECIPCOL)){
                 prop.setProperty("recipcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"texte")){
-                prop.setProperty("bodycol","no");
-            }
             else {
+                prop.setProperty("recipcol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.BODYCOL)){
                 prop.setProperty("bodycol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"nombre de pj")){
-                prop.setProperty("attachcol","no");
-            }
             else {
+                prop.setProperty("bodycol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.ATTACHCOL)){
                 prop.setProperty("attachcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"destinataires(complet)")){
-                prop.setProperty("mailrecipcol","no");
-            }
             else {
+                prop.setProperty("attachcol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.MAILRECIPCOL)){
                 prop.setProperty("mailrecipcol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"cc")){
-                prop.setProperty("cccol","no");
-            }
             else {
+                prop.setProperty("mailrecipcol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.CCCOL)){
                 prop.setProperty("cccol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"bcc")){
-                prop.setProperty("bcccol","no");
-            }
             else {
+                prop.setProperty("cccol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.BCCCOL)){
                 prop.setProperty("bcccol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"utilisateur")){
-                prop.setProperty("usernamecol","no");
-            }
             else {
+                prop.setProperty("bcccol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.USERNAMECOL)){
                 prop.setProperty("usernamecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"date insertion")){
-                prop.setProperty("insertdatecol","no");
-            }
             else {
+                prop.setProperty("usernamecol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.INSERTDATECOL)){
                 prop.setProperty("insertdatecol","yes");
             }
-            if(VisibleColumnDialog.isHiddenColumn(this,"tags")){
-                prop.setProperty("tagscol","no");
-            }
             else {
+                prop.setProperty("insertdatecol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.TAGSCOL)){
                 prop.setProperty("tagscol","yes");
             }
+            else {
+                prop.setProperty("tagscol","no");
+            }
+
             try {
                 prop.store(new FileOutputStream("config.txt"), "properties for Archivix");
             } catch (IOException except) {
@@ -351,13 +327,11 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("findMessagesAction".equals(e.getActionCommand())){
-            FindMessagesWorker nfmw = new FindMessagesWorker(MainFrame.this);
-            nfmw.start();
+            new FindMessagesWorker(MainFrame.this).start();
         }
 
         if("selectTagsAction".equals(e.getActionCommand())){
-            FindTagsWorker nftw = new FindTagsWorker(MainFrame.this,true);
-            nftw.start();
+            new FindTagsWorker(MainFrame.this,true).start();
         }
         if("previousAction".equals(e.getActionCommand())){
 
@@ -366,8 +340,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
         }
         if("findUserAction".equals(e.getActionCommand())){
-            FindUserWorker fuw = new FindUserWorker(MainFrame.this);
-            fuw.start();
+            new FindUserWorker(MainFrame.this).start();
         }
         if("deleteMessagesAction".equals(e.getActionCommand())){
             int result = JOptionPane.showConfirmDialog(

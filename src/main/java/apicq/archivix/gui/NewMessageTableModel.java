@@ -4,15 +4,26 @@ import apicq.archivix.tools.SpecializedWorker;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Created by pic on 2/10/14.
  */
 public class NewMessageTableModel extends AbstractTableModel {
 
+    public static final Logger log = Logger.getLogger("Archivix");
+
+    /**
+     * Class to manage column visibility
+     */
     class VisibleColumn {
         int id;
         boolean isVisible ;
+
+        VisibleColumn(int id, boolean isVisible) {
+            this.id = id;
+            this.isVisible = isVisible;
+        }
     }
 
     public static final int IDCOL           = 0;
@@ -34,7 +45,7 @@ public class NewMessageTableModel extends AbstractTableModel {
     private ArrayList<TextMessage> messages ;
 
     // manages column visibility
-    private final ArrayList<VisibleColumn> visibility ;//= new ArrayList<VisibleColumn>(SUMCOL-1) ;
+    private ArrayList<VisibleColumn> visibility ;
 
 
 
@@ -55,9 +66,9 @@ public class NewMessageTableModel extends AbstractTableModel {
      * Constructor
      */
     public NewMessageTableModel() {
-        visibility = new ArrayList<VisibleColumn>(SUMCOL) ;
-        for( int x=0 ; x<visibility.size() ; x++){
-            visibility.get(x).isVisible = true ;
+        visibility = new ArrayList<VisibleColumn>() ;
+        for( int x=0 ; x<SUMCOL ; x++){
+            visibility.add(new VisibleColumn(x,true));
         }
         messages = new ArrayList<TextMessage>();
     }
@@ -68,6 +79,13 @@ public class NewMessageTableModel extends AbstractTableModel {
      */
     public void add(TextMessage me){
         if(me!=null) messages.add(me);
+    }
+
+    /**
+     * Delete all messages in table model
+     */
+    public void clear(){
+        messages.clear();
     }
 
     public int getIndexFromVisibleColumn(int column){//todo rewrite
