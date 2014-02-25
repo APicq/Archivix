@@ -97,6 +97,5 @@ public class MessageColumnFactory extends ColumnFactory {
             default:
                 return tce ;
         }
-      //  log.info(""+tce.getTitle()+" "+tce.isVisible());
     }
 }

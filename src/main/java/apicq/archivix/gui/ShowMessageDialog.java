@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 /**
  * Created by pic on 2/13/14.
  */
-public class MessageShowerDialog extends JDialog {
+public class ShowMessageDialog extends JDialog {
 
     public static final Logger log = Logger.getLogger("Archivix");
 
@@ -27,7 +27,7 @@ public class MessageShowerDialog extends JDialog {
         }
     }
 
-    public  MessageShowerDialog(TextMessage me){
+    public ShowMessageDialog(TextMessage me){
 
         setLayout(new MigLayout());
         setModal(true);

@@ -1,15 +1,10 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.AddNewTagWorker;
-import org.apache.poi.ss.formula.functions.Column;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -53,9 +48,8 @@ public class MessageTable extends JXTable {
                 }
                 if(e.getClickCount()==2){
                     int rowIndex = getSelectedRow();
-                    log.info("rowIndex : "+rowIndex);
                     MessageTableModel mtm = (MessageTableModel) getModel();
-                    MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
+                    ShowMessageDialog msd = new ShowMessageDialog(mtm.get(rowIndex));
                     msd.setLocationRelativeTo(null);
                     msd.setVisible(true);
                 }

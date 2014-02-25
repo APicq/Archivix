@@ -30,6 +30,7 @@ public class ApplyTagWorker extends  SpecializedWorker{
     @Override
     protected Void doInBackground() throws Exception {
 
+        log.info("balise apply new tag");
         // build an array of message ids :
         int[] selectedRows = mainFrame.getMessageTable().getSelectedRows();
         int[] messageIds = new int[selectedRows.length];

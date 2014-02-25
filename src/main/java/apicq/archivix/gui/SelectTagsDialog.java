@@ -154,10 +154,10 @@ public class SelectTagsDialog extends JDialog {
                     for(Component c: selectedTagsPanel().getComponents()){
                         JLabel tagLabel = (JLabel)c;
                         newTagsList.add(tagLabel.getText());
-                        setVisible(false);
-                        log.info(""+newTagsList);
-                        new ApplyTagWorker(mainFrame,newTagsList).start();
                     }
+                    setVisible(false);
+                    log.info("newTagList"+newTagsList);
+                    new ApplyTagWorker(mainFrame,newTagsList).start();
                 }
             }
         });
