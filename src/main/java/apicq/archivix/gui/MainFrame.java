@@ -377,6 +377,9 @@ public class MainFrame extends JFrame implements ActionListener {
                         " sauvegardé sous "+messageDir);
                         continue ;
                     }
+                    //File messageFile = new File()
+                    //where i am
+                    // put everythingincreate report worker
 
                 }
             }
