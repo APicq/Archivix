@@ -155,8 +155,8 @@ public class SelectTagsDialog extends JDialog {
                         JLabel tagLabel = (JLabel)c;
                         newTagsList.add(tagLabel.getText());
                         setVisible(false);
-                        new ApplyTagWorker(mainFrame,newTagsList);
-                        //where i am
+                        log.info(""+newTagsList);
+                        new ApplyTagWorker(mainFrame,newTagsList).start();
                     }
                 }
             }
