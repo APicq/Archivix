@@ -31,6 +31,7 @@ public class MessageShowerDialog extends JDialog {
 
         setLayout(new MigLayout());
         setModal(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         Dimension screenDim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int dimX = (int) (screenDim.getWidth()*0.7);
         int dimY = (int) (screenDim.getHeight()*0.8);
@@ -76,22 +77,29 @@ public class MessageShowerDialog extends JDialog {
         messagePanel.add(mailRecipTextArea,"wmax "+dimX+",grow,wrap");
 
         // Line 6
-        messagePanel.add(new CustomJLabel("Pièces jointes :"),"wrap");
+        messagePanel.add(new CustomJLabel("Pièces jointes :"),"");
+
+        JTextArea attachTextArea = new JTextArea();
+        for(AttachmentSignature as : me.attachmentSignatures()){
+            attachTextArea.append(as.getName()+" -- ");
+        }
+        attachTextArea.setEditable(false);
+        attachTextArea.setLineWrap(true);
+        messagePanel.add(attachTextArea,"grow,span");
+
 
         // Line
         JTextArea bodyTextArea = new JTextArea(me.body());
         bodyTextArea.setBorder(new LineBorder(Color.RED));
+        bodyTextArea.setEditable(false);
         bodyTextArea.setLineWrap(true);
-        //messagePanel.add(bodyTextArea,"grow,wrap,wmax "+dimX);
         messagePanel.add(bodyTextArea,"grow,span");
 
 
         JScrollPane mainScrollPane = new JScrollPane(messagePanel);
         add(mainScrollPane,"width "+dimX+" ,height "+dimY+",span 2,wrap");
-        //add(new JScrollPane(messagePanel),"grow,span");
 
 
-        // Line
         JButton reportButton = new JButton("Sauvegarder le message");
         reportButton.addActionListener(new ActionListener() {
             @Override

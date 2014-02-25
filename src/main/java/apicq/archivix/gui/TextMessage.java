@@ -39,7 +39,8 @@ public class TextMessage {
     public String cc() {return cc;}
     public String bcc() { return bcc;}
     public String insertDate() { return insertDate;}
-    public  ArrayList<String> tags() { return tags ;}
+    public ArrayList<String> tags() { return tags ;}
+    public ArrayList<AttachmentSignature> attachmentSignatures() { return attachmentSignatures;}
 
     /**
      * Constructor

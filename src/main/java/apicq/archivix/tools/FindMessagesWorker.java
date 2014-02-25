@@ -98,7 +98,7 @@ public class FindMessagesWorker extends SpecializedWorker {
 
                 // pick up attachments :
                 PreparedStatement attachStatement =
-                        pStatement("SELECT name,md5sum FROM attach WHERE msgid=?");
+                        pStatement("SELECT md5sum,name FROM attach WHERE msgid=?");
                 attachStatement.setInt(1,rs.getInt(1));
                 ResultSet attachResultSet = attachStatement.executeQuery();
                 ArrayList<AttachmentSignature> attachmentSignatures = new ArrayList<AttachmentSignature>();

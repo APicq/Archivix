@@ -56,8 +56,8 @@ public class MessageTable extends JXTable {
                     log.info("rowIndex : "+rowIndex);
                     MessageTableModel mtm = (MessageTableModel) getModel();
                     MessageShowerDialog msd = new MessageShowerDialog(mtm.get(rowIndex));
-                    msd.setVisible(true);
                     msd.setLocationRelativeTo(null);
+                    msd.setVisible(true);
                 }
             }
 
