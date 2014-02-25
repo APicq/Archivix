@@ -16,7 +16,7 @@ public class MessageTable extends JXTable {
 
     private final JPopupMenu popupMenu ;
 
-    public MessageTable(MainFrame mainFrame) {
+    public MessageTable(final MainFrame mainFrame) {
 
         getTableHeader().setReorderingAllowed(false);
 
@@ -34,10 +34,15 @@ public class MessageTable extends JXTable {
         deleteMessagesItem.setActionCommand("deleteMessagesAction");
         deleteMessagesItem.addActionListener(mainFrame);
 
+        JMenuItem saveMessagesItem = new JMenuItem("Sauvegarder le(s) message(s)");
+        saveMessagesItem.setActionCommand("createReportAction");
+        saveMessagesItem.addActionListener(mainFrame);
+
         popupMenu = new JPopupMenu("Choisissez une action sur le(s) message(s)");
         popupMenu.add(addNewTagItem);
         popupMenu.add(modifyTagsItem);
         popupMenu.add(deleteMessagesItem);
+        popupMenu.add(saveMessagesItem);
 
         // Right-click : menu appears
         addMouseListener(new MouseAdapter() {
@@ -49,7 +54,7 @@ public class MessageTable extends JXTable {
                 if(e.getClickCount()==2){
                     int rowIndex = getSelectedRow();
                     MessageTableModel mtm = (MessageTableModel) getModel();
-                    ShowMessageDialog msd = new ShowMessageDialog(mtm.get(rowIndex));
+                    ShowMessageDialog msd = new ShowMessageDialog(mainFrame,mtm.get(rowIndex));
                     msd.setLocationRelativeTo(null);
                     msd.setVisible(true);
                 }

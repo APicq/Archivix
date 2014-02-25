@@ -356,6 +356,32 @@ public class MainFrame extends JFrame implements ActionListener {
         if("configColumnsAction".equals(e.getActionCommand())){
             new VisibleColumnDialog(this).setVisible(true);
         }
+        if("createReportAction".equals(e.getActionCommand())){
+            final JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Choisissez le répertoire pour la sauvegarde des messages");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnValue = chooser.showOpenDialog(this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                String messageDir = chooser.getSelectedFile().getAbsolutePath();
+                int[] selectedRows = getMessageTable().getSelectedRows();
+                log.info(messageDir);
+                MessageTableModel mtm = (MessageTableModel) getMessageTable().getModel();
+                for(int index: selectedRows){
+
+                    TextMessage tm = mtm.get(index);
+                    int id = tm.id();
+                    File indexedMsgDir = new File(messageDir,"message_"+id);
+                    boolean result = indexedMsgDir.mkdir();
+                    if(!result){
+                        JOptionPane.showMessageDialog(this,"Erreur, le message "+id+" semble avoir déjà été"+
+                        " sauvegardé sous "+messageDir);
+                        continue ;
+                    }
+
+                }
+            }
+        }
+
 
     }
 }

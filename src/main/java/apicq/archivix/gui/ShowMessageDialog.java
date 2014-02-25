@@ -113,6 +113,7 @@ public class ShowMessageDialog extends JDialog {
             }
         });*/
         reportButton.setActionCommand("createReportAction");
+        reportButton.addActionListener(mainFrame);
 
 
         add(reportButton, "left");
