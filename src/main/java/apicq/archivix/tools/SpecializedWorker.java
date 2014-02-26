@@ -78,9 +78,9 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
         progressDialog.getProgressBar().setIndeterminate(b);
     }
 
-
-
-
+    public boolean isError() {
+        return error;
+    }
 
     /**
      * method used to build sql strings.
@@ -171,7 +171,7 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
             dialog.setModal(true);
             JTextArea textArea = new JTextArea(20, 30);
             textArea.setText(errorBuilder.toString());
-            dialog.add(new JScrollPane(textArea));
+            dialog.add(new JScrollPane(textArea),"wrap");
             JButton quitButton = new JButton("Fermer");
             quitButton.addActionListener(new ActionListener() {
                 @Override
@@ -200,6 +200,7 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
     protected void addError(String errorString) {
         error = true; // an error string means there is an error.
         errorBuilder.append(errorString + "\n");
+        log.warning(errorString);
     }
 
 

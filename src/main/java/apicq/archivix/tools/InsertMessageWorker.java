@@ -77,6 +77,7 @@ public class InsertMessageWorker extends SpecializedWorker {
             // Check duplicates :
             int messageID = -1 ;
             try {
+                log.info("balise");
                 messageID = dibCheckDuplicate(mapiMessage);
             }
             catch (SQLException e){//Signal error,next message
@@ -119,7 +120,7 @@ public class InsertMessageWorker extends SpecializedWorker {
                 boolean attachAlreadySaved;
                 try {
                     md5 = dibMd5Sum(attach.getEmbeddedAttachmentObject());
-                    attachAlreadySaved = dibIsAttachAlreadySaved(attach, md5);
+                    attachAlreadySaved = dibIsAttachAlreadySaved(md5);
                 }
                 catch(IOException e){
                     addError("Erreur pièce jointe "+messageFile.getName());
@@ -275,7 +276,7 @@ public class InsertMessageWorker extends SpecializedWorker {
      * @throws NoSuchAlgorithmException
      * @throws IOException
      */
-    private boolean dibIsAttachAlreadySaved(AttachmentChunks attach, String md5)
+    private boolean dibIsAttachAlreadySaved(String md5)
             throws NoSuchAlgorithmException, IOException {
         List<String> listOfNames =
                 dibBuildCleanFileNames(mainFrame.attachmentDirectory());
@@ -320,24 +321,24 @@ public class InsertMessageWorker extends SpecializedWorker {
             throws SQLException {
 
         // Check if already saved ;
-        PreparedStatement pStatement = pStatement(
+        PreparedStatement pickupAttachStmt = pStatement(
                 "SELECT id from attach where msgid=? and name=? and md5sum =?");
-        pStatement.setInt(1,messageID);
-        pStatement.setString(2, attach.attachLongFileName.toString());
-        pStatement.setString(3,md5);
-        ResultSet rs = pStatement.executeQuery();
+        pickupAttachStmt.setInt(1, messageID);
+        pickupAttachStmt.setString(2, attach.attachLongFileName.toString());
+        pickupAttachStmt.setString(3, md5);
+        ResultSet rs = pickupAttachStmt.executeQuery();
         if(rs.next()){
             addError("attach " + attach.attachLongFileName + " already in database,msgid=" + messageID);
         }
         else {
-            pStatement = pStatement(
+            pickupAttachStmt = pStatement(
                     "INSERT INTO attach(msgid,name,size,md5sum) " +
                             " VALUES(?,?,?,?)");
-            pStatement.setInt(1, messageID);
-            pStatement.setString(2, attach.attachLongFileName.toString());
-            pStatement.setInt(3, attach.getEmbeddedAttachmentObject().length);
-            pStatement.setString(4,md5);
-            pStatement.execute();
+            pickupAttachStmt.setInt(1, messageID);
+            pickupAttachStmt.setString(2, attach.attachLongFileName.toString());
+            pickupAttachStmt.setInt(3, attach.getEmbeddedAttachmentObject().length);
+            pickupAttachStmt.setString(4, md5);
+            pickupAttachStmt.execute();
       }
     }  
 }

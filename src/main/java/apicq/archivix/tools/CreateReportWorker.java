@@ -1,20 +1,58 @@
 package apicq.archivix.tools;
 
+import apicq.archivix.gui.AttachmentSignature;
 import apicq.archivix.gui.MainFrame;
+import apicq.archivix.gui.MessageTableModel;
+import apicq.archivix.gui.TextMessage;
+
+import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Created by pic on 2/26/14.
  */
 public class CreateReportWorker extends SpecializedWorker {
 
+    // if true, cancel doInBackground method
+    private boolean actionIsCanceled = false ;
+
+    // selected rows in message table : every messages to be saved
+    private final int[] selectedRows ;
+
+    // Base directory to save messages:
+    private final String messageDir ;
+
+    // Number of saved messages :
+    private int savedMessages = 0 ;
+
+
     /**
      * Constructor
      *
      * @param mainFrame
-     * @param subject
      */
-    public CreateReportWorker(MainFrame mainFrame, String subject) {
-        super(mainFrame, subject);
+
+    public CreateReportWorker(MainFrame mainFrame) {
+        super(mainFrame, "Sauvegarde des messages");
+
+        // Ask for directory via fileChooser :
+        final JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Choisissez le répertoire pour la sauvegarde des messages");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnValue = chooser.showOpenDialog(mainFrame);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            messageDir = chooser.getSelectedFile().getAbsolutePath();
+            selectedRows = mainFrame.getMessageTable().getSelectedRows();
+            log.info(""+selectedRows);
+        }
+        else { // Cancel action
+            selectedRows = null ;
+            messageDir = "" ;
+            actionIsCanceled = true ;
+        }
     }
 
 
@@ -22,11 +60,70 @@ public class CreateReportWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
+        JOptionPane.showMessageDialog(mainFrame,""+savedMessages+" message(s) sauvegardé(s).");
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        return super.doInBackground();
+
+        if(actionIsCanceled) return null;
+
+        setMaximum(selectedRows.length);
+
+        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+        // for each message :
+        for(int index : selectedRows){
+            TextMessage tm = mtm.get(index);
+
+            // Create message directory
+            File messageDir = newNamedFile(this.messageDir,"message_"+tm.id(),"");
+            if(messageDir==null){
+                addError("Erreur : message "+tm.id()+" : trop de messages sauvegardés");
+                continue;
+            }
+            try {
+                messageDir.mkdir();
+            }catch (SecurityException e){
+                addError("Erreur : Impossible de créer le répertoire " + messageDir.getAbsolutePath());
+                continue ;
+            }
+
+            // Save message file
+            File textMessagefile = newNamedFile(messageDir.getAbsolutePath(),"message",".txt");
+            if(textMessagefile==null){
+                addError("Erreur : impossible de sauvegarder le message "+tm.id());
+            }
+            BufferedWriter bw = new BufferedWriter(new FileWriter(textMessagefile));
+            try {
+                bw.write(tm.toString());
+                bw.close();
+            } catch (IOException e){
+                addError("Erreur : impossible de sauvegarder le message "+tm.id());
+                addError(e.getMessage());
+            }
+            // Save attachments :
+            for(AttachmentSignature as : tm.attachmentSignatures()){
+                // check messageDir + name
+                File attachFile = new File(messageDir.getAbsolutePath(),as.getName());
+                // retrieve file :
+                // erreur : continue
+                // save file
+                // erreur : continue
+            }
+            savedMessages++;
+
+        } //for
+        return null;
+    }
+
+
+    public File newNamedFile(String parent,String base,String suffix){
+        int index = 0 ;
+        while(index<100){
+            File f = new File(parent,base+"_"+index+suffix);
+            if(!f.exists()) return f ;
+        }
+        return null ;
     }
 
 }

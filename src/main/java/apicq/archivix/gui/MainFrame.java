@@ -19,11 +19,11 @@ public class MainFrame extends JFrame implements ActionListener {
     public static final Logger log = Logger.getLogger("Archivix");
 
     // Full path to sqlite database :
-    private String dabataseFile;
+    private String dabataseFile = "";
     public String databaseFile() {return dabataseFile;}
 
     // Full path to attachment directory
-    private String attachmentDirectory;
+    private String attachmentDirectory = "";
     public String attachmentDirectory() {return attachmentDirectory;}
 
     // JTable to print messages :
@@ -165,6 +165,12 @@ public class MainFrame extends JFrame implements ActionListener {
             return ;
         }
 
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            log.warning(e.getMessage());
+        }
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -190,16 +196,17 @@ public class MainFrame extends JFrame implements ActionListener {
         if("addNewTagAction".equals(e.getActionCommand())){
             String newTag = JOptionPane.showInputDialog(
                     MainFrame.this,
-                    "Entrez un nouveau tag :",
+                    "Entrez un nouveau tag (pas d'espace) :",
                     "Nouveau tag",
                     JOptionPane.INFORMATION_MESSAGE);
+            newTag = newTag.replaceAll(" +",newTag);
             if(newTag!=null && newTag.trim().length()>0){
-                new AddNewTagWorker(MainFrame.this,newTag).execute();
+                new AddNewTagWorker(MainFrame.this,newTag).start();
             }
         }
 
         if("modifyTagsAction".equals(e.getActionCommand())){
-            new FindTagsWorker(MainFrame.this,false).execute();
+            new FindTagsWorker(MainFrame.this,false).start();
         }
 
         if("insertMessagesAction".equals(e.getActionCommand())){
@@ -208,7 +215,7 @@ public class MainFrame extends JFrame implements ActionListener {
             fileChooser.setMultiSelectionEnabled(true);
             if(fileChooser.showOpenDialog(MainFrame.this)==JFileChooser.APPROVE_OPTION){
                 File[] messageFiles = fileChooser.getSelectedFiles();
-                new InsertMessageWorker(MainFrame.this,messageFiles);
+                new InsertMessageWorker(MainFrame.this,messageFiles).start();
 
             }
             return ;
@@ -357,32 +364,7 @@ public class MainFrame extends JFrame implements ActionListener {
             new VisibleColumnDialog(this).setVisible(true);
         }
         if("createReportAction".equals(e.getActionCommand())){
-            final JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Choisissez le répertoire pour la sauvegarde des messages");
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int returnValue = chooser.showOpenDialog(this);
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                String messageDir = chooser.getSelectedFile().getAbsolutePath();
-                int[] selectedRows = getMessageTable().getSelectedRows();
-                log.info(messageDir);
-                MessageTableModel mtm = (MessageTableModel) getMessageTable().getModel();
-                for(int index: selectedRows){
-
-                    TextMessage tm = mtm.get(index);
-                    int id = tm.id();
-                    File indexedMsgDir = new File(messageDir,"message_"+id);
-                    boolean result = indexedMsgDir.mkdir();
-                    if(!result){
-                        JOptionPane.showMessageDialog(this,"Erreur, le message "+id+" semble avoir déjà été"+
-                        " sauvegardé sous "+messageDir);
-                        continue ;
-                    }
-                    //File messageFile = new File()
-                    //where i am
-                    // put everythingincreate report worker
-
-                }
-            }
+           new CreateReportWorker(this).start();
         }
 
 

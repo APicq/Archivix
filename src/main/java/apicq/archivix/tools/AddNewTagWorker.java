@@ -35,10 +35,15 @@ public class AddNewTagWorker extends SpecializedWorker {
         try {
 
             // list of all message ids already tagged with tag
-            PreparedStatement msgIdForTag = pStatement(
-                    " SELECT msgid FROM tags where tag='?' ");
-            msgIdForTag.setString(1, tag);
-            ResultSet rs = msgIdForTag.executeQuery();
+            PreparedStatement msgIdForTagStmt = pStatement(
+                    " SELECT msgid FROM tags where tag=? ");
+            try {
+            msgIdForTagStmt.setString(1,tag);
+            } catch (Exception e){
+
+                log.info(e.toString());
+            }
+            ResultSet rs = msgIdForTagStmt.executeQuery();
             ArrayList<Integer> msgIdList = new ArrayList<Integer>();
             while(rs.next()){
                 msgIdList.add(rs.getInt(1));
@@ -63,6 +68,7 @@ public class AddNewTagWorker extends SpecializedWorker {
                             "INSERT INTO tags(msgid,tag) VALUES(?,?) ");
                     insertTagStmt.setInt(1,id);
                     insertTagStmt.setString(2,tag);
+                    insertTagStmt.execute();
                 }
             }
 
@@ -78,7 +84,9 @@ public class AddNewTagWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-        JOptionPane.showMessageDialog(mainFrame,"Le tag "+tag+" a bien été ajouté aux messages sélectionnés");
+        if(isError()){
+            JOptionPane.showMessageDialog(mainFrame,"Le tag "+tag+" a bien été ajouté aux messages sélectionnés");
+        }
 
     }
 }

@@ -35,70 +35,69 @@ public class VisibleColumnDialog extends JDialog {
         // ---------------------
         // All the check boxes :
         // ---------------------
-        final MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
         final JCheckBox idCheckBox = new JCheckBox(
                 "clé primaire",
-                MessageColumnFactory.isVisible(mtm.IDCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.IDCOL));
         add(idCheckBox,"wrap");
 
         final JCheckBox dateCheckBox = new JCheckBox(
                 "Date et heure",
-                MessageColumnFactory.isVisible(mtm.DATECOL));
+                MessageColumnFactory.isVisible(MessageTableModel.DATECOL));
         add(dateCheckBox,"wrap");
 
         final JCheckBox authorCheckBox = new JCheckBox(
                 "Auteur",
-                MessageColumnFactory.isVisible(mtm.AUTHORCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.AUTHORCOL));
         add(authorCheckBox,"wrap");
 
         final JCheckBox subjectCheckBox = new JCheckBox(
                 "Sujet du message",
-                MessageColumnFactory.isVisible(mtm.SUBJECTCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.SUBJECTCOL));
         add(subjectCheckBox,"wrap");
 
         final JCheckBox recipCheckBox = new JCheckBox(
                 "Destinataires",
-                MessageColumnFactory.isVisible(mtm.RECIPCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.RECIPCOL));
         add(recipCheckBox,"wrap");
 
         final JCheckBox bodyCheckBox = new JCheckBox(
                 "Corps du message",
-                MessageColumnFactory.isVisible(mtm.BODYCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.BODYCOL));
         add(bodyCheckBox,"wrap");
 
         final JCheckBox attachCheckBox = new JCheckBox(
                 "nombre de pièces jointes",
-                MessageColumnFactory.isVisible(mtm.ATTACHCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.ATTACHCOL));
         add(attachCheckBox,"wrap");
 
         final JCheckBox mailRecipCheckBox = new JCheckBox(
                 "Destinataires (liste complète)",
-                MessageColumnFactory.isVisible(mtm.MAILRECIPCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.MAILRECIPCOL));
         add(mailRecipCheckBox,"wrap");
 
         final JCheckBox ccCheckBox = new JCheckBox(
                 "Champs cc",
-                MessageColumnFactory.isVisible(mtm.CCCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.CCCOL));
         add(ccCheckBox,"wrap");
 
         final JCheckBox bccCheckBox = new JCheckBox(
                 "Champs bcc",
-                MessageColumnFactory.isVisible(mtm.BCCCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.BCCCOL));
         add(bccCheckBox,"wrap");
 
         final JCheckBox usernameCheckBox = new JCheckBox(
                 "Nom d'utilisateur",
-                MessageColumnFactory.isVisible(mtm.USERNAMECOL));
+                MessageColumnFactory.isVisible(MessageTableModel.USERNAMECOL));
         add(usernameCheckBox,"wrap");
 
         final JCheckBox insertDateCheckBox = new JCheckBox(
                 "Date d'insertion",
-                MessageColumnFactory.isVisible(mtm.INSERTDATECOL));
+                MessageColumnFactory.isVisible(MessageTableModel.INSERTDATECOL));
         add(insertDateCheckBox,"wrap");
 
         final JCheckBox tagsCheckBox = new JCheckBox(
                 "Tags",
-                MessageColumnFactory.isVisible(mtm.TAGSCOL));
+                MessageColumnFactory.isVisible(MessageTableModel.TAGSCOL));
         add(tagsCheckBox,"wrap");
 
         //-----------
@@ -109,85 +108,85 @@ public class VisibleColumnDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(idCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.IDCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.IDCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
                 }
 
                 if(dateCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.DATECOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,true);
 
                 }
                 else {
-                    MessageColumnFactory.setVisibility(mtm.DATECOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
 
                 }
                 if(authorCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.AUTHORCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.AUTHORCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
                 }
                 if(subjectCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.SUBJECTCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.SUBJECTCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
                 }
                 if(recipCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.RECIPCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.RECIPCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
                 }
                 if(bodyCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.BODYCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.BODYCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
                 }
                 if(attachCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.ATTACHCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.ATTACHCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
                 }
                 if(mailRecipCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.MAILRECIPCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.MAILRECIPCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
                 }
                 if(ccCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.CCCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.CCCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
                 }
                 if(bccCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.BCCCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.BCCCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
                 }
                 if(usernameCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.USERNAMECOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.USERNAMECOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
                 }
                 if(insertDateCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.INSERTDATECOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.INSERTDATECOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
                 }
                 if(tagsCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(mtm.TAGSCOL,true);
+                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,true);
                 }
                 else{
-                    MessageColumnFactory.setVisibility(mtm.TAGSCOL,false);
+                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
                 }
                 new FindMessagesWorker(mainFrame).start();
                 setVisible(false);
@@ -195,7 +194,6 @@ public class VisibleColumnDialog extends JDialog {
 
         });
         add(OKButton, "");
-
 
         JButton cancelButton = new JButton("Quitter");
         cancelButton.addActionListener(new ActionListener() {
@@ -206,54 +204,5 @@ public class VisibleColumnDialog extends JDialog {
         });
         add(cancelButton, "");
         pack();
-        //setVisible(true);
-
     } // constructor
-
-    /*
-    public static void hideColumn(MainFrame mainFrame,int index){
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setMinWidth(0);
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setMaxWidth(0);
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setWidth(0);
-    }
-
-    public static void hideColumn(MainFrame mainFrame,String name){
-        TableColumnModel tcm = mainFrame.getMessageTable().getColumnModel();
-        tcm.getColumn(tcm.getColumnIndex(name)).setMinWidth(0);
-        tcm.getColumn(tcm.getColumnIndex(name)).setMaxWidth(0);
-        tcm.getColumn(tcm.getColumnIndex(name)).setWidth(0);
-    }
-
-    private void showColumn(int index){
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setMinWidth(10);
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setMaxWidth(Integer.MAX_VALUE);
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setWidth(15);
-        mainFrame.getMessageTable().getColumnModel().getColumn(index).setPreferredWidth(20);
-    }
-
-    private void showColumn(MainFrame mainFrame,String name){
-        TableColumnModel tcm = mainFrame.getMessageTable().getColumnModel();
-        tcm.getColumn(tcm.getColumnIndex(name)).setMinWidth(15);
-        tcm.getColumn(tcm.getColumnIndex(name)).setMaxWidth(Integer.MAX_VALUE);
-        tcm.getColumn(tcm.getColumnIndex(name)).setWidth(20);
-        tcm.getColumn(tcm.getColumnIndex(name)).setPreferredWidth(20);
-    }
-
-    public static boolean isHiddenColumn(MainFrame mainFrame,int index){
-        int minWidth = mainFrame.getMessageTable().getColumnModel().getColumn(index).getMinWidth();
-        int maxWidth = mainFrame.getMessageTable().getColumnModel().getColumn(index).getMaxWidth();
-        int width = mainFrame.getMessageTable().getColumnModel().getColumn(index).getWidth();
-        if(minWidth==0 && maxWidth==0 && width==0) return true ;
-        else return false ;
-    }
-
-    public static boolean isHiddenColumn(MainFrame mainFrame,String name){
-        TableColumnModel tcm = mainFrame.getMessageTable().getColumnModel();
-        int minWidth = tcm.getColumn(tcm.getColumnIndex(name)).getMinWidth();
-        int maxWidth = tcm.getColumn(tcm.getColumnIndex(name)).getMaxWidth();
-        int width = tcm.getColumn(tcm.getColumnIndex(name)).getWidth();
-        if(minWidth==0 && maxWidth==0 && width==0) return true ;
-        else return false ;
-    }
-*/
 }

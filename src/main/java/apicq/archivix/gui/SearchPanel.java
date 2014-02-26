@@ -37,10 +37,8 @@ public class SearchPanel extends JPanel {
 
 
     // -------------------
-
-    // -------------------
     // Getters and setters
-
+    // -------------------
 
     public static int getPageNumber() {
         return pageNumber;

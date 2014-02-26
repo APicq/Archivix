@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by pic on 2/24/14.
+ * Apply list of tags to selected messages
  */
 public class ApplyTagWorker extends  SpecializedWorker{
 

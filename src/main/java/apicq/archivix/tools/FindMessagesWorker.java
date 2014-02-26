@@ -47,7 +47,7 @@ public class FindMessagesWorker extends SpecializedWorker {
             fieldToSearch = "body";
         }
         if(fieldToSearch.equals("sujet")){
-            fieldToSearch = "subjet";
+            fieldToSearch = "subject";
         }
         if(fieldToSearch.equals("destinataires")){
             fieldToSearch = "mailrecip";
