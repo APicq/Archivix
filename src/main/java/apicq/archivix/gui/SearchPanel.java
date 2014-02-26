@@ -16,7 +16,7 @@ public class SearchPanel extends JPanel {
     public static final Logger log = Logger.getLogger("Archivix");
     private final JTextField searchWordsTextField;
     private final JComboBox<String> fieldComboBox;
-    //private final JButton searchWordsButton ;
+    private final JComboBox<String> sortComboBox;
     private final MainFrame mainFrame ;
 
     // if true, only untagged messages are searched
@@ -44,6 +44,9 @@ public class SearchPanel extends JPanel {
         return pageNumber;
     }
 
+    public JComboBox<String> getSortComboBox() {
+        return sortComboBox;
+    }
 
     public JFormattedTextField getMaxResultNumberField() {
         return maxResultNumberField;
@@ -95,7 +98,6 @@ public class SearchPanel extends JPanel {
     public SearchPanel(final MainFrame mainFrame){
 
         this.mainFrame = mainFrame ;
-        //setLayout(new MigLayout("", "[][][grow,fill][]", ""));
         setLayout(new MigLayout("", "[][][grow][]", ""));
         setBackground(Color.LIGHT_GRAY);
 
@@ -131,8 +133,8 @@ public class SearchPanel extends JPanel {
         // Last line :
         JPanel sortingPanel = new JPanel(new MigLayout());
         sortingPanel.add(new JLabel("Trier par :"), "");
-        JComboBox<String> sortComboBox = new JComboBox<String>(
-                new String[]{"date","sujet","destinataires","auteur"});
+        sortComboBox = new JComboBox<String>(
+                new String[]{"date","sujet","destinataires","auteur","date insertion"});
         sortingPanel.add(sortComboBox, "");
 
         JButton previousPageButton = new JButton("Page précédente");

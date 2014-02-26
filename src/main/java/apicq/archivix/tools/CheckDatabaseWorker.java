@@ -75,5 +75,7 @@ public class CheckDatabaseWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
+        mainFrame.setTitle("base de données : "+mainFrame.databaseFile()+" || "+
+                "pièces jointes : "+mainFrame.attachmentDirectory());
     }
 }

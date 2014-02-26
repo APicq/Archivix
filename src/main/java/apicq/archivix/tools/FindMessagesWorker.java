@@ -29,7 +29,6 @@ public class FindMessagesWorker extends SpecializedWorker {
      */
     public FindMessagesWorker(MainFrame mainFrame) {
         super(mainFrame, "Recherche des messages en cours");
-        //mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
         mtm = new MessageTableModel();
     }
 
@@ -37,9 +36,6 @@ public class FindMessagesWorker extends SpecializedWorker {
 
     @Override
     protected Void doInBackground() throws Exception {
-
-       // NewMessageTableModel mtm = (NewMessageTableModel)mainFrame.getMessageTable().getModel();
-        //mtm.clear();
 
         String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
 
@@ -57,7 +53,6 @@ public class FindMessagesWorker extends SpecializedWorker {
         }
 
         // search by tags : prepare array of tags
-
         Vector<String> tagVector = new Vector<String>();
         for(Component c : mainFrame.getSearchPanel().getSelectedTagsPanel().getComponents()){
             JLabel jLabel = (JLabel) c;
@@ -67,6 +62,26 @@ public class FindMessagesWorker extends SpecializedWorker {
         for( int index=0 ; index <tagVector.size() ; index++ ){
             tagArray[index]=tagVector.get(index);
         }
+
+        // ordering results :
+        String orderInput = (String) mainFrame.getSearchPanel().getSortComboBox().getSelectedItem();
+        String order = "date";
+        if(orderInput.equals("date")){
+            order = "date";
+        }
+        if(orderInput.equals("sujet")){
+            order = "subject";
+        }
+        if(orderInput.equals("destinataires")){
+            order = "recip";
+        }
+        if(orderInput.equals("auteur")){
+            order = "author";
+        }
+        if(orderInput.equals("date insertion")){
+            order = "insertDate";
+        }
+        order = order + " DESC ";
 
         int limit = Integer.parseInt(mainFrame.getSearchPanel().getMaxResultNumberField().getText());
         int offset = mainFrame.getSearchPanel().getPageNumber() * limit ;
@@ -80,6 +95,7 @@ public class FindMessagesWorker extends SpecializedWorker {
                 tagArray, // tags to search for
                 mainFrame.getSearchPanel().isPerUserSelection(),
                 mainFrame.getSearchPanel().getUserName(),
+                order,
                 limit, // limit
                 offset); // offset
         log.info("sqlFindString "+sqlFindString);
@@ -165,6 +181,7 @@ public class FindMessagesWorker extends SpecializedWorker {
                                        String[] tags,
                                        boolean perUserSelection,
                                        String userName,
+                                       String order,
                                        int limit,
                                        int offset){
         // -------
@@ -201,9 +218,10 @@ public class FindMessagesWorker extends SpecializedWorker {
             part3 = " id NOT IN (SELECT DISTINCT msgid FROM tags)";
         }
         else {
-            String tagString = stringify("'","'",",",tags);
+            String tagString = stringify("tag=","'"," AND ",tags);
             if(tagString.length()>0){
-                part3 = " id in (select msgid from tags where tag in("+tagString+"))";
+               // part3 = " id in (select msgid from tags where tag in("+tagString+"))";
+                part3 = " id in (SELECT msgid FROM tags WHERE "+tagString+")";
             }else {
                 part3="";
             }
@@ -221,9 +239,12 @@ public class FindMessagesWorker extends SpecializedWorker {
 
         String part1234 = stringify("",""," WHERE ",part1,part234);
 
-        String part5 = " LIMIT " + limit + " OFFSET " + offset  ;
+        String part5 = " ORDER BY "+order;
+
+        String part6 = " LIMIT " + limit + " OFFSET " + offset  ;
 
         return part1234;
+        // todo return part1234 + part5 + part6
     }
 
 }

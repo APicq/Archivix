@@ -67,40 +67,7 @@ public class MessageTableModel extends AbstractTableModel {
         return SUMCOL;
     }
 
-  /*  @Override
-    public String getColumnName(int column) {
-        switch (column){
-            case IDCOL :
-                return "id";
-            case DATECOL :
-                return "date" ;
-            case AUTHORCOL :
-                return "auteur" ;
-            case SUBJECTCOL :
-                return "sujet" ;
-            case RECIPCOL :
-                return "destinataires";
-            case BODYCOL :
-                return "texte" ;
-            case ATTACHCOL :
-                return "nombre de pj" ;
-            case MAILRECIPCOL :
-                return "destinataires(complet)" ;
-            case CCCOL :
-                return "cc" ;
-            case BCCCOL :
-                return "bcc" ;
-            case USERNAMECOL :
-                return "utilisateur" ;
-            case INSERTDATECOL :
-                return "date insertion" ;
-            case TAGSCOL :
-                return "tags" ;
-            default:
-                return "ERROR" ;
-        }
-    }
-*/
+
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex){

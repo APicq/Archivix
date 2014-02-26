@@ -47,7 +47,6 @@ public class MainFrame extends JFrame implements ActionListener {
         try {
             prop.load(new FileInputStream("config.txt"));
             dabataseFile = prop.getProperty("database");
-            setTitle(dabataseFile);
             attachmentDirectory = prop.getProperty("attachmentdir");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -148,6 +147,9 @@ public class MainFrame extends JFrame implements ActionListener {
 
         setVisible(true);
         setLocationRelativeTo(null);
+
+        new CheckDatabaseWorker(this).start();
+        log.info("balise");
 
     }// constructor
 
