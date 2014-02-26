@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Created by pic on 2/26/14.
@@ -71,9 +72,14 @@ public class CreateReportWorker extends SpecializedWorker {
         setMaximum(selectedRows.length);
 
         MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+
         // for each message :
         for(int index : selectedRows){
+
+            setProgress(++savedMessages);
+
             TextMessage tm = mtm.get(index);
+            setString("message "+savedMessages+"/"+selectedRows.length);
 
             // Create message directory
             File messageDir = newNamedFile(this.messageDir,"message_"+tm.id(),"");
@@ -88,6 +94,31 @@ public class CreateReportWorker extends SpecializedWorker {
                 continue ;
             }
 
+            // Save attachments :
+            for(AttachmentSignature as : tm.attachmentSignatures()){
+                // check messageDir + name
+                // retrieve file :
+                File[] archivedFiles = new File(mainFrame.attachmentDirectory()).listFiles();
+                for(File archivedFile : archivedFiles){
+
+                    String archivedMd5 = "";
+                    int extensionIndex  = archivedFile.getName().lastIndexOf(".");
+                    if (extensionIndex == -1) {
+                        archivedMd5 = archivedFile.getName();
+                    } else {
+                        archivedMd5 = archivedFile.getName().substring(0, extensionIndex);
+                    }
+                    if(archivedMd5.equals(as.getMd5())){ // copy message
+                        File destinationFile = new File(messageDir.getAbsolutePath(),as.getName());
+                        try {
+                            Files.copy(archivedFile.toPath(),destinationFile.toPath());
+                        } catch (IOException e){
+                            addError("Impossible de récuperer la pièce jointe : "+as.getName());
+                        }
+                        break ;
+                    }
+                }
+            }
             // Save message file
             File textMessagefile = newNamedFile(messageDir.getAbsolutePath(),"message",".txt");
             if(textMessagefile==null){
@@ -101,29 +132,26 @@ public class CreateReportWorker extends SpecializedWorker {
                 addError("Erreur : impossible de sauvegarder le message "+tm.id());
                 addError(e.getMessage());
             }
-            // Save attachments :
-            for(AttachmentSignature as : tm.attachmentSignatures()){
-                // check messageDir + name
-                File attachFile = new File(messageDir.getAbsolutePath(),as.getName());
-                // retrieve file :
-                // erreur : continue
-                // save file
-                // erreur : continue
-            }
-            savedMessages++;
-
-        } //for
+        }
         return null;
     }
 
-
-    public File newNamedFile(String parent,String base,String suffix){
-        int index = 0 ;
-        while(index<100){
-            File f = new File(parent,base+"_"+index+suffix);
+    /**
+     * create a File base on parent and base name, with integer extension.
+     * @param parent
+     * @param base
+     * @param suffix
+     * @return
+     */
+    public static File newNamedFile(String parent,String base,String suffix){
+        File f = new File(parent,base+suffix);
+        if(!f.exists()) return f;
+        // Seek a correct name :100 max, should be enough
+        for(int index=0 ; index<100 ; index++ ){
+            f = new File(parent,base+"_"+index+suffix);
             if(!f.exists()) return f ;
         }
-        return null ;
+        return null ; // too many files created, return null
     }
 
 }

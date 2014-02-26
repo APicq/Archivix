@@ -271,7 +271,6 @@ public class InsertMessageWorker extends SpecializedWorker {
 
     /**
      * Check if an attachment is saved in archive directory
-     * @param attach
      * @return
      * @throws NoSuchAlgorithmException
      * @throws IOException
@@ -296,17 +295,17 @@ public class InsertMessageWorker extends SpecializedWorker {
      * @return
      * @throws IOException
      */
-    private List<String> dibBuildCleanFileNames(String directory) throws IOException {
+    public static List<String> dibBuildCleanFileNames(String directory) throws IOException {
 
         List<String> listOfNames = new ArrayList<String>();
         File[] files = new File(directory).listFiles();
         String separator = ".";
         for (File oneFile : files) {
-            int extensionIndex  = oneFile.getName().toString().lastIndexOf(separator);
+            int extensionIndex  = oneFile.getName().lastIndexOf(separator);
             if (extensionIndex == -1) {
-                listOfNames.add(oneFile.getName().toString());
+                listOfNames.add(oneFile.getName());
             } else {
-                listOfNames.add(oneFile.getName().toString().substring(0, extensionIndex));
+                listOfNames.add(oneFile.getName().substring(0, extensionIndex));
             }
         } // for
         return listOfNames;
