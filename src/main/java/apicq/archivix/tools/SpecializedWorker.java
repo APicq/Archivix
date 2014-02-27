@@ -147,6 +147,7 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
             addError(e.toString());
             log.warning(e.toString());
         }
+        progressDialog.setLocationRelativeTo(null);
         progressDialog.setVisible(true);
     }
 
@@ -167,9 +168,11 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
         // In case of error, show a dialog with all errors
         if (error) {
             final JDialog dialog = new JDialog(mainFrame);
-            dialog.setLayout(new MigLayout());
+            dialog.setTitle("Liste des erreurs :");
+            dialog.setLayout(new MigLayout("","",""));
             dialog.setModal(true);
             JTextArea textArea = new JTextArea(20, 30);
+            textArea.setLineWrap(true);
             textArea.setText(errorBuilder.toString());
             dialog.add(new JScrollPane(textArea),"wrap");
             JButton quitButton = new JButton("Fermer");
@@ -182,6 +185,7 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
             dialog.add(quitButton);
             dialog.setMinimumSize(new Dimension(400, 300));
             dialog.pack();
+            dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
             return;
         }

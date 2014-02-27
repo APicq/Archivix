@@ -34,6 +34,24 @@ public class MainFrame extends JFrame implements ActionListener {
     private final SearchPanel searchPanel;
     public SearchPanel getSearchPanel(){ return searchPanel ;}
 
+    public void updateMainTitle(){
+        setTitle("Archivix -- base de donnée : ");
+        if(dabataseFile.length()==0){
+            setTitle(getTitle()+" Aucune base de données");
+        } else {
+            setTitle(getTitle()+dabataseFile);
+        }
+        setTitle(getTitle()+ " || Pièces jointes : ");
+        if(attachmentDirectory.length()==0){
+            setTitle(getTitle()+"aucun répertoire sélectionné");
+        } else {
+            setTitle(getTitle()+attachmentDirectory);
+        }
+        revalidate();
+        repaint();
+
+    }
+
     /**
      * Constructor
      */
@@ -52,6 +70,7 @@ public class MainFrame extends JFrame implements ActionListener {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,"Aucune base de données configurée. Connectez-vous\n"+
                     "à une base de données et choisissez un répertoire pour les pièces jointes");
+            updateMainTitle();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -145,8 +164,8 @@ public class MainFrame extends JFrame implements ActionListener {
         pack();
         setMinimumSize(getPreferredSize());
 
-        setVisible(true);
         setLocationRelativeTo(null);
+        setVisible(true);
 
         new CheckDatabaseWorker(this).start();
         log.info("balise");
@@ -229,7 +248,8 @@ public class MainFrame extends JFrame implements ActionListener {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 dabataseFile = (chooser.getSelectedFile().getAbsolutePath());
                 new CheckDatabaseWorker(MainFrame.this).start();
-                MainFrame.this.setTitle(chooser.getSelectedFile().getName());
+                //updateMainTitle();
+                //MainFrame.this.setTitle(chooser.getSelectedFile().getName());
             }
         }
 
@@ -239,6 +259,7 @@ public class MainFrame extends JFrame implements ActionListener {
             int returnValue = chooser.showOpenDialog(this);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 attachmentDirectory = chooser.getSelectedFile().getAbsolutePath();
+                new CheckDatabaseWorker(MainFrame.this).start();
             }
         }
 
@@ -379,7 +400,5 @@ public class MainFrame extends JFrame implements ActionListener {
         if("createReportAction".equals(e.getActionCommand())){
             new CreateReportWorker(this).start();
         }
-
-
     }
 }
