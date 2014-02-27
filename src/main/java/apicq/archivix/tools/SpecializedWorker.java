@@ -167,14 +167,18 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
 
         // In case of error, show a dialog with all errors
         if (error) {
+            Dimension screenDim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+            int dimX = (int) (screenDim.getWidth()*0.5);
+            int dimY = (int) (screenDim.getHeight()*0.5);
             final JDialog dialog = new JDialog(mainFrame);
             dialog.setTitle("Liste des erreurs :");
             dialog.setLayout(new MigLayout("","",""));
             dialog.setModal(true);
-            JTextArea textArea = new JTextArea(20, 30);
+//            JTextArea textArea = new JTextArea(20, 30);
+            JTextArea textArea = new JTextArea();
             textArea.setLineWrap(true);
             textArea.setText(errorBuilder.toString());
-            dialog.add(new JScrollPane(textArea),"wrap");
+            dialog.add(new JScrollPane(textArea),"wrap,w "+dimX+",h "+dimY);
             JButton quitButton = new JButton("Fermer");
             quitButton.addActionListener(new ActionListener() {
                 @Override
@@ -183,7 +187,7 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
                 }
             });
             dialog.add(quitButton);
-            dialog.setMinimumSize(new Dimension(400, 300));
+            //dialog.setMinimumSize(new Dimension(400, 300));
             dialog.pack();
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
