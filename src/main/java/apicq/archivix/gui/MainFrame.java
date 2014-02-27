@@ -336,6 +336,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("findMessagesAction".equals(e.getActionCommand())){
+            searchPanel.setPageNumber(1);
             new FindMessagesWorker(MainFrame.this).start();
         }
 
@@ -343,10 +344,20 @@ public class MainFrame extends JFrame implements ActionListener {
             new FindTagsWorker(MainFrame.this,true).start();
         }
         if("previousAction".equals(e.getActionCommand())){
-
+            if(getSearchPanel().getPageNumber()>1){
+                getSearchPanel().setPageNumber(SearchPanel.getPageNumber()-1);
+                new FindMessagesWorker(this).start();
+            }
         }
         if("nextAction".equals(e.getActionCommand())){
-
+            // Number of results :
+            int resultNumber = getMessageTable().getModel().getRowCount() ;
+            int limit = Integer.parseInt(getSearchPanel().getMaxResultNumberField().getText());
+            if( resultNumber >= limit ){
+                log.info(""+SearchPanel.getPageNumber());
+                getSearchPanel().setPageNumber(SearchPanel.getPageNumber()+1);
+                new FindMessagesWorker(this).start();
+            }
         }
         if("findUserAction".equals(e.getActionCommand())){
             new FindUserWorker(MainFrame.this).start();
@@ -366,7 +377,7 @@ public class MainFrame extends JFrame implements ActionListener {
             new VisibleColumnDialog(this).setVisible(true);
         }
         if("createReportAction".equals(e.getActionCommand())){
-           new CreateReportWorker(this).start();
+            new CreateReportWorker(this).start();
         }
 
 

@@ -97,15 +97,15 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
                                    String... args) {
         if (args == null) return "";
         StringBuilder sb = new StringBuilder();
-        boolean isSecond = false;
+        boolean isFirst = true;
         for (String arg : args) {
             String trimmedArg = arg.trim();
             if (trimmedArg.length() > 0) {
-                if (isSecond) {
-                    sb.append(separator + prefix + trimmedArg + suffix);
-                } else {
-                    isSecond = true;
+                if (isFirst) {
                     sb.append(prefix + trimmedArg + suffix);
+                    isFirst = false;
+                } else {
+                    sb.append(separator + prefix + trimmedArg + suffix);
                 }
             }
         }

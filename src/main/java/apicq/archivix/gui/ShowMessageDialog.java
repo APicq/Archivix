@@ -6,9 +6,11 @@ import sun.applet.Main;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 /**
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
 public class ShowMessageDialog extends JDialog {
 
     public static final Logger log = Logger.getLogger("Archivix");
+    public static final String SEP = System.getProperty("line.separator");
     private final MainFrame mainFrame ;
 
 
@@ -37,6 +40,8 @@ public class ShowMessageDialog extends JDialog {
         setLayout(new MigLayout());
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        // Dimension to limite dialog size :
         Dimension screenDim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int dimX = (int) (screenDim.getWidth()*0.7);
         int dimY = (int) (screenDim.getHeight()*0.8);
@@ -52,20 +57,19 @@ public class ShowMessageDialog extends JDialog {
         // Line 2
         messagePanel.add(new CustomJLabel("Sujet :"),"");
 
-        //messagePanel.add(new JLabel(me.subject()),"grow,span");
         JTextArea subjectTextArea = new JTextArea(me.subject());
         subjectTextArea.setEditable(false);
         subjectTextArea.setBorder(new LineBorder(Color.BLACK));
         subjectTextArea.setBackground(Color.YELLOW);
         subjectTextArea.setLineWrap(true);
         messagePanel.add(subjectTextArea,"wmax "+dimX+",grow,wrap");
-        // Line 3
+
+        // From :
         messagePanel.add(new CustomJLabel("De :"),"");
         messagePanel.add(new JLabel(me.author()),"grow,wrap");
 
-        // Line 4
+        // Recipients
         messagePanel.add(new CustomJLabel("A :"),"");
-        //messagePanel.add(new JLabel(me.recip()),"grow,span");
         JTextArea recipTextArea = new JTextArea(me.recip());
         recipTextArea.setEditable(false);
         recipTextArea.setBorder(new LineBorder(Color.BLACK));
@@ -73,7 +77,7 @@ public class ShowMessageDialog extends JDialog {
         messagePanel.add(recipTextArea,"wmax "+dimX+",grow,wrap");
 
 
-        // Line 5
+        // All recipients :
         messagePanel.add(new CustomJLabel("Tous les destinataires :"),"");
         JTextArea mailRecipTextArea = new JTextArea(me.mailrecip());
         mailRecipTextArea.setEditable(false);
@@ -81,23 +85,33 @@ public class ShowMessageDialog extends JDialog {
         mailRecipTextArea.setLineWrap(true);
         messagePanel.add(mailRecipTextArea,"wmax "+dimX+",grow,wrap");
 
-        // Line 6
+        // Attachments :
         messagePanel.add(new CustomJLabel("Pièces jointes :"),"");
 
         JTextArea attachTextArea = new JTextArea();
-        for(AttachmentSignature as : me.attachmentSignatures()){
-            attachTextArea.append(as.getName()+" -- ");
+        attachTextArea.setBorder(new LineBorder(Color.blue));
+        Iterator<AttachmentSignature> asIterator = me.attachmentSignatures().iterator();
+        while(asIterator.hasNext()){
+            attachTextArea.append(asIterator.next().getName());
+            if(asIterator.hasNext()) attachTextArea.append(SEP);
         }
+        /*
+        for(AttachmentSignature as : me.attachmentSignatures()){
+            attachTextArea.append(as.getName()+SEP);
+        }
+        */
         attachTextArea.setEditable(false);
         attachTextArea.setLineWrap(true);
         messagePanel.add(attachTextArea,"grow,span");
 
-
-        // Line
+        // ------
+        // Body :
+        // ------
         JTextArea bodyTextArea = new JTextArea(me.body());
         bodyTextArea.setBorder(new LineBorder(Color.RED));
         bodyTextArea.setEditable(false);
         bodyTextArea.setLineWrap(true);
+        bodyTextArea.setWrapStyleWord(true);
         messagePanel.add(bodyTextArea,"grow,span");
 
 
@@ -106,15 +120,8 @@ public class ShowMessageDialog extends JDialog {
 
 
         JButton reportButton = new JButton("Sauvegarder le message");
-        /*reportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //todo
-            }
-        });*/
         reportButton.setActionCommand("createReportAction");
         reportButton.addActionListener(mainFrame);
-
 
         add(reportButton, "left");
 
@@ -125,7 +132,8 @@ public class ShowMessageDialog extends JDialog {
                 setVisible(false);
             }
         });
-        add(quitButton, "left");
+        add(quitButton, "right");
         pack();
+        setResizable(false);
     }
 }

@@ -18,6 +18,7 @@ public class SearchPanel extends JPanel {
     private final JComboBox<String> fieldComboBox;
     private final JComboBox<String> sortComboBox;
     private final MainFrame mainFrame ;
+    private final JLabel pageLabel;
 
     // if true, only untagged messages are searched
     private boolean onlyUntagged = false ;
@@ -28,11 +29,13 @@ public class SearchPanel extends JPanel {
     // If true, enable search by users
     private boolean perUserSelection = false ;
 
+
+
     // Page number, used by next/previous
-    private static int pageNumber;
+    private static int pageNumber=1;
 
     // Number of results per page :
-    JFormattedTextField maxResultNumberField ;
+    private JFormattedTextField maxResultNumberField ;
 
 
 
@@ -44,12 +47,23 @@ public class SearchPanel extends JPanel {
         return pageNumber;
     }
 
+    public void setPageNumber(int pageNumber) {
+        if(pageNumber>=1){
+            this.pageNumber = pageNumber;
+            pageLabel.setText("page : "+pageNumber);
+        }
+    }
+
     public JComboBox<String> getSortComboBox() {
         return sortComboBox;
     }
 
     public JFormattedTextField getMaxResultNumberField() {
         return maxResultNumberField;
+    }
+
+    public void setMaxResult(int max){
+        maxResultNumberField.setText(""+max);
     }
 
     public JPanel getSelectedTagsPanel() {
@@ -106,7 +120,7 @@ public class SearchPanel extends JPanel {
         add(searchLabel, "");
         searchWordsTextField = new JTextField("");
         fieldComboBox = new JComboBox<String>(
-        new String[]{"corps","sujet","destinataires","auteur"});
+                new String[]{"corps","sujet","destinataires","auteur"});
         add(fieldComboBox);
         add(searchWordsTextField,"grow");
 
@@ -130,7 +144,7 @@ public class SearchPanel extends JPanel {
         add(new JScrollPane(selectedTagsPanel), "grow,span");
 
 
-        // Last line :
+        // Panel with sort options :
         JPanel sortingPanel = new JPanel(new MigLayout());
         sortingPanel.add(new JLabel("Trier par :"), "");
         sortComboBox = new JComboBox<String>(
@@ -142,6 +156,9 @@ public class SearchPanel extends JPanel {
         previousPageButton.addActionListener(mainFrame);
         sortingPanel.add(previousPageButton, "");
 
+        pageLabel = new JLabel("page 1");
+        sortingPanel.add(pageLabel);
+
         JButton nextPageButton = new JButton("Page suivante");
         nextPageButton.setActionCommand("nextAction");
         nextPageButton.addActionListener(mainFrame);
@@ -150,7 +167,7 @@ public class SearchPanel extends JPanel {
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
+        formatter.setMinimum(1);
         formatter.setMaximum(1000);
         formatter.setCommitsOnValidEdit(true);
         maxResultNumberField = new JFormattedTextField(formatter);

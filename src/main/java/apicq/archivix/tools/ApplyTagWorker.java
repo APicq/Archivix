@@ -17,7 +17,7 @@ public class ApplyTagWorker extends  SpecializedWorker{
     public ApplyTagWorker(MainFrame mainFrame, ArrayList<String> newTagsList) {
         super(mainFrame,"Modification des messages avec les nouveaux tags");
         this.newTagsList = newTagsList;
-
+        setMaximum(mainFrame.getMessageTable().getSelectedRowCount());
     }
 
     @Override
@@ -30,16 +30,19 @@ public class ApplyTagWorker extends  SpecializedWorker{
     @Override
     protected Void doInBackground() throws Exception {
 
-        log.info("balise apply new tag");
         // build an array of message ids :
         int[] selectedRows = mainFrame.getMessageTable().getSelectedRows();
         int[] messageIds = new int[selectedRows.length];
         MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
-        // remove old tags :
         for(int x=0 ; x<selectedRows.length ; x++){
             messageIds[x] = mtm.get(selectedRows[x]).id();
         }
+
+        // remove old tags :
+        publish("nettoyage des tags");
+        int countDeleteMessage=0;
         for(int messageId:messageIds){
+            setProgress(++countDeleteMessage);
             try {
             PreparedStatement removeTagStmt = pStatement(
                     "DELETE FROM tags WHERE msgid=?");
@@ -54,7 +57,10 @@ public class ApplyTagWorker extends  SpecializedWorker{
         }
         // apply new tags :
         for(String newTag : newTagsList){
+            publish("création du tag : "+newTag);
+            int countApplyMessage = 0 ;
             for(int messageId:messageIds){
+                setProgress(++countApplyMessage);
                 try{
                     PreparedStatement addNewTagStmt =
                             pStatement("INSERT INTO tags(msgid,tag) VALUES(?,?)");

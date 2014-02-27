@@ -96,7 +96,7 @@ public class SelectTagsDialog extends JDialog {
         tagListModel = new TagListModel(tagStringList);
         tagList = new JList<String>(tagListModel);
         tagList.addListSelectionListener(new MySelectionListener());
-        tagList.setLayoutOrientation(JList.VERTICAL_WRAP);
+        tagList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         JScrollPane tagListScrollPane = new JScrollPane(tagList);
         add(tagListScrollPane, "grow,span");
 

@@ -1,9 +1,6 @@
 package apicq.archivix.tools;
 
-import apicq.archivix.gui.AttachmentSignature;
-import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageTableModel;
-import apicq.archivix.gui.TextMessage;
+import apicq.archivix.gui.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -52,18 +50,17 @@ public class FindMessagesWorker extends SpecializedWorker {
             fieldToSearch = "author";
         }
 
+        // Tag request string :
         // search by tags : prepare array of tags
-        Vector<String> tagVector = new Vector<String>();
+        ArrayList<String> tagArrayList = new ArrayList<String>();
         for(Component c : mainFrame.getSearchPanel().getSelectedTagsPanel().getComponents()){
             JLabel jLabel = (JLabel) c;
-            tagVector.add(((JLabel) c).getText());
-        }
-        String[] tagArray = new String[tagVector.size()];
-        for( int index=0 ; index <tagVector.size() ; index++ ){
-            tagArray[index]=tagVector.get(index);
+            tagArrayList.add(((JLabel) c).getText());
         }
 
+	// ------------------
         // ordering results :
+	// ------------------
         String orderInput = (String) mainFrame.getSearchPanel().getSortComboBox().getSelectedItem();
         String order = "date";
         if(orderInput.equals("date")){
@@ -83,8 +80,19 @@ public class FindMessagesWorker extends SpecializedWorker {
         }
         order = order + " DESC ";
 
-        int limit = Integer.parseInt(mainFrame.getSearchPanel().getMaxResultNumberField().getText());
-        int offset = mainFrame.getSearchPanel().getPageNumber() * limit ;
+
+        //-----------------
+        // limit and offset
+        //-----------------
+        int limit = 10 ;
+        try {
+            limit = Integer.parseInt(mainFrame.getSearchPanel().getMaxResultNumberField().getText());
+            if(limit<=0) limit = 10 ;
+        } catch (NumberFormatException nfe ){
+            addError("Erreur champs nombre de résultats maximum par page");
+            addError(nfe.toString());
+        }
+        int offset = (SearchPanel.getPageNumber()-1) * limit ;
 
         // Build request :
 
@@ -92,13 +100,14 @@ public class FindMessagesWorker extends SpecializedWorker {
                 mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
                 fieldToSearch,// column name
                 mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
-                tagArray, // tags to search for
+                tagArrayList, // tags to search for
                 mainFrame.getSearchPanel().isPerUserSelection(),
                 mainFrame.getSearchPanel().getUserName(),
                 order,
                 limit, // limit
                 offset); // offset
         log.info("sqlFindString "+sqlFindString);
+
         try {
             PreparedStatement pstmt = pStatement(sqlFindString);
             ResultSet rs = pstmt.executeQuery();
@@ -155,9 +164,12 @@ public class FindMessagesWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-        mainFrame.getMessageTable().setModel(mtm);
-        mainFrame.getMessageTable().revalidate();
-        mainFrame.getMessageTable().repaint();
+
+        if(!isError()){
+            mainFrame.getMessageTable().setModel(mtm);
+            mainFrame.getMessageTable().revalidate();
+            mainFrame.getMessageTable().repaint();
+        }
     }
 
 
@@ -168,7 +180,7 @@ public class FindMessagesWorker extends SpecializedWorker {
      * @param wordsTofind   words in message, ex : "meeting London"
      * @param fieldForWords  field to search for words : body, subject, author...
      * @param unTagged if true, search only in non-tagged messages
-     * @param tags // String[] of tags
+     * @param tagList // String[] of tags
      * @param perUserSelection // true if search for one particular username
      * @param userName // username to search for
      * @param limit
@@ -178,7 +190,7 @@ public class FindMessagesWorker extends SpecializedWorker {
     private String buildMessageRequest(String wordsTofind, // words in message, ex : "meeting London"
                                        String fieldForWords,// field to seach for words
                                        boolean unTagged,
-                                       String[] tags,
+                                       ArrayList<String> tagList,
                                        boolean perUserSelection,
                                        String userName,
                                        String order,
@@ -215,15 +227,56 @@ public class FindMessagesWorker extends SpecializedWorker {
         //----------------
         String part3 = "";
         if(unTagged) {
-            part3 = " id NOT IN (SELECT DISTINCT msgid FROM tags)";
+            part3 = " id NOT IN (SELECT DISTINCT msgid FROM tags) ";
         }
         else {
-            String tagString = stringify("tag=","'"," AND ",tags);
-            if(tagString.length()>0){
-               // part3 = " id in (select msgid from tags where tag in("+tagString+"))";
-                part3 = " id in (SELECT msgid FROM tags WHERE "+tagString+")";
-            }else {
-                part3="";
+            if( tagList.size() >0 ){
+
+                // SELECT
+                part3 = " id IN(SELECT tags0.msgid FROM ";
+
+                // FROM
+                boolean isFirst = true ;
+                for(int i=0 ; i<tagList.size() ; i++){
+                    if(isFirst){
+                        isFirst=false;
+                        part3 = part3 + "tags as tags"+i ;
+                    }
+                    else {
+                        part3 = part3 + ",tags as tags"+i ;
+                    }
+                }
+
+                //WHERE  tag part
+                part3 = part3 + " WHERE " ;
+                isFirst=true;
+                for(int i=0 ; i<tagList.size() ; i++){
+                    if(isFirst){
+                        isFirst=false;
+                        part3=part3+" tags"+i+".tag="+"'"+tagList.get(i)+"'";
+                    }else {
+                        part3=part3+" AND  tags"+i+".tag="+"'"+tagList.get(i)+"'";
+                    }
+                }
+
+                // WHERE msgid part
+                if ( tagList.size() >1 ){
+                    part3 = part3 + " AND " ;
+                    isFirst=true;
+                    for(int i=0 ; i<tagList.size()-1 ; i++){
+                        if(isFirst){
+                            isFirst=false;
+                            part3 = part3 + "tags"+i+".msgid=tags"+(i+1)+".msgid";
+                        }
+                        else {
+                            part3 = part3 + " AND tags"+i+".msgid=tags"+(i+1)+".msgid";
+                        }
+                    }
+                }
+
+                part3=part3+") ";
+            }else { // all tags must be visible
+                part3=" ";
             }
         }
 
@@ -239,12 +292,18 @@ public class FindMessagesWorker extends SpecializedWorker {
 
         String part1234 = stringify("",""," WHERE ",part1,part234);
 
+        // ----------
+        // ordering :
+        // ----------
         String part5 = " ORDER BY "+order;
 
+
+        // -------
+        // limit :
+        // -------
         String part6 = " LIMIT " + limit + " OFFSET " + offset  ;
 
-        return part1234;
-        // todo return part1234 + part5 + part6
+        return part1234 + part5 + part6 ;
     }
 
 }
