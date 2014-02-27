@@ -119,7 +119,7 @@ public class ShowMessageDialog extends JDialog {
         add(mainScrollPane,"width "+dimX+" ,height "+dimY+",span 2,wrap");
 
 
-        JButton reportButton = new JButton("Sauvegarder le message");
+        JButton reportButton = new JButton("Sauvegarder le message et les pièces jointes");
         reportButton.setActionCommand("createReportAction");
         reportButton.addActionListener(mainFrame);
 
