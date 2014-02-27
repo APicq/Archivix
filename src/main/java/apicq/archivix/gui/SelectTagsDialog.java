@@ -4,6 +4,7 @@ import apicq.archivix.tools.ApplyTagWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -96,13 +97,14 @@ public class SelectTagsDialog extends JDialog {
         tagListModel = new TagListModel(tagStringList);
         tagList = new JList<String>(tagListModel);
         tagList.addListSelectionListener(new MySelectionListener());
-        tagList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        tagList.setLayoutOrientation(JList.VERTICAL_WRAP);
         JScrollPane tagListScrollPane = new JScrollPane(tagList);
         add(tagListScrollPane, "grow,span");
 
         // Line 3
         add(new JLabel("Tags sélectionnés :"),"");
         selectedTagsPanel = new JPanel();
+        selectedTagsPanel.setBorder(new EmptyBorder(10,10,10,10));
         selectedTagsPanel.setLayout(new MigLayout());
         add(new JScrollPane(selectedTagsPanel), "grow,span 2");
         JButton delSelectionButton = new JButton("Effacer la sélection");
@@ -123,7 +125,7 @@ public class SelectTagsDialog extends JDialog {
             }
         });
         if(searchPanelMode){
-            add(untaggedMessagesCheckBox);
+            add(untaggedMessagesCheckBox,"span 2");
         }
 
         // Line 5
@@ -174,5 +176,6 @@ public class SelectTagsDialog extends JDialog {
         add(QuitButton, "cell 2 3");
         pack();
         setMinimumSize(getPreferredSize());
+        setLocationRelativeTo(null);
     }
 }

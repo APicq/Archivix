@@ -41,7 +41,7 @@ public class ShowMessageDialog extends JDialog {
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        // Dimension to limite dialog size :
+        // Dimension to limit dialog size :
         Dimension screenDim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int dimX = (int) (screenDim.getWidth()*0.7);
         int dimY = (int) (screenDim.getHeight()*0.8);

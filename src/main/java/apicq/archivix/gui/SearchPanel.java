@@ -3,6 +3,7 @@ package apicq.archivix.gui;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
@@ -136,11 +137,12 @@ public class SearchPanel extends JPanel {
         JButton selectTagsButton = new JButton("Tags");
         selectTagsButton.setActionCommand("selectTagsAction");
         selectTagsButton.addActionListener(mainFrame);
-        add(selectTagsButton, "grow");
+        add(selectTagsButton, "shrink");
 
         // panel with all the tags :
         selectedTagsPanel = new JPanel();
         selectedTagsPanel.setLayout(new MigLayout());
+        selectTagsButton.setBorder(new EmptyBorder(10,10,10,10));
         add(new JScrollPane(selectedTagsPanel), "grow,span");
 
 
