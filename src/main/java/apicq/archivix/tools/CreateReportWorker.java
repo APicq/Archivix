@@ -17,6 +17,8 @@ import java.nio.file.Files;
  */
 public class CreateReportWorker extends SpecializedWorker {
 
+    // todo :
+
     // if true, cancel doInBackground method
     private boolean actionIsCanceled = false ;
 
@@ -61,7 +63,9 @@ public class CreateReportWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-        JOptionPane.showMessageDialog(mainFrame,""+savedMessages+" message(s) sauvegardé(s).");
+        JOptionPane.showMessageDialog(mainFrame,
+                ""+savedMessages+" message(s) sauvegardé(s)"+SEP+
+                        "dans le répertoire : "+messageDir);
     }
 
     @Override

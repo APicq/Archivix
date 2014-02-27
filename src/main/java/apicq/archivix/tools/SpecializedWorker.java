@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class SpecializedWorker extends SwingWorker<Void, String> {
 
-
+    public static final String SEP = System.getProperty("line.separator");//todo check call to sEP in derived classes
     public static final Logger log = Logger.getLogger("Archivix");
     private static Connection con;
     protected final MainFrame mainFrame;
