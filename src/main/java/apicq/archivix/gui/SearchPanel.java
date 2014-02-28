@@ -170,11 +170,11 @@ public class SearchPanel extends JPanel {
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
         formatter.setMinimum(1);
-        formatter.setMaximum(1000);
+        formatter.setMaximum(999999);
         formatter.setCommitsOnValidEdit(true);
         maxResultNumberField = new JFormattedTextField(formatter);
-        maxResultNumberField.setColumns(4);
-        maxResultNumberField.setText("100");
+        maxResultNumberField.setColumns(6);
+        maxResultNumberField.setText("999999");
         sortingPanel.add(maxResultNumberField, "");
         sortingPanel.add(new JLabel("résultats maximum par page"), "");
         add(sortingPanel,"span,grow");

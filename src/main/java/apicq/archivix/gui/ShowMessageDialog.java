@@ -10,6 +10,8 @@ import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -21,7 +23,6 @@ public class ShowMessageDialog extends JDialog {
     public static final Logger log = Logger.getLogger("Archivix");
     public static final String SEP = System.getProperty("line.separator");
     private final MainFrame mainFrame ;
-
 
 
     /**

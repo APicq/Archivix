@@ -115,7 +115,7 @@ public class FindMessagesWorker extends SpecializedWorker {
 
                 // pick up tags
                 PreparedStatement tagsStatement =
-                        pStatement("SELECT tag FROM tags where msgid=?");
+                        pStatement("SELECT tag FROM tags where msgid=? ORDER BY id ");
                 tagsStatement.setInt(1,rs.getInt(1));
                 ResultSet tagsResultSet = tagsStatement.executeQuery();
                 ArrayList<String> tags = new ArrayList<String>();
@@ -123,7 +123,7 @@ public class FindMessagesWorker extends SpecializedWorker {
 
                 // pick up attachments :
                 PreparedStatement attachStatement =
-                        pStatement("SELECT md5sum,name FROM attach WHERE msgid=?");
+                        pStatement("SELECT md5sum,name FROM attach WHERE msgid=? ");
                 attachStatement.setInt(1,rs.getInt(1));
                 ResultSet attachResultSet = attachStatement.executeQuery();
                 ArrayList<AttachmentSignature> attachmentSignatures = new ArrayList<AttachmentSignature>();

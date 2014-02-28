@@ -67,6 +67,9 @@ public class SelectTagsDialog extends JDialog {
     class MySelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
+
+            //log.info(""+tagList.getSelectedValuesList()+" first "+e.getFirstIndex()+" last "+e.getLastIndex());
+            /*
             selectedTagsPanel.removeAll();
             for(Object tag:tagList.getSelectedValuesList()){
                 JLabel tagLabel = new JLabel(tag.toString());
@@ -74,6 +77,26 @@ public class SelectTagsDialog extends JDialog {
                 tagLabel.setBackground(Color.WHITE);
                 tagLabel.setBorder(new LineBorder(Color.black));
                 selectedTagsPanel.add(tagLabel);
+            }
+            SelectTagsDialog.this.validate();
+            SelectTagsDialog.this.repaint();
+            */
+            boolean tagIsAlreadyInPanel = false ;
+            String clickedTag = (String) tagList.getSelectedValue();
+            log.info("clicked tag : "+clickedTag);
+            for(Component comp : selectedTagsPanel.getComponents()){
+                JLabel selectedTagLabel = (JLabel)comp;
+                if(selectedTagLabel.getText().equals(clickedTag)){
+                    tagIsAlreadyInPanel = true ;
+                    break ;
+                }
+            }
+            if(!tagIsAlreadyInPanel) {
+                JLabel newTagLabel = new JLabel(clickedTag);
+                newTagLabel.setOpaque(true);
+                newTagLabel.setBackground(Color.WHITE);
+                newTagLabel.setBorder(new LineBorder(Color.black));
+                selectedTagsPanel.add(newTagLabel);
             }
             SelectTagsDialog.this.validate();
             SelectTagsDialog.this.repaint();
@@ -88,7 +111,8 @@ public class SelectTagsDialog extends JDialog {
                             final ArrayList<String> tagStringList,
                             final boolean searchPanelMode) {
         setModal(true);
-        setLayout(new MigLayout("","[][grow][]","[][grow 95][grow 5][]")); // layout,column,row
+        setLayout(new MigLayout("","[][grow][]","[][grow][][]")); // layout,column,row
+      //  setLayout(new MigLayout("","[][grow][]","[][grow 95][grow 5][]")); // layout,column,row
         this.mainFrame = mainFrame ;
 
         // Line 1
@@ -97,21 +121,24 @@ public class SelectTagsDialog extends JDialog {
         tagListModel = new TagListModel(tagStringList);
         tagList = new JList<String>(tagListModel);
         tagList.addListSelectionListener(new MySelectionListener());
-        tagList.setLayoutOrientation(JList.VERTICAL_WRAP);
+        tagList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        tagList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane tagListScrollPane = new JScrollPane(tagList);
         add(tagListScrollPane, "grow,span");
 
         // Line 3
         add(new JLabel("Tags sélectionnés :"),"");
         selectedTagsPanel = new JPanel();
-        selectedTagsPanel.setBorder(new EmptyBorder(10,10,10,10));
+        selectedTagsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         selectedTagsPanel.setLayout(new MigLayout());
         add(new JScrollPane(selectedTagsPanel), "grow,span 2");
         JButton delSelectionButton = new JButton("Effacer la sélection");
         delSelectionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tagList.clearSelection();
+                selectedTagsPanel.removeAll();
+                selectedTagsPanel.revalidate();
+                selectedTagsPanel.repaint();
             }
         });
         add(delSelectionButton, "wrap");

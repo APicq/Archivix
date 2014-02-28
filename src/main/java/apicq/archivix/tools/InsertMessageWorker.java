@@ -77,7 +77,6 @@ public class InsertMessageWorker extends SpecializedWorker {
             // Check duplicates :
             int messageID = -1 ;
             try {
-                log.info("balise");
                 messageID = dibCheckDuplicate(mapiMessage);
             }
             catch (SQLException e){//Signal error,next message
@@ -170,14 +169,14 @@ public class InsertMessageWorker extends SpecializedWorker {
 
         PreparedStatement pStatement = pStatement(
                 "SELECT id FROM messages WHERE " +
-                        "author=? AND date=? AND subject=? AND body=? AND recip=?");
+                        "author=? AND date=? AND subject=? AND body=? ");
         pStatement.setString(1, mapiMessage.getDisplayFrom());
         pStatement.setString(2,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
                         mapiMessage.getMessageDate().getTime()));
         pStatement.setString(3, mapiMessage.getSubject());
         pStatement.setString(4, dibPurge(mapiMessage.getTextBody()));
-        pStatement.setString(5, mapiMessage.getDisplayTo());
+        //pStatement.setString(5, mapiMessage.getDisplayTo());
 
         ResultSet rs = pStatement.executeQuery();
 
