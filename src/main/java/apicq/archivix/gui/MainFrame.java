@@ -166,10 +166,6 @@ public class MainFrame extends JFrame implements ActionListener {
 
         setLocationRelativeTo(null);
         setVisible(true);
-
-        new CheckDatabaseWorker(this).start();
-        log.info("balise");
-
     }// constructor
 
 

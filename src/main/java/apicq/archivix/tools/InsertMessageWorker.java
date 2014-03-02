@@ -4,11 +4,14 @@ import apicq.archivix.gui.MainFrame;
 import org.apache.poi.hsmf.MAPIMessage;
 import org.apache.poi.hsmf.datatypes.AttachmentChunks;
 import org.apache.poi.hsmf.exceptions.ChunkNotFoundException;
+import org.sqlite.SQLiteErrorCode;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
@@ -55,6 +58,7 @@ public class InsertMessageWorker extends SpecializedWorker {
     protected Void doInBackground() throws Exception {
 
         setMaximum(messageFiles.length);
+
         int cursor = 0 ;
 
         for( File messageFile : messageFiles ){
@@ -69,62 +73,69 @@ public class InsertMessageWorker extends SpecializedWorker {
                 mapiMessage = new MAPIMessage(messageFile.getAbsolutePath());
             }
             catch (IOException e){
-                addError(messageFile.getAbsolutePath() + " not a message file");
-                log.warning(messageFile.getAbsolutePath()+" not a message file");
+                addError(messageFile.getAbsolutePath() + " n'est pas un message.");
                 continue;
             }
 
-            // Check duplicates :
+
+
+            // New message : insert
+            try {
+                dibInsertMessage(mapiMessage);
+            }
+            catch (SQLException e){
+                if( e.getErrorCode()==SQLiteErrorCode.SQLITE_CONSTRAINT.code){
+                    addError("Message déja inséré : "+messageFile.getAbsolutePath());
+                }
+                else {
+                    addError("Erreur d'insertion avec le message : "+messageFile.getAbsoluteFile());
+                    addError(e.toString());
+                }
+
+                continue;
+            }
+            catch (ChunkNotFoundException e){
+                addError("Chunk error : "+e.getMessage());
+                continue;
+            }
+
+            // get message id :
             int messageID = -1 ;
             try {
-                messageID = dibCheckDuplicate(mapiMessage);
-            }
-            catch (SQLException e){//Signal error,next message
-                addError("Message déjà présent dans la base de données : "+e.getMessage());
+                PreparedStatement getMessageIdStmt = pStatement("SELECT id FROM messages where date=? and subject=?");
+                getMessageIdStmt.setString(1,
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
+                                mapiMessage.getMessageDate().getTime()));
+                getMessageIdStmt.setString(2,mapiMessage.getSubject());
+                ResultSet rs = getMessageIdStmt.executeQuery();
+                if(rs.next()) messageID = rs.getInt(1);
+            } catch (SQLException e){
+                addError("Impossible de retrouver la clé primaire du message");
+                addError(e.getMessage());
                 continue;
             }
-            catch (ChunkNotFoundException e){  //idem
-                addError("Duplicate chunk error : "+e.getMessage());
+            if(messageID == -1){
+                addError("Impossible de retrouver la clé primaire du message : id=-1");
                 continue;
-            }
-
-            // If new message,insert it :
-            if( messageID == -1 ){
-                try {
-                    messageID = dibInsertMessage(mapiMessage);
-                }
-                catch (SQLException e){
-                    addError("Erreur d'insertion : "+e.getMessage());
-                    continue;
-                }
-                catch (ChunkNotFoundException e){
-                    addError("Chunk error : "+e.getMessage());
-                    continue;
-                }
             }
 
             // insert attachments
             AttachmentChunks[] attachmentChunksList = mapiMessage.getAttachmentFiles();
+
             if (attachmentChunksList == null || attachmentChunksList.length == 0) continue;
 
             for (AttachmentChunks attach : attachmentChunksList) {
+
                 // ignore embedded outlook messages :
                 if (attach.getEmbeddedAttachmentObject() == null) {
                     addError("message outlook ignoré dans : " + messageFile.getName());
-                    // add to error string todo
                     continue;
                 }
-                // Check if attachment is already saved :
+
+                // md5 calculation
                 String md5 = "" ;
-                boolean attachAlreadySaved;
                 try {
                     md5 = dibMd5Sum(attach.getEmbeddedAttachmentObject());
-                    attachAlreadySaved = dibIsAttachAlreadySaved(md5);
-                }
-                catch(IOException e){
-                    addError("Erreur pièce jointe "+messageFile.getName());
-                    addError(e.getMessage());
-                    continue;
                 }
                 catch (NoSuchAlgorithmException e){
                     addError("Erreur md5sum "+messageFile.getName());
@@ -132,58 +143,48 @@ public class InsertMessageWorker extends SpecializedWorker {
                     continue;
                 }
 
-                // New attach,copy it :
-                if(!attachAlreadySaved){
-                    String finalName = md5 + attach.attachExtension.toString();
-                    try {
-                        File inputFile = new File(mainFrame.attachmentDirectory(),finalName);
-                        FileOutputStream fos = new FileOutputStream(inputFile);
-                        fos.write(attach.getEmbeddedAttachmentObject());
-                        fos.close();
-                    }
-                    catch (Exception e){
-                        addError("Error copie pièce jointe :" + messageFile.getName());
-                        continue;
-                    }
-                }
-                else {
-                    addError("Attachment file " + attach.attachLongFileName + " already saved.");
-                }
-                // update attachment table
+                // update attachRef :
                 try {
-                    dibInsertAttachToDatabase(attach, messageID, md5);
+                    PreparedStatement updateAttachRefStmt = pStatement(
+                            "INSERT INTO attachref(md5sum,name,size) VALUES(?,?,?)");
+                    updateAttachRefStmt.setString(1,md5);
+                    updateAttachRefStmt.setString(2,attach.attachLongFileName.toString());
+                    updateAttachRefStmt.setInt(3, attach.getEmbeddedAttachmentObject().length);
+                    updateAttachRefStmt.execute();
+
+                } catch (SQLException e){
+                    addError("Impossible de mettre à jour la table attachref");
+                    addError(e.getMessage());
                 }
-                catch (SQLException e){
-                    addError("Error mise à jour table pièces jointes :  " + messageFile.getName());
-                    continue;
+
+                // update attach :
+                try {
+                    PreparedStatement updateAttachStmt = pStatement(
+                            "INSERT INTO attach(md5sum,msgid) VALUES(?,?)");
+                    updateAttachStmt.setString(1,md5);
+                    updateAttachStmt.setInt(2, messageID);
+                    updateAttachStmt.execute();
+
+                } catch (SQLException e){
+                    addError("Impossible de mettre à jour la table attach");
+                    addError(e.getMessage());
+                }
+                // Copy file if new :
+                try {
+                    String finalName = md5 + attach.attachExtension.toString();
+                    File inputFile = new File(mainFrame.attachmentDirectory(),finalName);
+                    if(!inputFile.exists()){
+                        ByteArrayInputStream bais = new ByteArrayInputStream(attach.getEmbeddedAttachmentObject());
+                        Files.copy(bais,inputFile.toPath());
+                        bais.close();
+                    }
+                } catch(IOException e){
+                    addError("Impossible de sauvegarder la pièce jointe : "+attach.attachLongFileName.toString());
+                    addError(e.getMessage());
                 }
             }
         }//for each message file
         return null ;
-    }
-
-
-    private int dibCheckDuplicate(MAPIMessage mapiMessage) throws
-            SQLException,
-            ChunkNotFoundException {
-
-        PreparedStatement pStatement = pStatement(
-                "SELECT id FROM messages WHERE " +
-                        "author=? AND date=? AND subject=? AND body=? ");
-        pStatement.setString(1, mapiMessage.getDisplayFrom());
-        pStatement.setString(2,
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
-                        mapiMessage.getMessageDate().getTime()));
-        pStatement.setString(3, mapiMessage.getSubject());
-        pStatement.setString(4, dibPurge(mapiMessage.getTextBody()));
-        //pStatement.setString(5, mapiMessage.getDisplayTo());
-
-        ResultSet rs = pStatement.executeQuery();
-
-        if( rs.next() ){ // message already in database : pick up messageID
-            return rs.getInt(1);
-        }
-        else return -1 ;
     }
 
     /**
@@ -204,7 +205,7 @@ public class InsertMessageWorker extends SpecializedWorker {
      * @param mapiMessage
      * @return
      */
-    private int dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
+    private void dibInsertMessage(MAPIMessage mapiMessage) throws SQLException, ChunkNotFoundException {
         PreparedStatement pStatement = pStatement(
                 "INSERT INTO messages(" +
                         "date," +
@@ -233,110 +234,22 @@ public class InsertMessageWorker extends SpecializedWorker {
         pStatement.setString(10, USER);
         pStatement.setString(11,
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-
         pStatement.execute();
-
-        // pick up message id :
-        pStatement = pStatement("SELECT last_insert_rowid()");
-        ResultSet rs = pStatement.executeQuery();
-        if (rs.next()) {
-            pStatement = pStatement("SELECT id FROM messages WHERE rowid=?");
-            pStatement.setInt(1, rs.getInt(1));
-            rs = pStatement.executeQuery();
-            rs.next();
-        }
-        return rs.getInt(1);
     }
 
 
     /**
-    * Returns a string as a md5 calculation of byte content
-    * @param content  byte array
-    * @return         md5 string
-    * @throws NoSuchAlgorithmException
-    */
+     * Returns a string as a md5 calculation of byte content
+     * @param content  byte array
+     * @return         md5 string
+     * @throws NoSuchAlgorithmException
+     */
     private String dibMd5Sum(byte[] content) throws NoSuchAlgorithmException {
 
         MessageDigest md = MessageDigest.getInstance("MD5");
-
         byte[] digest = md.digest(content);
-
         BigInteger bigInt = new BigInteger(1, digest);
-
         //todo : zero fill result : so all filenames have same chars number
-
         return bigInt.toString(16);
     }
-
-    /**
-     * Check if an attachment is saved in archive directory
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     */
-    private boolean dibIsAttachAlreadySaved(String md5)
-            throws NoSuchAlgorithmException, IOException {
-        List<String> listOfNames =
-                dibBuildCleanFileNames(mainFrame.attachmentDirectory());
-        for (String name : listOfNames) {
-            if (md5.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     *  Returns a list of file name, without extension. Retrieve md5sum from attach
-     *  directory.
-     * @param directory
-     * @return
-     * @throws IOException
-     */
-    public static List<String> dibBuildCleanFileNames(String directory) throws IOException {
-
-        List<String> listOfNames = new ArrayList<String>();
-        File[] files = new File(directory).listFiles();
-        String separator = ".";
-        for (File oneFile : files) {
-            int extensionIndex  = oneFile.getName().lastIndexOf(separator);
-            if (extensionIndex == -1) {
-                listOfNames.add(oneFile.getName());
-            } else {
-                listOfNames.add(oneFile.getName().substring(0, extensionIndex));
-            }
-        } // for
-        return listOfNames;
-    }
-
-
-    /**
-     * do in background : Insert attach parameters into table,if not exists
-     * @param attach
-     */
-    private void dibInsertAttachToDatabase(AttachmentChunks attach, int messageID, String md5)
-            throws SQLException {
-
-        // Check if already saved ;
-        PreparedStatement pickupAttachStmt = pStatement(
-                "SELECT id from attach where msgid=? and name=? and md5sum =?");
-        pickupAttachStmt.setInt(1, messageID);
-        pickupAttachStmt.setString(2, attach.attachLongFileName.toString());
-        pickupAttachStmt.setString(3, md5);
-        ResultSet rs = pickupAttachStmt.executeQuery();
-        if(rs.next()){
-            addError("attach " + attach.attachLongFileName + " already in database,msgid=" + messageID);
-        }
-        else {
-            pickupAttachStmt = pStatement(
-                    "INSERT INTO attach(msgid,name,size,md5sum) " +
-                            " VALUES(?,?,?,?)");
-            pickupAttachStmt.setInt(1, messageID);
-            pickupAttachStmt.setString(2, attach.attachLongFileName.toString());
-            pickupAttachStmt.setInt(3, attach.getEmbeddedAttachmentObject().length);
-            pickupAttachStmt.setString(4, md5);
-            pickupAttachStmt.execute();
-      }
-    }  
 }
