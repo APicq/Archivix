@@ -32,7 +32,7 @@ public class FindTagsWorker extends SpecializedWorker {
     protected Void doInBackground() throws Exception {
 
         try {
-            PreparedStatement findTagNamesStmt = pStatement("SELECT DISTINCT tag from tags order by tag");
+            PreparedStatement findTagNamesStmt = pStatement("SELECT DISTINCT name from tagsref order by name");
             ResultSet rs = findTagNamesStmt.executeQuery();
             while(rs.next()) tagList.add(rs.getString(1));
         } catch (SQLException e){

@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 public class MainFrame extends JFrame implements ActionListener {
 
     public static final Logger log = Logger.getLogger("Archivix");
+    public static final String archivixVersion = "20140304_1";
 
     // Full path to sqlite database :
     private String dabataseFile = "";
@@ -35,7 +36,7 @@ public class MainFrame extends JFrame implements ActionListener {
     public SearchPanel getSearchPanel(){ return searchPanel ;}
 
     public void updateMainTitle(){
-        setTitle("Archivix -- base de donnée : ");
+        setTitle("Archivix_"+archivixVersion+" -- base de donnée : ");
         if(dabataseFile.length()==0){
             setTitle(getTitle()+" Aucune base de données");
         } else {
@@ -64,8 +65,7 @@ public class MainFrame extends JFrame implements ActionListener {
         Properties prop = new Properties();
         try {
             prop.load(new FileInputStream("config.txt"));
-            dabataseFile = prop.getProperty("database");
-            attachmentDirectory = prop.getProperty("attachmentdir");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,"Aucune base de données configurée. Connectez-vous\n"+
@@ -75,7 +75,10 @@ public class MainFrame extends JFrame implements ActionListener {
             e.printStackTrace();
         }
 
-        // Load visibility :
+        // Apply configuration
+        dabataseFile = prop.getProperty("database","");
+        attachmentDirectory = prop.getProperty("attachmentdir","");
+        updateMainTitle();
 
         if(prop.getProperty("idcol","yes").equals("no"))
             MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
@@ -244,8 +247,6 @@ public class MainFrame extends JFrame implements ActionListener {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 dabataseFile = (chooser.getSelectedFile().getAbsolutePath());
                 new CheckDatabaseWorker(MainFrame.this).start();
-                //updateMainTitle();
-                //MainFrame.this.setTitle(chooser.getSelectedFile().getName());
             }
         }
 
@@ -369,12 +370,16 @@ public class MainFrame extends JFrame implements ActionListener {
         if("nextAction".equals(e.getActionCommand())){
             // Number of results :
             int resultNumber = getMessageTable().getModel().getRowCount() ;
-            int limit = Integer.parseInt(getSearchPanel().getMaxResultNumberField().getText());
-            if( resultNumber >= limit ){
-                log.info(""+SearchPanel.getPageNumber());
-                getSearchPanel().setPageNumber(SearchPanel.getPageNumber()+1);
-                new FindMessagesWorker(this).start();
+            try {
+                int limit = Integer.parseInt(getSearchPanel().getMaxResultNumberField().getText());
+                if( resultNumber >= limit ){
+                    getSearchPanel().setPageNumber(SearchPanel.getPageNumber()+1);
+                    new FindMessagesWorker(this).start();
+                }
+            } catch (NumberFormatException nfe){
+                JOptionPane.showMessageDialog(this,"le champs \"résultats maximum par page\" n'est pas un entier positif !");
             }
+            return;
         }
         if("findUserAction".equals(e.getActionCommand())){
             new FindUserWorker(MainFrame.this).start();

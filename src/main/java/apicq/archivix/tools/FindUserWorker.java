@@ -34,7 +34,6 @@ public class FindUserWorker extends SpecializedWorker {
             while(rs.next()){
                 nameVector.add(rs.getString(1));
             }
-            //mainFrame.getSearchPanel().getU
 
         } catch (SQLException e){
             addError("Erreur SQL :");

@@ -35,6 +35,7 @@ public class FindMessagesWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
+        //  where to search for words in body, subject, etc...
         String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
 
         if(fieldToSearch.equals("corps")){
@@ -58,9 +59,9 @@ public class FindMessagesWorker extends SpecializedWorker {
             tagArrayList.add(((JLabel) c).getText());
         }
 
-	// ------------------
+        // ------------------
         // ordering results :
-	// ------------------
+        // ------------------
         String orderInput = (String) mainFrame.getSearchPanel().getSortComboBox().getSelectedItem();
         String order = "date";
         if(orderInput.equals("date")){
@@ -91,19 +92,21 @@ public class FindMessagesWorker extends SpecializedWorker {
         } catch (NumberFormatException nfe ){
             addError("Erreur champs nombre de résultats maximum par page");
             addError(nfe.toString());
+            return null;
         }
         int offset = (SearchPanel.getPageNumber()-1) * limit ;
 
+        // ---------------
         // Build request :
-
+        // ---------------
         String sqlFindString = buildMessageRequest(
                 mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
                 fieldToSearch,// column name
                 mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
                 tagArrayList, // tags to search for
-                mainFrame.getSearchPanel().isPerUserSelection(),
-                mainFrame.getSearchPanel().getUserName(),
-                order,
+                mainFrame.getSearchPanel().isPerUserSelection(),// user selection on/off
+                mainFrame.getSearchPanel().getUserName(), // username
+                order, // ordering field
                 limit, // limit
                 offset); // offset
         log.info("sqlFindString "+sqlFindString);
@@ -115,7 +118,7 @@ public class FindMessagesWorker extends SpecializedWorker {
 
                 // pick up tags
                 PreparedStatement tagsStatement =
-                        pStatement("SELECT tag FROM tags where msgid=? ORDER BY id ");
+                        pStatement("SELECT tag FROM tags where msgid=? ");
                 tagsStatement.setInt(1,rs.getInt(1));
                 ResultSet tagsResultSet = tagsStatement.executeQuery();
                 ArrayList<String> tags = new ArrayList<String>();
@@ -123,7 +126,9 @@ public class FindMessagesWorker extends SpecializedWorker {
 
                 // pick up attachments :
                 PreparedStatement attachStatement =
-                        pStatement("SELECT md5sum,name FROM attach WHERE msgid=? ");
+                        pStatement("SELECT attachref.md5sum,attachref.name FROM" +
+                                " attachref,attach " +
+                                "WHERE attachref.md5sum=attach.md5sum AND attach.msgid=? ");
                 attachStatement.setInt(1,rs.getInt(1));
                 ResultSet attachResultSet = attachStatement.executeQuery();
                 ArrayList<AttachmentSignature> attachmentSignatures = new ArrayList<AttachmentSignature>();

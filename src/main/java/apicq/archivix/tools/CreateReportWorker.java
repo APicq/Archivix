@@ -71,7 +71,6 @@ public class CreateReportWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
-        if(actionIsCanceled) return null;
 
         setMaximum(selectedRows.length);
 
@@ -79,6 +78,8 @@ public class CreateReportWorker extends SpecializedWorker {
 
         // for each message :
         for(int index : selectedRows){
+
+            if(actionIsCanceled) return null;
 
             setProgress(++savedMessages);
 

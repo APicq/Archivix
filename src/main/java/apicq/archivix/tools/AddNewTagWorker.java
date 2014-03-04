@@ -2,6 +2,7 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
 import apicq.archivix.gui.MessageTableModel;
+import org.sqlite.SQLiteErrorCode;
 
 import javax.swing.*;
 import java.sql.PreparedStatement;
@@ -23,7 +24,7 @@ public class AddNewTagWorker extends SpecializedWorker {
      * @param mainFrame
      */
     public AddNewTagWorker(MainFrame mainFrame, String tag) {
-        super(mainFrame, "Vérification des tags");
+        super(mainFrame, "Ajout d'un nouveau tag");
         setIndeterminate(true);
         this.tag = tag ;
 
@@ -32,59 +33,60 @@ public class AddNewTagWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
+        // Add new tag into tagref :
+        // -------------------------
         try {
-
-            // list of all message ids already tagged with tag
-            PreparedStatement msgIdForTagStmt = pStatement(
-                    " SELECT msgid FROM tags where tag=? ");
-            try {
-            msgIdForTagStmt.setString(1,tag);
-            } catch (Exception e){
-
-                log.info(e.toString());
-            }
-            ResultSet rs = msgIdForTagStmt.executeQuery();
-            ArrayList<Integer> msgIdList = new ArrayList<Integer>();
-            while(rs.next()){
-                msgIdList.add(rs.getInt(1));
-            }
-
-            // Apply tag if necessary for each message
-            int[] selected  = mainFrame.getMessageTable().getSelectedRows();
-            MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
-            if(selected.length==0) return null;
-            for( int i=0 ; i < selected.length ; i++){
-                setProgress(i*100/selected.length);
-                int id = mtm.get(selected[i]).id();
-                boolean isAlreadyTagged = false ;
-                for(int x : msgIdList){
-                    if(id==x){
-                        isAlreadyTagged = true ;
-                        break;
-                    }
-                }
-                if(!isAlreadyTagged){
-                    PreparedStatement insertTagStmt = pStatement(
-                            "INSERT INTO tags(msgid,tag) VALUES(?,?) ");
-                    insertTagStmt.setInt(1,id);
-                    insertTagStmt.setString(2,tag);
-                    insertTagStmt.execute();
-                }
-            }
-
+            PreparedStatement addNewTagRefStmt = pStatement("INSERT INTO tagsref(name) VALUES(?)");
+            addNewTagRefStmt.setString(1,tag.trim().replaceAll(" +","_"));
+            addNewTagRefStmt.execute();
         }
         catch (SQLException e){
-            addError("Erreur d'accès à la base de données :");
-            addError(e.toString());
+            if(e.getErrorCode()== SQLiteErrorCode.SQLITE_OK.code ||
+                    e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT.code){
+                addError("Erreur : le tag "+tag+" existe déjà");
+            } else {
+                addError(e.toString());
+            }
+            return null ;
         }
 
+        // Add tag to messages :
+        // build an array of message ids : // todo copy code
+        publish("Recherche des messages à tagger..");
+        int[] selectedRows = mainFrame.getMessageTable().getSelectedRows();
+        int[] messageIds = new int[selectedRows.length];
+        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+        for(int x=0 ; x<selectedRows.length ; x++){
+            messageIds[x] = mtm.get(selectedRows[x]).id();
+        }
+
+        setMaximum(messageIds.length);
+        int progressCursor = 0 ;
+        for(int messageId :messageIds){
+            try {
+                setProgress(++progressCursor);
+                PreparedStatement addNewTagStmt = pStatement("INSERT INTO tags(msgid,tag) VALUES(?,?)");
+                addNewTagStmt.setInt(1,messageId);
+                addNewTagStmt.setString(2,tag);
+                addNewTagStmt.execute();
+            } catch (SQLException e){
+                if(e.getErrorCode()== SQLiteErrorCode.SQLITE_OK.code ||
+                        e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT.code){
+                    addError("Problème de doublon : tag="+tag+" message id="+messageId);
+                    log.warning(e.getMessage());
+                } else {
+                    addError(e.getMessage());
+                    return null ;
+                }
+            }
+        } // for
         return null ;
     }
 
     @Override
     protected void done() {
         super.done();
-        if(isError()){
+        if(!isError()){
             JOptionPane.showMessageDialog(mainFrame,"Le tag "+tag+" a bien été ajouté aux messages sélectionnés");
         }
 

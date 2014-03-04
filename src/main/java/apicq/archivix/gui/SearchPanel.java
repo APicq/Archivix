@@ -36,7 +36,7 @@ public class SearchPanel extends JPanel {
     private static int pageNumber=1;
 
     // Number of results per page :
-    private JFormattedTextField maxResultNumberField ;
+    private JTextField maxResultNumberField ;
 
 
 
@@ -59,7 +59,7 @@ public class SearchPanel extends JPanel {
         return sortComboBox;
     }
 
-    public JFormattedTextField getMaxResultNumberField() {
+    public JTextField getMaxResultNumberField() {
         return maxResultNumberField;
     }
 
@@ -166,13 +166,14 @@ public class SearchPanel extends JPanel {
         nextPageButton.addActionListener(mainFrame);
         sortingPanel.add(nextPageButton, "");
 
-        NumberFormat format = NumberFormat.getInstance();
+   /*     NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
         formatter.setMinimum(1);
         formatter.setMaximum(999999);
-        formatter.setCommitsOnValidEdit(true);
-        maxResultNumberField = new JFormattedTextField(formatter);
+        formatter.setCommitsOnValidEdit(true);*/
+//        maxResultNumberField = new JFormattedTextField(formatter);
+        maxResultNumberField = new JTextField();
         maxResultNumberField.setColumns(6);
         maxResultNumberField.setText("999999");
         sortingPanel.add(maxResultNumberField, "");

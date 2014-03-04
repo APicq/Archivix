@@ -38,11 +38,13 @@ public class ApplyTagWorker extends  SpecializedWorker{
             messageIds[x] = mtm.get(selectedRows[x]).id();
         }
 
+        // -----------------
         // remove old tags :
+        // -----------------
         publish("nettoyage des tags");
-        int countDeleteMessage=0;
+        int progressCursor=0;
         for(int messageId:messageIds){
-            setProgress(++countDeleteMessage);
+            setProgress(++progressCursor);
             try {
             PreparedStatement removeTagStmt = pStatement(
                     "DELETE FROM tags WHERE msgid=?");
@@ -55,7 +57,10 @@ public class ApplyTagWorker extends  SpecializedWorker{
                 return  null ;
             }
         }
+
+        // ----------------
         // apply new tags :
+        // ----------------
         for(String newTag : newTagsList){
             publish("création du tag : "+newTag);
             int countApplyMessage = 0 ;
@@ -72,6 +77,20 @@ public class ApplyTagWorker extends  SpecializedWorker{
                     addError(e.toString());
                 }
             }
+        } //for
+
+
+        // -----------------
+        // Clean unused tags
+        // -----------------
+        publish("Effacement des tags orphelins..");
+        try {
+        PreparedStatement cleanTagsStmt = pStatement("DELETE FROM tagsref WHERE name NOT IN " +
+                "(SELECT DISTINCT tag from tags)");
+        cleanTagsStmt.execute();
+        } catch (SQLException e){
+            addError("Impossible d'effacer les tags inutilisés");
+            addError(e.getMessage());
         }
         return null ;
     }

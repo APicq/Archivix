@@ -77,21 +77,21 @@ public class InsertMessageWorker extends SpecializedWorker {
                 continue;
             }
 
-
-
-            // New message : insert
+            // Insert message, go to next message if already in database.
             try {
                 dibInsertMessage(mapiMessage);
             }
             catch (SQLException e){
-                if( e.getErrorCode()==SQLiteErrorCode.SQLITE_CONSTRAINT.code){
+                if(e.getErrorCode()==SQLiteErrorCode.SQLITE_CONSTRAINT.code ||
+                        e.getErrorCode() == SQLiteErrorCode.SQLITE_OK.code){
                     addError("Message déja inséré : "+messageFile.getAbsolutePath());
                 }
                 else {
                     addError("Erreur d'insertion avec le message : "+messageFile.getAbsoluteFile());
                     addError(e.toString());
+                    log.info("e.getErrorCode() : "+e.getErrorCode());
+                    log.info("SQLITE_CONSTRAINT.code : "+SQLiteErrorCode.SQLITE_CONSTRAINT.code);
                 }
-
                 continue;
             }
             catch (ChunkNotFoundException e){
@@ -115,7 +115,7 @@ public class InsertMessageWorker extends SpecializedWorker {
                 continue;
             }
             if(messageID == -1){
-                addError("Impossible de retrouver la clé primaire du message : id=-1");
+                addError("Impossible de retrouver la clé primaire du message : id = -1");
                 continue;
             }
 
@@ -153,8 +153,14 @@ public class InsertMessageWorker extends SpecializedWorker {
                     updateAttachRefStmt.execute();
 
                 } catch (SQLException e){
-                    addError("Impossible de mettre à jour la table attachref");
-                    addError(e.getMessage());
+                    if(e.getErrorCode()==SQLiteErrorCode.SQLITE_CONSTRAINT.code ||
+                            e.getErrorCode()==SQLiteErrorCode.SQLITE_OK.code){
+                        addError("Pièce jointe en doublon : "+attach.attachLongFileName.toString());
+                    }
+                    else {
+                        addError("Impossible de mettre à jour la table attachref");
+                        addError(e.getMessage());
+                    }
                 }
 
                 // update attach :
@@ -166,8 +172,17 @@ public class InsertMessageWorker extends SpecializedWorker {
                     updateAttachStmt.execute();
 
                 } catch (SQLException e){
-                    addError("Impossible de mettre à jour la table attach");
-                    addError(e.getMessage());
+                    if(e.getErrorCode()==SQLiteErrorCode.SQLITE_CONSTRAINT.code ||
+                            e.getErrorCode()==SQLiteErrorCode.SQLITE_OK.code){
+                        addError("Pièce jointe déjà insérée : "+attach.attachLongFileName.toString());
+                        log.warning("Erreur SQL : INSERT INTO attach(md5sum,msgid) VALUES(?,?)");
+                                log.warning("messageID : "+messageID+" md5 : "+md5);
+
+                    } else {
+                        addError("Erreur lors de la mise à jour la table attach");
+                        addError(e.getMessage());
+                    }
+
                 }
                 // Copy file if new :
                 try {
