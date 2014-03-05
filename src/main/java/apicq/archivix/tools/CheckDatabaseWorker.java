@@ -41,7 +41,7 @@ public class CheckDatabaseWorker extends SpecializedWorker {
                             "bcc TEXT,"+
                             "username TEXT,"+
                             "insertDate TEXT," +
-                            "UNIQUE(date,subject))");
+                            "UNIQUE(date,author))");
             messageTableStmt.execute();
 
 

@@ -50,7 +50,6 @@ public class MainFrame extends JFrame implements ActionListener {
         }
         revalidate();
         repaint();
-
     }
 
     /**
@@ -126,28 +125,45 @@ public class MainFrame extends JFrame implements ActionListener {
         insertMessageItem.addActionListener(this);
         fileMenu.add(insertMessageItem);
 
-        JMenuItem databaseChooseItem = new JMenuItem("Connecter la base de données");
-        databaseChooseItem.setActionCommand("connectDatabaseAction");
-        databaseChooseItem.addActionListener(this);
-        fileMenu.add(databaseChooseItem);
 
-        JMenuItem attachDirItem = new JMenuItem("Définir le répertoire des pièces jointes");
-        attachDirItem.setActionCommand("setAttachDirAction");
-        attachDirItem.addActionListener(this);
-        fileMenu.add(attachDirItem);
+        JMenuItem saveDatabaseItem = new JMenuItem("Créer un point de sauvegarde de la base de données");
+        saveDatabaseItem.setActionCommand("saveDatabaseAction");
+        saveDatabaseItem.addActionListener(this);
+        fileMenu.add(saveDatabaseItem);
 
-        JMenuItem quitItem = new JMenuItem("Sauvegarder la configuration et quitter");
+        JMenuItem quitItem = new JMenuItem("Quitter");
         quitItem.setActionCommand("quitAction");
         quitItem.addActionListener(this);
         fileMenu.add(quitItem);
 
+
+
+
         menuBar.add(fileMenu);
 
         JMenu configurationMenu = new JMenu("Configuration");
+
         JMenuItem configColumnItem = new JMenuItem("Configurer les colonnes visibles");
         configColumnItem.setActionCommand("configColumnsAction");
         configColumnItem.addActionListener(this);
         configurationMenu.add(configColumnItem);
+
+        JMenuItem databaseChooseItem = new JMenuItem("Connecter une base de données");
+        databaseChooseItem.setActionCommand("connectDatabaseAction");
+        databaseChooseItem.addActionListener(this);
+        configurationMenu.add(databaseChooseItem);
+
+        JMenuItem attachDirItem = new JMenuItem("Définir le répertoire des pièces jointes");
+        attachDirItem.setActionCommand("setAttachDirAction");
+        attachDirItem.addActionListener(this);
+        configurationMenu.add(attachDirItem);
+
+        JMenuItem saveConfigItem = new JMenuItem("Sauvegarder la configuration");
+        saveConfigItem.setActionCommand("saveConfigAction");
+        saveConfigItem.addActionListener(this);
+        configurationMenu.add(saveConfigItem);
+
+
         menuBar.add(configurationMenu);
 
         setJMenuBar(menuBar);
@@ -208,11 +224,6 @@ public class MainFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if("deleteMessagesAction".equals(e.getActionCommand())){
-            new DeleteMessagesWorker(MainFrame.this).start();
-            return ;
-        }
-
         if("addNewTagAction".equals(e.getActionCommand())){
             String newTag = JOptionPane.showInputDialog(
                     MainFrame.this,
@@ -260,7 +271,7 @@ public class MainFrame extends JFrame implements ActionListener {
             }
         }
 
-        if("quitAction".equals(e.getActionCommand())){
+        if("saveConfigAction".equals(e.getActionCommand())){
             Properties prop = new Properties();
             prop.setProperty("database",dabataseFile);
             prop.setProperty("attachmentdir",attachmentDirectory);
@@ -346,11 +357,11 @@ public class MainFrame extends JFrame implements ActionListener {
 
             try {
                 prop.store(new FileOutputStream("config.txt"), "properties for Archivix");
+                JOptionPane.showMessageDialog(this,"La configuration est enregistrée sous config.txt");
             } catch (IOException except) {
                 JOptionPane.showMessageDialog(this,"ERREUR : l'enregistrement des paramètres a échoué.");
                 log.warning(except.getMessage());
             }
-            System.exit(0);
         }
 
         if("findMessagesAction".equals(e.getActionCommand())){
@@ -385,21 +396,35 @@ public class MainFrame extends JFrame implements ActionListener {
             new FindUserWorker(MainFrame.this).start();
         }
         if("deleteMessagesAction".equals(e.getActionCommand())){
-            int result = JOptionPane.showConfirmDialog(
+
+            String result = JOptionPane.showInputDialog(
                     MainFrame.this,
-                    "Etes-vous sûr de vouloir effacer les messages sélectionnés ?",
+                    "Tapez OUI pour effacer les messages sélectionnés ?",
                     "Effacement des messages",
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
-            if( result==JOptionPane.YES_OPTION ){
+                    JOptionPane.WARNING_MESSAGE);
+            if( result.equals("OUI") ){
                 new DeleteMessagesWorker(MainFrame.this).start();
             }
         }
         if("configColumnsAction".equals(e.getActionCommand())){
             new VisibleColumnDialog(this).setVisible(true);
+            return ;
         }
         if("createReportAction".equals(e.getActionCommand())){
             new CreateReportWorker(this).start();
+            return ;
+        }
+        if( "quitAction".equals(e.getActionCommand())){
+            System.exit(0);
+        }
+        if("saveDatabaseAction".equals(e.getActionCommand())){
+            new SaveDatabaseWorker(this).start();
         }
     }
 }
+/*
+ todo : tags table : make(tag,msgid) primary key
+ menu : quit & save -> quit
+ menu : save ->config
+ menu : build time stamp
+ */
