@@ -36,7 +36,7 @@ public class SearchPanel extends JPanel {
     private static int pageNumber=1;
 
     // Number of results per page :
-    private JFormattedTextField maxResultNumberField ;
+    private JTextField maxResultNumberField ;
 
 
 
@@ -59,7 +59,7 @@ public class SearchPanel extends JPanel {
         return sortComboBox;
     }
 
-    public JFormattedTextField getMaxResultNumberField() {
+    public JTextField getMaxResultNumberField() {
         return maxResultNumberField;
     }
 
@@ -132,7 +132,6 @@ public class SearchPanel extends JPanel {
         add(searchWordsButton, "wrap");
 
         // Line 2
-        // todo : actions from mainFrame here.
         // Button to choose tags :
         JButton selectTagsButton = new JButton("Tags");
         selectTagsButton.setActionCommand("selectTagsAction");
@@ -150,7 +149,7 @@ public class SearchPanel extends JPanel {
         JPanel sortingPanel = new JPanel(new MigLayout());
         sortingPanel.add(new JLabel("Trier par :"), "");
         sortComboBox = new JComboBox<String>(
-                new String[]{"date","sujet","destinataires","auteur","date insertion"});
+                new String[]{"date","sujet","destinataires","auteur","date insertion","id"});
         sortingPanel.add(sortComboBox, "");
 
         JButton previousPageButton = new JButton("Page précédente");
@@ -166,13 +165,14 @@ public class SearchPanel extends JPanel {
         nextPageButton.addActionListener(mainFrame);
         sortingPanel.add(nextPageButton, "");
 
-        NumberFormat format = NumberFormat.getInstance();
+   /*     NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
         formatter.setMinimum(1);
         formatter.setMaximum(999999);
-        formatter.setCommitsOnValidEdit(true);
-        maxResultNumberField = new JFormattedTextField(formatter);
+        formatter.setCommitsOnValidEdit(true);*/
+//        maxResultNumberField = new JFormattedTextField(formatter);
+        maxResultNumberField = new JTextField();
         maxResultNumberField.setColumns(6);
         maxResultNumberField.setText("999999");
         sortingPanel.add(maxResultNumberField, "");

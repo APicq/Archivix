@@ -35,6 +35,7 @@ public class FindMessagesWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
+        //  where to search for words in body, subject, etc...
         String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
 
         if(fieldToSearch.equals("corps")){
@@ -50,6 +51,7 @@ public class FindMessagesWorker extends SpecializedWorker {
             fieldToSearch = "author";
         }
 
+
         // Tag request string :
         // search by tags : prepare array of tags
         ArrayList<String> tagArrayList = new ArrayList<String>();
@@ -58,9 +60,9 @@ public class FindMessagesWorker extends SpecializedWorker {
             tagArrayList.add(((JLabel) c).getText());
         }
 
-	// ------------------
+        // ------------------
         // ordering results :
-	// ------------------
+        // ------------------
         String orderInput = (String) mainFrame.getSearchPanel().getSortComboBox().getSelectedItem();
         String order = "date";
         if(orderInput.equals("date")){
@@ -78,6 +80,9 @@ public class FindMessagesWorker extends SpecializedWorker {
         if(orderInput.equals("date insertion")){
             order = "insertDate";
         }
+        if(orderInput.equals("id")){
+            order = "id";
+        }
         order = order + " DESC ";
 
 
@@ -91,31 +96,56 @@ public class FindMessagesWorker extends SpecializedWorker {
         } catch (NumberFormatException nfe ){
             addError("Erreur champs nombre de résultats maximum par page");
             addError(nfe.toString());
+            return null;
         }
         int offset = (SearchPanel.getPageNumber()-1) * limit ;
 
+        // ---------------
         // Build request :
+        // ---------------
+        String sqlCountString = buildMessageRequest(
+                mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
+                fieldToSearch,// column name
+                mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
+                tagArrayList, // tags to search for
+                mainFrame.getSearchPanel().isPerUserSelection(),// user selection on/off
+                mainFrame.getSearchPanel().getUserName(), // username
+                order, // ordering field
+                limit, // limit
+                offset,
+                true); // offset
+
 
         String sqlFindString = buildMessageRequest(
                 mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
                 fieldToSearch,// column name
                 mainFrame.getSearchPanel().isOnlyUntagged(),// only tagged message
                 tagArrayList, // tags to search for
-                mainFrame.getSearchPanel().isPerUserSelection(),
-                mainFrame.getSearchPanel().getUserName(),
-                order,
+                mainFrame.getSearchPanel().isPerUserSelection(),// user selection on/off
+                mainFrame.getSearchPanel().getUserName(), // username
+                order, // ordering field
                 limit, // limit
-                offset); // offset
+                offset,// offset
+                false);
+
+
         log.info("sqlFindString "+sqlFindString);
+        log.info("sqlcountString "+sqlCountString);
 
         try {
+            PreparedStatement countStmt = pStatement(sqlCountString);
+            ResultSet countRs = countStmt.executeQuery();
+            int numberOfRows = countRs.getInt(1);
+           // setMaximum(numberOfRows);
+
             PreparedStatement pstmt = pStatement(sqlFindString);
             ResultSet rs = pstmt.executeQuery();
+            int progressCount = 0 ;
             while(rs.next()){
-
+                setProgress((int) (((++progressCount) * 100.0) / (numberOfRows + 1)));
                 // pick up tags
                 PreparedStatement tagsStatement =
-                        pStatement("SELECT tag FROM tags where msgid=? ORDER BY id ");
+                        pStatement("SELECT tag FROM tags where msgid=? ");
                 tagsStatement.setInt(1,rs.getInt(1));
                 ResultSet tagsResultSet = tagsStatement.executeQuery();
                 ArrayList<String> tags = new ArrayList<String>();
@@ -123,7 +153,9 @@ public class FindMessagesWorker extends SpecializedWorker {
 
                 // pick up attachments :
                 PreparedStatement attachStatement =
-                        pStatement("SELECT md5sum,name FROM attach WHERE msgid=? ");
+                        pStatement("SELECT attachref.md5sum,attachref.name FROM" +
+                                " attachref,attach " +
+                                "WHERE attachref.md5sum=attach.md5sum AND attach.msgid=? ");
                 attachStatement.setInt(1,rs.getInt(1));
                 ResultSet attachResultSet = attachStatement.executeQuery();
                 ArrayList<AttachmentSignature> attachmentSignatures = new ArrayList<AttachmentSignature>();
@@ -133,8 +165,6 @@ public class FindMessagesWorker extends SpecializedWorker {
                                     attachResultSet.getString(1),
                                     attachResultSet.getString(2)));
                 }
-
-
                 TextMessage me = new TextMessage(
                         rs.getInt(1),       // id
                         rs.getString(2),    // date
@@ -151,7 +181,6 @@ public class FindMessagesWorker extends SpecializedWorker {
                         tags,               // tags
                         attachmentSignatures);// attachments
                 mtm.add(me);
-
             }
         }
         catch (SQLException e){
@@ -164,7 +193,6 @@ public class FindMessagesWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-
         if(!isError()){
             mainFrame.getMessageTable().setModel(mtm);
             mainFrame.getMessageTable().revalidate();
@@ -195,7 +223,8 @@ public class FindMessagesWorker extends SpecializedWorker {
                                        String userName,
                                        String order,
                                        int limit,
-                                       int offset){
+                                       int offset,
+                                       boolean isForCount){ // if true , sql is a count request
         // -------
         // Header
         // -------
@@ -213,6 +242,8 @@ public class FindMessagesWorker extends SpecializedWorker {
                 "username," +
                 "insertdate " +
                 "FROM messages ";
+
+        if(isForCount) part1 = "SELECT COUNT(id) FROM messages ";
 
         // -----------------
         // Words selection :

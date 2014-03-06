@@ -30,7 +30,8 @@ public class CheckDatabaseWorker extends SpecializedWorker {
             PreparedStatement messageTableStmt = pStatement(
                     "CREATE TABLE IF NOT EXISTS messages("+
                             "id INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                            "date TEXT,author TEXT,"+
+                            "date TEXT," +
+                            "author TEXT,"+
                             "subject TEXT,"+
                             "recip TEXT,"+
                             "body TEXT,"+
@@ -39,25 +40,42 @@ public class CheckDatabaseWorker extends SpecializedWorker {
                             "cc TEXT,"+
                             "bcc TEXT,"+
                             "username TEXT,"+
-                            "insertDate TEXT)");
+                            "insertDate TEXT," +
+                            "UNIQUE(date,author))");
             messageTableStmt.execute();
 
+
+            PreparedStatement attachRefStmt = pStatement(
+                    "CREATE TABLE IF NOT EXISTS attachref ("+
+                            "md5sum TEXT PRIMARY KEY,"+
+                            "name TEXT,"+
+                            "size INTEGER)");
+            attachRefStmt.execute();
+
+
+
             PreparedStatement attachTableStmt = pStatement(
-            "CREATE TABLE IF NOT EXISTS attach ("+
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                    "msgid INTEGER,"+
-                    "name TEXT,"+
-                    "size INTEGER,"+
-                    "md5sum TEXT,"+
-                    "FOREIGN KEY(msgid) REFERENCES messages(id))");
+                    "CREATE TABLE IF NOT EXISTS attach("+
+                            "md5sum TEXT,"+
+                            "msgid INTEGER,"+
+                            "PRIMARY KEY(md5sum,msgid)," +
+                            "FOREIGN KEY(md5sum) REFERENCES attachref(id)," +
+                            "FOREIGN KEY(msgid) REFERENCES messages(id))");
             attachTableStmt.execute();
+
+            log.info("balise");
+
+            PreparedStatement tagsrefStmt = pStatement("CREATE TABLE IF NOT EXISTS tagsref("+
+                    "name TEXT PRIMARY KEY)");
+            tagsrefStmt.execute();
+
 
             PreparedStatement tagTableStmt = pStatement(
                     "CREATE TABLE IF NOT EXISTS tags("+
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT,"+
                             "msgid INTEGER,"+
                             "tag TEXT,"+
-                            "FOREIGN KEY(msgid) REFERENCES messages(id))");
+                            "FOREIGN KEY(msgid) REFERENCES messages(id),"+
+                            "FOREIGN KEY(tag) REFERENCES tagsref(tag))");
             tagTableStmt.execute();
 
 
@@ -75,8 +93,6 @@ public class CheckDatabaseWorker extends SpecializedWorker {
     @Override
     protected void done() {
         super.done();
-//        mainFrame.setTitle("base de données : "+mainFrame.databaseFile()+" || "+
-//                "pièces jointes : "+mainFrame.attachmentDirectory());
         mainFrame.updateMainTitle();
     }
 }

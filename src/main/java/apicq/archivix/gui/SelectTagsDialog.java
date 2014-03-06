@@ -68,19 +68,6 @@ public class SelectTagsDialog extends JDialog {
         @Override
         public void valueChanged(ListSelectionEvent e) {
 
-            //log.info(""+tagList.getSelectedValuesList()+" first "+e.getFirstIndex()+" last "+e.getLastIndex());
-            /*
-            selectedTagsPanel.removeAll();
-            for(Object tag:tagList.getSelectedValuesList()){
-                JLabel tagLabel = new JLabel(tag.toString());
-                tagLabel.setOpaque(true);
-                tagLabel.setBackground(Color.WHITE);
-                tagLabel.setBorder(new LineBorder(Color.black));
-                selectedTagsPanel.add(tagLabel);
-            }
-            SelectTagsDialog.this.validate();
-            SelectTagsDialog.this.repaint();
-            */
             boolean tagIsAlreadyInPanel = false ;
             String clickedTag = (String) tagList.getSelectedValue();
             log.info("clicked tag : "+clickedTag);
@@ -112,7 +99,6 @@ public class SelectTagsDialog extends JDialog {
                             final boolean searchPanelMode) {
         setModal(true);
         setLayout(new MigLayout("","[][grow][]","[][grow][][]")); // layout,column,row
-      //  setLayout(new MigLayout("","[][grow][]","[][grow 95][grow 5][]")); // layout,column,row
         this.mainFrame = mainFrame ;
 
         // Line 1
