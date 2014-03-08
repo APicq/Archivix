@@ -20,6 +20,7 @@ public class SearchPanel extends JPanel {
     private final JComboBox<String> sortComboBox;
     private final MainFrame mainFrame ;
     private final JLabel pageLabel;
+    private final JLabel userLabel;
 
     // if true, only untagged messages are searched
     private boolean onlyUntagged = false ;
@@ -53,6 +54,10 @@ public class SearchPanel extends JPanel {
             this.pageNumber = pageNumber;
             pageLabel.setText("page : "+pageNumber);
         }
+    }
+
+    public void setuserLabel(String s){
+        userLabel.setText(s);
     }
 
     public JComboBox<String> getSortComboBox() {
@@ -129,10 +134,18 @@ public class SearchPanel extends JPanel {
         JButton searchWordsButton = new JButton("Rechercher");
         searchWordsButton.setActionCommand("findMessagesAction");
         searchWordsButton.addActionListener(mainFrame);
-        add(searchWordsButton, "wrap");
+        add(searchWordsButton, "");
+
+        // user selection :
+        JButton userSelectionButton = new JButton("Utilisateur");
+        userSelectionButton.setActionCommand("findUserAction");
+        userSelectionButton.addActionListener(mainFrame);
+        add(userSelectionButton, "");
+
+        userLabel = new JLabel("Tous");
+        add(userLabel,"wrap");
 
         // Line 2
-        // todo : actions from mainFrame here.
         // Button to choose tags :
         JButton selectTagsButton = new JButton("Tags");
         selectTagsButton.setActionCommand("selectTagsAction");
@@ -150,7 +163,7 @@ public class SearchPanel extends JPanel {
         JPanel sortingPanel = new JPanel(new MigLayout());
         sortingPanel.add(new JLabel("Trier par :"), "");
         sortComboBox = new JComboBox<String>(
-                new String[]{"date","sujet","destinataires","auteur","date insertion"});
+                new String[]{"date","sujet","destinataires","auteur","date insertion","id"});
         sortingPanel.add(sortComboBox, "");
 
         JButton previousPageButton = new JButton("Page précédente");
@@ -166,13 +179,6 @@ public class SearchPanel extends JPanel {
         nextPageButton.addActionListener(mainFrame);
         sortingPanel.add(nextPageButton, "");
 
-   /*     NumberFormat format = NumberFormat.getInstance();
-        NumberFormatter formatter = new NumberFormatter(format);
-        formatter.setValueClass(Integer.class);
-        formatter.setMinimum(1);
-        formatter.setMaximum(999999);
-        formatter.setCommitsOnValidEdit(true);*/
-//        maxResultNumberField = new JFormattedTextField(formatter);
         maxResultNumberField = new JTextField();
         maxResultNumberField.setColumns(6);
         maxResultNumberField.setText("999999");
@@ -181,11 +187,7 @@ public class SearchPanel extends JPanel {
         add(sortingPanel,"span,grow");
 
 
-        // user selection :
-        JButton userSelectionButton = new JButton("Utilisateur");
-        userSelectionButton.setActionCommand("findUserAction");
-        userSelectionButton.addActionListener(mainFrame);
-        add(userSelectionButton, "cell 5 0");
+
     }
 
 
