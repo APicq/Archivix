@@ -50,15 +50,18 @@ public class SelectUserDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if(allUsersBox.isSelected()){
                     mainFrame.getSearchPanel().setPerUserSelection(false);
+                    mainFrame.getSearchPanel().setuserLabel("Tous");
                 }
                 else {
                     if(userList.getSelectedValue()!=null){
                         mainFrame.getSearchPanel().setPerUserSelection(true);
                         mainFrame.getSearchPanel().setUserName(userList.getSelectedValue());
+                        mainFrame.getSearchPanel().setuserLabel(userList.getSelectedValue());
                     }
                 }
                 setVisible(false);
-                debug();
+                mainFrame.revalidate();
+                mainFrame.repaint();
                 return;
             }
         });
@@ -69,7 +72,6 @@ public class SelectUserDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                debug();
             }
         });
         add(cancelButton,"");
@@ -77,9 +79,5 @@ public class SelectUserDialog extends JDialog {
         pack();
         setVisible(true);
     } // constructor
-
-    private void debug(){
-        log.info("UserName "+mainFrame.getSearchPanel().getUserName());
-        log.info("isPerUserSelection "+mainFrame.getSearchPanel().isPerUserSelection());
-    }
 }
+
