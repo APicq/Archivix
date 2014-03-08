@@ -136,7 +136,6 @@ public class FindMessagesWorker extends SpecializedWorker {
             ResultSet countRs = countStmt.executeQuery();
             int numberOfRows = countRs.getInt(1);
             setMaximum(100);
-            int numberOfRows = countRs.getInt(1);
             if( numberOfRows>limit ) numberOfRows=limit ;
 
             PreparedStatement pstmt = pStatement(sqlFindString);
