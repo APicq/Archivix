@@ -114,6 +114,8 @@ public class FindMessagesWorker extends SpecializedWorker {
                 limit, // limit
                 offset,
                 true); // offset
+                offset,// offset
+                true);
 
 
         String sqlFindString = buildMessageRequest(
@@ -136,7 +138,9 @@ public class FindMessagesWorker extends SpecializedWorker {
             PreparedStatement countStmt = pStatement(sqlCountString);
             ResultSet countRs = countStmt.executeQuery();
             int numberOfRows = countRs.getInt(1);
-           // setMaximum(numberOfRows);
+            setMaximum(100);
+            int numberOfRows = countRs.getInt(1);
+            if( numberOfRows>limit ) numberOfRows=limit ;
 
             PreparedStatement pstmt = pStatement(sqlFindString);
             ResultSet rs = pstmt.executeQuery();
@@ -334,7 +338,8 @@ public class FindMessagesWorker extends SpecializedWorker {
         // -------
         String part6 = " LIMIT " + limit + " OFFSET " + offset  ;
 
-        return part1234 + part5 + part6 ;
+        if(isForCount) return part1234 ;
+        else return part1234 + part5 + part6 ;
     }
 
 }
