@@ -23,8 +23,9 @@ public class MessageTableModel extends AbstractTableModel {
     public static final int USERNAMECOL     = 10;
     public static final int INSERTDATECOL   = 11;
     public static final int TAGSCOL         = 12;
+    public static final int LINENUMBER      = 13;
 
-    public static final int SUMCOL          = 13; // number of columns
+    public static final int SUMCOL          = 14; // number of columns
 
     // messageElement container
     private ArrayList<TextMessage> messages ;
@@ -101,6 +102,8 @@ public class MessageTableModel extends AbstractTableModel {
                     tagArray[i]=messages.get(rowIndex).tags().get(i);
                 }
                 return SpecializedWorker.stringify("", "", " || ", tagArray);
+            case LINENUMBER :
+                return ""+rowIndex ;
 
             default :
                 return "ERROR" ;
