@@ -105,6 +105,8 @@ public class MainFrame extends JFrame implements ActionListener {
             MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
         if(prop.getProperty("tagscol","yes").equals("no"))
             MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
+        if(prop.getProperty("linenumbercol","yes").equals("no"))
+            MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
 
 
         // Disable renaming in file chooser :
@@ -353,6 +355,12 @@ public class MainFrame extends JFrame implements ActionListener {
             }
             else {
                 prop.setProperty("tagscol","no");
+            }
+            if(MessageColumnFactory.isVisible(MessageTableModel.LINENUMBERCOL)){
+                prop.setProperty("linenumbercol","yes");
+            }
+            else {
+                prop.setProperty("linenumbercol","no");
             }
 
             try {

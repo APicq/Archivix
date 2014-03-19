@@ -2,11 +2,8 @@ package apicq.archivix.gui;
 
 import apicq.archivix.tools.FindMessagesWorker;
 import net.miginfocom.swing.MigLayout;
-import sun.applet.Main;
 
 import javax.swing.*;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -100,6 +97,11 @@ public class VisibleColumnDialog extends JDialog {
                 MessageColumnFactory.isVisible(MessageTableModel.TAGSCOL));
         add(tagsCheckBox,"wrap");
 
+        final JCheckBox lineNumberCheckBox = new JCheckBox(
+                "Numero des lignes",
+                MessageColumnFactory.isVisible(MessageTableModel.LINENUMBERCOL));
+        add(lineNumberCheckBox,"wrap");
+
         //-----------
         // OK Button :
         //-----------
@@ -187,6 +189,11 @@ public class VisibleColumnDialog extends JDialog {
                 }
                 else{
                     MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
+                }
+                if(lineNumberCheckBox.isSelected()){
+                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,true);
+                } else {
+                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
                 }
                 new FindMessagesWorker(mainFrame).start();
                 setVisible(false);

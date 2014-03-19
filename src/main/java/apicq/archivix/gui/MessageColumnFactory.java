@@ -27,6 +27,7 @@ public class MessageColumnFactory extends ColumnFactory {
             true, //USERNAMECOL
             true, //INSERTDATECOL
             true, //TAGSCOL
+            true, //LINENUMBERCOL
     };
 
     public static void setVisibility(int index,boolean isVisible){
@@ -92,6 +93,10 @@ public class MessageColumnFactory extends ColumnFactory {
                 return tce ;
             case MessageTableModel.TAGSCOL :
                 tce.setTitle("Tags");
+                tce.setVisible(visibility[modelIndex]);
+                return tce ;
+            case MessageTableModel.LINENUMBERCOL:
+                tce.setTitle("Numéro de ligne");
                 tce.setVisible(visibility[modelIndex]);
                 return tce ;
             default:
