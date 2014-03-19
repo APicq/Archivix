@@ -96,7 +96,7 @@ public class MessageColumnFactory extends ColumnFactory {
                 tce.setVisible(visibility[modelIndex]);
                 return tce ;
             case MessageTableModel.LINENUMBERCOL:
-                tce.setTitle("Numéro de ligne");
+                tce.setTitle("Ligne");
                 tce.setVisible(visibility[modelIndex]);
                 return tce ;
             default:
