@@ -1,17 +1,12 @@
 package apicq.archivix.gui;
 
 import net.miginfocom.swing.MigLayout;
-import org.jdesktop.swingx.JXLabel;
-import sun.applet.Main;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Iterator;
 import java.util.logging.Logger;
 

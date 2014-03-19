@@ -1,6 +1,5 @@
 package apicq.archivix.gui;
 
-import apicq.archivix.tools.FindUserWorker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
