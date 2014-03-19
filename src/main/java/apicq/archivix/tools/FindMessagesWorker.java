@@ -112,8 +112,8 @@ public class FindMessagesWorker extends SpecializedWorker {
                 mainFrame.getSearchPanel().getUserName(), // username
                 order, // ordering field
                 limit, // limit
-                offset,
-                true); // offset
+                offset,// offset
+                true);
  
         String sqlFindString = buildMessageRequest(
                 mainFrame.getSearchPanel().searchWordsTextField().getText(),//words to search
