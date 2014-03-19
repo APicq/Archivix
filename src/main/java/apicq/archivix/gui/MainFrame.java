@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class MainFrame extends JFrame implements ActionListener {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    public static final String archivixVersion = "20140304_1";
+    public static final String archivixVersion = "20140319_1";
 
     // Full path to sqlite database :
     private String dabataseFile = "";
