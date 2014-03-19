@@ -98,7 +98,7 @@ public class VisibleColumnDialog extends JDialog {
         add(tagsCheckBox,"wrap");
 
         final JCheckBox lineNumberCheckBox = new JCheckBox(
-                "Numero des lignes",
+                "Numéro des lignes",
                 MessageColumnFactory.isVisible(MessageTableModel.LINENUMBERCOL));
         add(lineNumberCheckBox,"wrap");
 

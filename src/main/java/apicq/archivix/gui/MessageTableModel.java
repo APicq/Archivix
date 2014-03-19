@@ -103,7 +103,7 @@ public class MessageTableModel extends AbstractTableModel {
                 }
                 return SpecializedWorker.stringify("", "", " || ", tagArray);
             case LINENUMBERCOL:
-                return ""+rowIndex ;
+                return ""+(rowIndex+1) ;
 
             default :
                 return "ERROR" ;
