@@ -1,17 +1,23 @@
-enregistrer largeur colonnes
-cosmétique table :
-couleur des lignes
-date en gras
-sujet en gras
-Empecher auto-tri des lignes
+* enregistrer largeur colonnes
+** cosmétique table :
+*** couleur des lignes
+*** date en gras
+*** sujet en gras
+*** Empecher auto-tri des lignes
+*** Messages non taggéss en jaune
 
 
-SQL:
-refaire sqlfindmessages avec tag in ('tag1' 'tag2' 'tag3' )+moins de select (pas de select par message)
-changer schema db :
-
-CREATE TABLE tags(msgid INTEGER,tag TEXT,FOREIGN KEY(msgid) REFERENCES messages(id),FOREIGN KEY(tag) REFERENCES tagsref(tag)) avec unique(msgid,tag)
+* SQL:
+** refaire sqlfindmessages avec tag in ('tag1' 'tag2' 'tag3' )+moins de select (pas de select par message)
+** changer schema db :
+** CREATE TABLE tags(msgid INTEGER,tag TEXT,FOREIGN KEY(msgid) REFERENCES messages(id),FOREIGN KEY(tag) REFERENCES tagsref(tag)) avec unique(msgid,tag)
 cf : http://tagging.pui.ch/post/37027745720/tags-database-schemas
 
-bug:
-sauvegarder plusieurs messages : erreurs avec pj
+* Ajout d'une option :
+** Changer findMessages : recupere la string centrée sur le mot clé pour le corps, et Récupère 100 caractères du corps du message au maximum
+
+* fcontionnalités complexes :
+** Autorefresh liste toutes les secondes.
+
+* bug:
+sauvegarder plusieurs messages : erreurs avec pièces jointes
