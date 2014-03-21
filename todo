@@ -11,6 +11,7 @@ refaire sqlfindmessages avec tag in ('tag1' 'tag2' 'tag3' )+moins de select (pas
 changer schema db :
 
 CREATE TABLE tags(msgid INTEGER,tag TEXT,FOREIGN KEY(msgid) REFERENCES messages(id),FOREIGN KEY(tag) REFERENCES tagsref(tag)) avec unique(msgid,tag)
+cf : http://tagging.pui.ch/post/37027745720/tags-database-schemas
 
 bug:
 sauvegarder plusieurs messages : erreurs avec pj
