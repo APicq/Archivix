@@ -1,0 +1,16 @@
+enregistrer largeur colonnes
+cosmétique table :
+couleur des lignes
+date en gras
+sujet en gras
+Empecher auto-tri des lignes
+
+
+SQL:
+refaire sqlfindmessages avec tag in ('tag1' 'tag2' 'tag3' )+moins de select (pas de select par message)
+changer schema db :
+
+CREATE TABLE tags(msgid INTEGER,tag TEXT,FOREIGN KEY(msgid) REFERENCES messages(id),FOREIGN KEY(tag) REFERENCES tagsref(tag)) avec unique(msgid,tag)
+
+bug:
+sauvegarder plusieurs messages : erreurs avec pj
