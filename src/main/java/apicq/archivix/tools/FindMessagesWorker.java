@@ -1,6 +1,7 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.*;
+import apicq.archivix.gui.table.MailTableModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,8 @@ import java.util.logging.Logger;
 public class FindMessagesWorker extends SpecializedWorker {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    private final MessageTableModel mtm ;
+
+    //private final MailTableModel mtm ;
 
     /**
      * Constructor
@@ -27,13 +29,16 @@ public class FindMessagesWorker extends SpecializedWorker {
      */
     public FindMessagesWorker(MainFrame mainFrame) {
         super(mainFrame, "Recherche des messages en cours");
-        mtm = new MessageTableModel();
+        //mtm = new MailTableModel();
     }
 
 
 
     @Override
     protected Void doInBackground() throws Exception {
+
+        // First, clear all previous data from the table :
+        mainFrame.getMessageTable().clearMessages();
 
         //  where to search for words in body, subject, etc...
         String fieldToSearch = (String) mainFrame.getSearchPanel().getFieldComboBox().getSelectedItem();
@@ -180,7 +185,7 @@ public class FindMessagesWorker extends SpecializedWorker {
                         rs.getString(12),   // insertdate
                         tags,               // tags
                         attachmentSignatures);// attachments
-                mtm.add(me);
+                mainFrame.getMessageTable().addMessage(me);
             }
         }
         catch (SQLException e){
@@ -194,9 +199,10 @@ public class FindMessagesWorker extends SpecializedWorker {
     protected void done() {
         super.done();
         if(!isError()){
-            mainFrame.getMessageTable().setModel(mtm);
+            log.info("pref Width ATTACHCOL :"+mainFrame.getMessageTable().getColumn(MailTableModel.ATTACHCOL_NAME).getPreferredWidth());
             mainFrame.getMessageTable().revalidate();
             mainFrame.getMessageTable().repaint();
+            log.info("pref Width ATTACHCOL :"+mainFrame.getMessageTable().getColumn(MailTableModel.ATTACHCOL_NAME).getPreferredWidth());
         }
     }
 
