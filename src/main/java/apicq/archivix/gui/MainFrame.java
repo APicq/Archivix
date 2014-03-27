@@ -1,5 +1,6 @@
 package apicq.archivix.gui;
 
+import apicq.archivix.gui.table.MailTable;
 import apicq.archivix.tools.*;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.table.ColumnFactory;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 public class MainFrame extends JFrame implements ActionListener {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    public static final String archivixVersion = "20140319_1";
+    public static final String archivixVersion = "Test_0327_1";
 
     // Full path to sqlite database :
     private String dabataseFile = "";
@@ -28,8 +29,8 @@ public class MainFrame extends JFrame implements ActionListener {
     public String attachmentDirectory() {return attachmentDirectory;}
 
     // JTable to print messages :
-    private final MessageTable messageTable ;
-    public MessageTable getMessageTable(){ return messageTable ;}
+    private final MailTable messageTable ;
+    public MailTable getMessageTable(){ return messageTable ;}
 
     // Panel with buttons, to search elements
     private final SearchPanel searchPanel;
@@ -138,9 +139,6 @@ public class MainFrame extends JFrame implements ActionListener {
         quitItem.addActionListener(this);
         fileMenu.add(quitItem);
 
-
-
-
         menuBar.add(fileMenu);
 
         JMenu configurationMenu = new JMenu("Configuration");
@@ -175,7 +173,7 @@ public class MainFrame extends JFrame implements ActionListener {
         // ----------
         searchPanel = new SearchPanel(this);
         add(searchPanel, "wrap");
-        messageTable = new MessageTable(this);
+        messageTable = new MailTable(this);
 
 
         JScrollPane messageListScroller = new JScrollPane(messageTable);

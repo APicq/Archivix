@@ -1,5 +1,7 @@
 package apicq.archivix.gui;
 
+import apicq.archivix.gui.table.MailTable;
+import apicq.archivix.gui.table.MailTableModel;
 import apicq.archivix.tools.FindMessagesWorker;
 import net.miginfocom.swing.MigLayout;
 
@@ -14,6 +16,7 @@ import java.util.logging.Logger;
 public class VisibleColumnDialog extends JDialog {
 
     public static final Logger log = Logger.getLogger("Archivix");
+
     private final MainFrame mainFrame ;
 
 
@@ -25,6 +28,9 @@ public class VisibleColumnDialog extends JDialog {
 
         super(mainFrame,true);
         this.mainFrame = mainFrame ;
+
+        // pick up all visible Columns :
+
         setTitle("Colonnes visibles");
         setLayout(new MigLayout());
         add(new JLabel("Choisissez les colonnes visibles :"),"wrap");
@@ -32,74 +38,77 @@ public class VisibleColumnDialog extends JDialog {
         // ---------------------
         // All the check boxes :
         // ---------------------
+        final MailTable mailTable = mainFrame.getMessageTable();
+
         final JCheckBox idCheckBox = new JCheckBox(
-                "clé primaire",
-                MessageColumnFactory.isVisible(MessageTableModel.IDCOL));
-        add(idCheckBox,"wrap");
+                "clé primaire (ID)",
+                mailTable.isVisibleColumn(MailTableModel.IDCOL_NAME));
+        log.info("ID visible : "+mailTable.isVisibleColumn(MailTableModel.IDCOL_NAME));
+        add(idCheckBox, "wrap");
 
         final JCheckBox dateCheckBox = new JCheckBox(
                 "Date et heure",
-                MessageColumnFactory.isVisible(MessageTableModel.DATECOL));
+                mailTable.isVisibleColumn(MailTableModel.DATECOL_NAME));
         add(dateCheckBox,"wrap");
 
         final JCheckBox authorCheckBox = new JCheckBox(
                 "Auteur",
-                MessageColumnFactory.isVisible(MessageTableModel.AUTHORCOL));
+                mailTable.isVisibleColumn(MailTableModel.AUTHORCOL_NAME));
         add(authorCheckBox,"wrap");
 
         final JCheckBox subjectCheckBox = new JCheckBox(
                 "Sujet du message",
-                MessageColumnFactory.isVisible(MessageTableModel.SUBJECTCOL));
+                mailTable.isVisibleColumn(MailTableModel.SUBJECTCOL_NAME));
         add(subjectCheckBox,"wrap");
 
         final JCheckBox recipCheckBox = new JCheckBox(
                 "Destinataires",
-                MessageColumnFactory.isVisible(MessageTableModel.RECIPCOL));
+                mailTable.isVisibleColumn(MailTableModel.RECIPCOL_NAME) );
         add(recipCheckBox,"wrap");
 
         final JCheckBox bodyCheckBox = new JCheckBox(
                 "Corps du message",
-                MessageColumnFactory.isVisible(MessageTableModel.BODYCOL));
+                mailTable.isVisibleColumn(MailTableModel.BODYCOL_NAME));
         add(bodyCheckBox,"wrap");
 
         final JCheckBox attachCheckBox = new JCheckBox(
                 "nombre de pièces jointes",
-                MessageColumnFactory.isVisible(MessageTableModel.ATTACHCOL));
+                mailTable.isVisibleColumn(MailTableModel.ATTACHCOL_NAME) );
         add(attachCheckBox,"wrap");
 
         final JCheckBox mailRecipCheckBox = new JCheckBox(
                 "Destinataires (liste complète)",
-                MessageColumnFactory.isVisible(MessageTableModel.MAILRECIPCOL));
+                mailTable.isVisibleColumn(MailTableModel.MAILRECIPCOL_NAME));
         add(mailRecipCheckBox,"wrap");
 
         final JCheckBox ccCheckBox = new JCheckBox(
                 "Champs cc",
-                MessageColumnFactory.isVisible(MessageTableModel.CCCOL));
+                mailTable.isVisibleColumn(MailTableModel.CCCOL_NAME));
         add(ccCheckBox,"wrap");
 
         final JCheckBox bccCheckBox = new JCheckBox(
                 "Champs bcc",
-                MessageColumnFactory.isVisible(MessageTableModel.BCCCOL));
+                mailTable.isVisibleColumn(MailTableModel.BCCCOL_NAME) );
         add(bccCheckBox,"wrap");
 
         final JCheckBox usernameCheckBox = new JCheckBox(
                 "Nom d'utilisateur",
-                MessageColumnFactory.isVisible(MessageTableModel.USERNAMECOL));
+                mailTable.isVisibleColumn(MailTableModel.USERNAMECOL_NAME) );
         add(usernameCheckBox,"wrap");
 
         final JCheckBox insertDateCheckBox = new JCheckBox(
                 "Date d'insertion",
-                MessageColumnFactory.isVisible(MessageTableModel.INSERTDATECOL));
+                mailTable.isVisibleColumn(MailTableModel.INSERTDATECOL_NAME) );
         add(insertDateCheckBox,"wrap");
 
         final JCheckBox tagsCheckBox = new JCheckBox(
                 "Tags",
-                MessageColumnFactory.isVisible(MessageTableModel.TAGSCOL));
+                mailTable.isVisibleColumn(MailTableModel.TAGSCOL_NAME) );
         add(tagsCheckBox,"wrap");
 
         final JCheckBox lineNumberCheckBox = new JCheckBox(
                 "Numéro des lignes",
-                MessageColumnFactory.isVisible(MessageTableModel.LINENUMBERCOL));
+                mailTable.isVisibleColumn(MailTableModel.LINENUMBERCOL_NAME) );
         add(lineNumberCheckBox,"wrap");
 
         //-----------
@@ -109,91 +118,123 @@ public class VisibleColumnDialog extends JDialog {
         OKButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(idCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,true);
+
+                mailTable.resetColumns();
+
+                if(!idCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,true);
+                    log.info("idCheckBox non selected");
+                    log.info("table id : "+mailTable.getColumn(MailTableModel.IDCOL_NAME).getIdentifier());
+//                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.IDCOL_NAME));
+                    mailTable.removeColumn(mailTable.getColumn("ID"));
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
                 }
 
-                if(dateCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,true);
+                if(!dateCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.DATECOL_NAME));
 
                 }
                 else {
-                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
 
                 }
-                if(authorCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,true);
+                if(!authorCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,true)
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.AUTHORCOL_NAME));
+                    ;
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
                 }
-                if(subjectCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,true);
-                }
-                else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
-                }
-                if(recipCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,true);
+                if(!subjectCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.SUBJECTCOL_NAME));
+
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
                 }
-                if(bodyCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,true);
-                }
-                else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
-                }
-                if(attachCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,true);
+                if(!recipCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.RECIPCOL_NAME));
+
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
                 }
-                if(mailRecipCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,true);
-                }
-                else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
-                }
-                if(ccCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,true);
+                if(!bodyCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.BODYCOL_NAME));
+
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
                 }
-                if(bccCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,true);
-                }
-                else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
-                }
-                if(usernameCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,true);
+                if(!attachCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.ATTACHCOL_NAME));
+
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
                 }
-                if(insertDateCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,true);
-                }
-                else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
-                }
-                if(tagsCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,true);
+                if(!mailRecipCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.MAILRECIPCOL_NAME));
+
                 }
                 else{
-                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
                 }
-                if(lineNumberCheckBox.isSelected()){
-                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,true);
+                if(!ccCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.CCCOL_NAME));
+
+                }
+                else{
+//                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
+                }
+                if(!bccCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.BCCCOL_NAME));
+
+                }
+                else{
+//                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
+                }
+                if(!usernameCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.USERNAMECOL_NAME));
+
+                }
+                else{
+//                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
+                }
+                if(!insertDateCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.INSERTDATECOL_NAME));
+
+                }
+                else{
+//                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
+                }
+                if(!tagsCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.TAGSCOL_NAME));
+
+                }
+                else{
+//                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
+                }
+                if(!lineNumberCheckBox.isSelected()){
+//                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,true);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.LINENUMBERCOL_NAME));
+
                 } else {
-                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
+//                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
                 }
                 new FindMessagesWorker(mainFrame).start();
                 setVisible(false);
