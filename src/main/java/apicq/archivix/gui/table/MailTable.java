@@ -89,14 +89,12 @@ public class MailTable extends JTable {
                     ShowMessageDialog smd = new ShowMessageDialog(
                             mainFrame,
                             mtm.getMessages().get(rowIndex));
-
                     smd.setLocationRelativeTo(null);
                     smd.setVisible(true);
                 }
             }
 
         });
-
     }
 
     /**
