@@ -5,11 +5,14 @@ import apicq.archivix.tools.SpecializedWorker;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  *  TableModel for MailTable
  */
 public class MailTableModel extends AbstractTableModel {
+
+    public static final Logger log = Logger.getLogger("Archivix");
 
     // Name of columns
     public static final String IDCOL_NAME         = "ID" ;
@@ -23,8 +26,26 @@ public class MailTableModel extends AbstractTableModel {
     public static final String CCCOL_NAME         = "CC" ;
     public static final String BCCCOL_NAME        = "BCC" ;
     public static final String USERNAMECOL_NAME   = "Utilisateur" ;
-    public static final String INSERTDATECOL_NAME = "Tags" ;
-    public static final String TAGSCOL_NAME       = "Ligne" ;
+    public static final String INSERTDATECOL_NAME = "Date d'insertion" ;
+    public static final String TAGSCOL_NAME       = "Tags" ;
+    public static final String LINENUMBERCOL_NAME = "Ligne" ;
+
+    public static final String[] COL_NAMES = {
+            "ID" ,			// 0
+            "Date" ,			// 1
+            "Auteur" ,			// 2
+            "Sujet" ,			// 3
+            "Destinataires" ,		// 4
+            "Texte" ,			// 5
+            "pièces jointes" ,		// 6
+            "Tous les destinataires" ,	// 7
+            "CC" ,			// 8
+            "BCC" ,			// 9
+            "Utilisateur" ,		// 10
+            "Date d'insertion",		// 11
+            "Tags" ,			// 12
+            "Ligne"			// 13
+    };
 
     //order of columns
     public static final int IDCOL_ORDER         = 0;
@@ -45,8 +66,15 @@ public class MailTableModel extends AbstractTableModel {
     public static final int SUMCOL		= 14;
 
     // Data container :
-    private ArrayList<TextMessage> messages ;
+    private final ArrayList<TextMessage> messages ;
 
+    /**
+     * Getter
+     * @return the array of messages
+     */
+    public ArrayList<TextMessage> getMessages() {
+        return messages;
+    }
 
     /**
      * Constructor
@@ -123,21 +151,45 @@ public class MailTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
+        return COL_NAMES[column];
+        /*
         switch(column){
-            case IDCOL_ORDER : return IDCOL_NAME ;
-            case DATECOL_ORDER : return DATECOL_NAME ;
-            case AUTHORCOL_ORDER : return AUTHORCOL_NAME ;
-            case SUBJECTCOL_ORDER : return SUBJECTCOL_NAME ;
-            case RECIPCOL_ORDER : return RECIPCOL_NAME ;
-            case BODYCOL_ORDER : return BODYCOL_NAME ;
-            case ATTACHCOL_ORDER : return ATTACHCOL_NAME ;
-            case MAILRECIPCOL_ORDER : return MAILRECIPCOL_NAME ;
-            case CCCOL_ORDER : return CCCOL_NAME ;
-            case BCCCOL_ORDER : return BCCCOL_NAME ;
-            case USERNAMECOL_ORDER : return USERNAMECOL_NAME ;
-            case INSERTDATECOL_ORDER : return INSERTDATECOL_NAME ;
-            case TAGSCOL_ORDER : return TAGSCOL_NAME ;
-            default:return "ERROR";
-        }
+            case IDCOL_ORDER		    : return IDCOL_NAME ;
+            case DATECOL_ORDER		    : return DATECOL_NAME ;
+            case AUTHORCOL_ORDER	    : return AUTHORCOL_NAME ;
+            case SUBJECTCOL_ORDER   	: return SUBJECTCOL_NAME ;
+            case RECIPCOL_ORDER		    : return RECIPCOL_NAME ;
+            case BODYCOL_ORDER	    	: return BODYCOL_NAME ;
+            case ATTACHCOL_ORDER	    : return ATTACHCOL_NAME ;
+            case MAILRECIPCOL_ORDER	    : return MAILRECIPCOL_NAME ;
+            case CCCOL_ORDER	    	: return CCCOL_NAME ;
+            case BCCCOL_ORDER	    	: return BCCCOL_NAME ;
+            case USERNAMECOL_ORDER	    : return USERNAMECOL_NAME ;
+            case INSERTDATECOL_ORDER	: return INSERTDATECOL_NAME ;
+            case TAGSCOL_ORDER	    	: return TAGSCOL_NAME ;
+            default		            	: return "ERROR";
+        }*/
     }
+
+
+    /**
+     * Getter
+     * @param index
+     * @return the TextMessage at index [index]
+     */
+   /*
+    public TextMessage get(int index){
+        if( index <0 || index>=messages.size() ) return null ;
+        return messages.get(index);
+    }*/
+
+    /**
+     * adds a new TextMessage
+     * @param me : the TextMessage to add
+     */
+    /*
+    public void add(TextMessage me){
+        if(me!=null) messages.add(me);
+    }
+    */
 }
