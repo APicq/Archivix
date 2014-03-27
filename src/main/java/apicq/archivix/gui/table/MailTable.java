@@ -1,12 +1,13 @@
 package apicq.archivix.gui.table;
 
 import apicq.archivix.gui.MainFrame;
+import apicq.archivix.gui.ShowMessageDialog;
 import apicq.archivix.gui.TextMessage;
-import org.apache.poi.hslf.model.Table;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.logging.Logger;
@@ -28,6 +29,9 @@ public class MailTable extends JTable {
     // mainFrame frame, used for event management.
     private final MainFrame mainFrame ;
 
+    // The pop up menu :
+    private final JPopupMenu popupMenu ;
+
 
 
 
@@ -35,10 +39,12 @@ public class MailTable extends JTable {
      * Constructor
      * @param mainFrame
      */
-    public MailTable(MainFrame mainFrame){
+    public MailTable(final MainFrame mainFrame){
 
         this.mainFrame = mainFrame ;
         setModel(new MailTableModel());
+
+        // prevents column moves :
         getTableHeader().setReorderingAllowed(false);
 
         // store all columns :
@@ -46,8 +52,51 @@ public class MailTable extends JTable {
         Enumeration<TableColumn> col = getColumnModel().getColumns();
         while(col.hasMoreElements()) columnIdents.add(col.nextElement());
 
-        //test : OK
-        //getColumn(MailTableModel.ATTACHCOL_NAME).setPreferredWidth(500);
+        // Menu definition and actions :
+        JMenuItem addNewTagItem = new JMenuItem("Ajouter un nouveau tag");
+        addNewTagItem.setActionCommand("addNewTagAction");
+        addNewTagItem.addActionListener(mainFrame);
+
+
+        JMenuItem modifyTagsItem = new JMenuItem("Modifier les tags");
+        modifyTagsItem.setActionCommand("modifyTagsAction");
+        modifyTagsItem.addActionListener(mainFrame);
+
+        JMenuItem deleteMessagesItem = new JMenuItem("Effacer le(s) message(s)");
+        deleteMessagesItem.setActionCommand("deleteMessagesAction");
+        deleteMessagesItem.addActionListener(mainFrame);
+
+        JMenuItem saveMessagesItem = new JMenuItem("Sauvegarder le(s) message(s)");
+        saveMessagesItem.setActionCommand("createReportAction");
+        saveMessagesItem.addActionListener(mainFrame);
+
+        popupMenu = new JPopupMenu("Choisissez une action sur le(s) message(s)");
+        popupMenu.add(addNewTagItem);
+        popupMenu.add(modifyTagsItem);
+        popupMenu.add(deleteMessagesItem);
+        popupMenu.add(saveMessagesItem);
+
+        // Right-click : menu appears
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == e.BUTTON3 && getSelectedRow() != -1) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+                if(e.getClickCount()==2){
+                    int rowIndex = getSelectedRow();
+                    MailTableModel mtm = (MailTableModel) getModel() ;
+                    ShowMessageDialog smd = new ShowMessageDialog(
+                            mainFrame,
+                            mtm.getMessages().get(rowIndex));
+
+                    smd.setLocationRelativeTo(null);
+                    smd.setVisible(true);
+                }
+            }
+
+        });
+
     }
 
     /**
@@ -83,6 +132,4 @@ public class MailTable extends JTable {
         MailTableModel mtm = (MailTableModel) getModel() ;
         mtm.getMessages().add(tm);
     }
-
-
 }

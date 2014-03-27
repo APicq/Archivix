@@ -1,14 +1,11 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageTableModel;
 import org.sqlite.SQLiteErrorCode;
 
 import javax.swing.*;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * Created by pic on 2/23/14.

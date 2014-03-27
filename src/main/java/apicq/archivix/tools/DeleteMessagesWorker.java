@@ -1,7 +1,6 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageTableModel;
 
 import javax.swing.*;
 import java.io.File;

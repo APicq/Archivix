@@ -123,13 +123,10 @@ public class VisibleColumnDialog extends JDialog {
 
                 if(!idCheckBox.isSelected()){
 //                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,true);
-                    log.info("idCheckBox non selected");
-                    log.info("table id : "+mailTable.getColumn(MailTableModel.IDCOL_NAME).getIdentifier());
+                    //log.info("idCheckBox non selected");
+                    //log.info("table id : "+mailTable.getColumn(MailTableModel.IDCOL_NAME).getIdentifier());
 //                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.IDCOL_NAME));
-                    mailTable.removeColumn(mailTable.getColumn("ID"));
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
+                    mailTable.removeColumn(mailTable.getColumn(MailTableModel.IDCOL_NAME));
                 }
 
                 if(!dateCheckBox.isSelected()){
@@ -137,104 +134,45 @@ public class VisibleColumnDialog extends JDialog {
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.DATECOL_NAME));
 
                 }
-                else {
-//                    MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
-
-                }
                 if(!authorCheckBox.isSelected()){
 //                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,true)
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.AUTHORCOL_NAME));
                     ;
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
                 }
                 if(!subjectCheckBox.isSelected()){
 //                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.SUBJECTCOL_NAME));
 
                 }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
-                }
                 if(!recipCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.RECIPCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
                 }
                 if(!bodyCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.BODYCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
                 }
                 if(!attachCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.ATTACHCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
                 }
                 if(!mailRecipCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.MAILRECIPCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
                 }
                 if(!ccCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.CCCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
                 }
                 if(!bccCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.BCCCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
                 }
                 if(!usernameCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.USERNAMECOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
                 }
                 if(!insertDateCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.INSERTDATECOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
                 }
                 if(!tagsCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.TAGSCOL_NAME));
-
-                }
-                else{
-//                    MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
                 }
                 if(!lineNumberCheckBox.isSelected()){
-//                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,true);
                     mailTable.removeColumn(mailTable.getColumn(MailTableModel.LINENUMBERCOL_NAME));
-
-                } else {
-//                    MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
                 }
                 new FindMessagesWorker(mainFrame).start();
                 setVisible(false);

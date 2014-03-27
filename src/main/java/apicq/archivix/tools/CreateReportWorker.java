@@ -2,7 +2,6 @@ package apicq.archivix.tools;
 
 import apicq.archivix.gui.AttachmentSignature;
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageTableModel;
 import apicq.archivix.gui.TextMessage;
 
 import javax.swing.*;

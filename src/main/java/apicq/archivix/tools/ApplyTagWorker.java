@@ -1,7 +1,6 @@
 package apicq.archivix.tools;
 
 import apicq.archivix.gui.MainFrame;
-import apicq.archivix.gui.MessageTableModel;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

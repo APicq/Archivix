@@ -1,6 +1,7 @@
 package apicq.archivix.gui;
 
 import apicq.archivix.gui.table.MailTable;
+import apicq.archivix.gui.table.MailTableModel;
 import apicq.archivix.tools.*;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.table.ColumnFactory;
@@ -79,39 +80,39 @@ public class MainFrame extends JFrame implements ActionListener {
         dabataseFile = prop.getProperty("database","");
         attachmentDirectory = prop.getProperty("attachmentdir","");
         updateMainTitle();
+//
+//        if(prop.getProperty("idcol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
+//        if(prop.getProperty("datecol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
+//        if(prop.getProperty("authorcol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
+//        if(prop.getProperty("subjectcol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
+//        if(prop.getProperty("recipcol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
+//        if(prop.getProperty("bodycol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
+//        if(prop.getProperty("attachcol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
+//        if(prop.getProperty("mailrecipcol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
+//        if(prop.getProperty("cccol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
+//        if(prop.getProperty("bcccol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
+//        if(prop.getProperty("usernamecol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
+//        if(prop.getProperty("insertdatecol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
+//        if(prop.getProperty("tagscol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
+//        if(prop.getProperty("linenumbercol","yes").equals("no"))
+//            MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
 
-        if(prop.getProperty("idcol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
-        if(prop.getProperty("datecol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
-        if(prop.getProperty("authorcol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
-        if(prop.getProperty("subjectcol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
-        if(prop.getProperty("recipcol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
-        if(prop.getProperty("bodycol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
-        if(prop.getProperty("attachcol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
-        if(prop.getProperty("mailrecipcol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
-        if(prop.getProperty("cccol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
-        if(prop.getProperty("bcccol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
-        if(prop.getProperty("usernamecol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
-        if(prop.getProperty("insertdatecol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
-        if(prop.getProperty("tagscol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
-        if(prop.getProperty("linenumbercol","yes").equals("no"))
-            MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
 
-
-        // Disable renaming in file chooser :
-        UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+        // 1Nsable renaming in file chooser :
+        UIManager.put("FileChooser.readOnly", Boolean.FALSE);
 
         // Misc frame configuration
         setLayout(new MigLayout("", "[grow,fill]", "[][grow]"));
@@ -173,8 +174,39 @@ public class MainFrame extends JFrame implements ActionListener {
         // ----------
         searchPanel = new SearchPanel(this);
         add(searchPanel, "wrap");
+
+
         messageTable = new MailTable(this);
 
+        // Load messageTable configuration :
+        if(prop.getProperty("idcol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.IDCOL_NAME));
+        if(prop.getProperty("datecol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.DATECOL_NAME));
+        if(prop.getProperty("authorcol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.AUTHORCOL_NAME));
+        if(prop.getProperty("subjectcol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.SUBJECTCOL_NAME));
+        if(prop.getProperty("recipcol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.RECIPCOL_NAME));
+        if(prop.getProperty("bodycol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.BODYCOL_NAME));
+        if(prop.getProperty("attachcol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.ATTACHCOL_NAME));
+        if(prop.getProperty("mailrecipcol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.MAILRECIPCOL_NAME));
+        if(prop.getProperty("cccol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.CCCOL_NAME));
+        if(prop.getProperty("bcccol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.BCCCOL_NAME));
+        if(prop.getProperty("usernamecol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.USERNAMECOL_NAME));
+        if(prop.getProperty("insertdatecol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.INSERTDATECOL_NAME));
+        if(prop.getProperty("tagscol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.TAGSCOL_NAME));
+        if(prop.getProperty("linenumbercol","yes").equals("no"))
+            messageTable.removeColumn(messageTable.getColumn(MailTableModel.LINENUMBERCOL_NAME));
 
         JScrollPane messageListScroller = new JScrollPane(messageTable);
         add(messageListScroller, "grow");
@@ -276,85 +308,85 @@ public class MainFrame extends JFrame implements ActionListener {
             prop.setProperty("database",dabataseFile);
             prop.setProperty("attachmentdir",attachmentDirectory);
 
-            if(MessageColumnFactory.isVisible(MessageTableModel.IDCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.IDCOL_NAME)){
                 prop.setProperty("idcol","yes");
             }
             else {
                 prop.setProperty("idcol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.DATECOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.DATECOL_NAME)){
                 prop.setProperty("datecol","yes");
             }
             else {
                 prop.setProperty("datecol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.AUTHORCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.AUTHORCOL_NAME)){
                 prop.setProperty("authorcol","yes");
             }
             else {
                 prop.setProperty("authorcol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.SUBJECTCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.SUBJECTCOL_NAME)){
                 prop.setProperty("subjectcol","yes");
             }
             else {
                 prop.setProperty("subjectcol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.RECIPCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.RECIPCOL_NAME)){
                 prop.setProperty("recipcol","yes");
             }
             else {
                 prop.setProperty("recipcol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.BODYCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.BODYCOL_NAME)){
                 prop.setProperty("bodycol","yes");
             }
             else {
                 prop.setProperty("bodycol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.ATTACHCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.ATTACHCOL_NAME)){
                 prop.setProperty("attachcol","yes");
             }
             else {
                 prop.setProperty("attachcol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.MAILRECIPCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.MAILRECIPCOL_NAME)){
                 prop.setProperty("mailrecipcol","yes");
             }
             else {
                 prop.setProperty("mailrecipcol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.CCCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.CCCOL_NAME)){
                 prop.setProperty("cccol","yes");
             }
             else {
                 prop.setProperty("cccol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.BCCCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.BCCCOL_NAME)){
                 prop.setProperty("bcccol","yes");
             }
             else {
                 prop.setProperty("bcccol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.USERNAMECOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.USERNAMECOL_NAME)){
                 prop.setProperty("usernamecol","yes");
             }
             else {
                 prop.setProperty("usernamecol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.INSERTDATECOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.INSERTDATECOL_NAME)){
                 prop.setProperty("insertdatecol","yes");
             }
             else {
                 prop.setProperty("insertdatecol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.TAGSCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.TAGSCOL_NAME)){
                 prop.setProperty("tagscol","yes");
             }
             else {
                 prop.setProperty("tagscol","no");
             }
-            if(MessageColumnFactory.isVisible(MessageTableModel.LINENUMBERCOL)){
+            if(messageTable.isVisibleColumn(MailTableModel.LINENUMBERCOL_NAME)){
                 prop.setProperty("linenumbercol","yes");
             }
             else {
@@ -431,6 +463,4 @@ public class MainFrame extends JFrame implements ActionListener {
 /*
  todo : tags table : make(tag,msgid) primary key
  menu : quit & save -> quit
- menu : save ->config
- menu : build time stamp
  */
