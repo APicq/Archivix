@@ -4,7 +4,6 @@ import apicq.archivix.gui.table.MailTable;
 import apicq.archivix.gui.table.MailTableModel;
 import apicq.archivix.tools.*;
 import net.miginfocom.swing.MigLayout;
-import org.jdesktop.swingx.table.ColumnFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
 public class MainFrame extends JFrame implements ActionListener {
 
     public static final Logger log = Logger.getLogger("Archivix");
-    public static final String archivixVersion = "Test_0327_1";
+    public static final String archivixVersion = "Test_0328_1";
 
     // Full path to sqlite database :
     private String dabataseFile = "";
@@ -59,9 +58,6 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     public MainFrame() {
 
-        // Create Column factory :
-        ColumnFactory.setInstance(new MessageColumnFactory());
-
         // Load configuration :
         Properties prop = new Properties();
         try {
@@ -80,43 +76,16 @@ public class MainFrame extends JFrame implements ActionListener {
         dabataseFile = prop.getProperty("database","");
         attachmentDirectory = prop.getProperty("attachmentdir","");
         updateMainTitle();
-//
-//        if(prop.getProperty("idcol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.IDCOL,false);
-//        if(prop.getProperty("datecol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.DATECOL,false);
-//        if(prop.getProperty("authorcol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.AUTHORCOL,false);
-//        if(prop.getProperty("subjectcol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.SUBJECTCOL,false);
-//        if(prop.getProperty("recipcol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.RECIPCOL,false);
-//        if(prop.getProperty("bodycol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.BODYCOL,false);
-//        if(prop.getProperty("attachcol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.ATTACHCOL,false);
-//        if(prop.getProperty("mailrecipcol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.MAILRECIPCOL,false);
-//        if(prop.getProperty("cccol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.CCCOL,false);
-//        if(prop.getProperty("bcccol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.BCCCOL,false);
-//        if(prop.getProperty("usernamecol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.USERNAMECOL,false);
-//        if(prop.getProperty("insertdatecol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.INSERTDATECOL,false);
-//        if(prop.getProperty("tagscol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.TAGSCOL,false);
-//        if(prop.getProperty("linenumbercol","yes").equals("no"))
-//            MessageColumnFactory.setVisibility(MessageTableModel.LINENUMBERCOL,false);
 
 
-        // 1Nsable renaming in file chooser :
+        // enable renaming in file chooser :
         UIManager.put("FileChooser.readOnly", Boolean.FALSE);
 
-        // Misc frame configuration
-        setLayout(new MigLayout("", "[grow,fill]", "[][grow]"));
+        // Close program if window closed :
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Layout configuration :
+        setLayout(new MigLayout("", "[grow,fill]", "[][grow]"));
 
         // -----------
         // Setup menu

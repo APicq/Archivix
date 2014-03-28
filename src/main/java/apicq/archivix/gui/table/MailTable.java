@@ -126,8 +126,22 @@ public class MailTable extends JTable {
         mtm.getMessages().clear();
     }
 
+    /**
+     * add a textMessage a the end of the textMessage array;
+     * @param tm
+     */
     public void addMessage(TextMessage tm){
         MailTableModel mtm = (MailTableModel) getModel() ;
         mtm.getMessages().add(tm);
+    }
+
+    /**
+     * returns the TextMessage at index i
+     * @param index
+     * @return
+     */
+    public TextMessage get(int index){
+        MailTableModel mtm = (MailTableModel) getModel() ;
+        return mtm.getMessages().get(index);
     }
 }

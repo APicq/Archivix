@@ -30,7 +30,7 @@ public class AddNewTagWorker extends SpecializedWorker {
     @Override
     protected Void doInBackground() throws Exception {
 
-        // Add new tag into tagref :
+        // Add new tag into tagsref table :
         // -------------------------
         try {
             PreparedStatement addNewTagRefStmt = pStatement("INSERT INTO tagsref(name) VALUES(?)");
@@ -48,13 +48,14 @@ public class AddNewTagWorker extends SpecializedWorker {
         }
 
         // Add tag to messages :
-        // build an array of message ids : // todo copy code
+        // build an array of message ids :
         publish("Recherche des messages à tagger..");
         int[] selectedRows = mainFrame.getMessageTable().getSelectedRows();
         int[] messageIds = new int[selectedRows.length];
-        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+//        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
         for(int x=0 ; x<selectedRows.length ; x++){
-            messageIds[x] = mtm.get(selectedRows[x]).id();
+//            messageIds[x] = mtm.get(selectedRows[x]).id();
+            messageIds[x] = mainFrame.getMessageTable().get(selectedRows[x]).id() ;
         }
 
         setMaximum(messageIds.length);

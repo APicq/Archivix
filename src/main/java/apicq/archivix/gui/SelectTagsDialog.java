@@ -81,7 +81,7 @@ public class SelectTagsDialog extends JDialog {
             if(!tagIsAlreadyInPanel) {
                 JLabel newTagLabel = new JLabel(clickedTag);
                 newTagLabel.setOpaque(true);
-                newTagLabel.setBackground(Color.WHITE);
+                newTagLabel.setBackground(Color.YELLOW);
                 newTagLabel.setBorder(new LineBorder(Color.black));
                 selectedTagsPanel.add(newTagLabel);
             }
@@ -109,6 +109,7 @@ public class SelectTagsDialog extends JDialog {
         tagList.addListSelectionListener(new MySelectionListener());
         tagList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         tagList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tagList.setBorder(new EmptyBorder(30,10,30,10));
         JScrollPane tagListScrollPane = new JScrollPane(tagList);
         add(tagListScrollPane, "grow,span");
 

@@ -73,7 +73,7 @@ public class CreateReportWorker extends SpecializedWorker {
 
         setMaximum(selectedRows.length);
 
-        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+//        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
 
         // for each message :
         for(int index : selectedRows){
@@ -82,7 +82,8 @@ public class CreateReportWorker extends SpecializedWorker {
 
             setProgress(++savedMessages);
 
-            TextMessage tm = mtm.get(index);
+//            TextMessage tm = mtm.get(index);
+            TextMessage tm = mainFrame.getMessageTable().get(index);
             setString("message "+savedMessages+"/"+selectedRows.length);
 
             // Create message directory

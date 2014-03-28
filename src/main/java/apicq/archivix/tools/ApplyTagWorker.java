@@ -32,9 +32,10 @@ public class ApplyTagWorker extends  SpecializedWorker{
         // build an array of message ids :
         int[] selectedRows = mainFrame.getMessageTable().getSelectedRows();
         int[] messageIds = new int[selectedRows.length];
-        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
+//        MessageTableModel mtm = (MessageTableModel) mainFrame.getMessageTable().getModel();
         for(int x=0 ; x<selectedRows.length ; x++){
-            messageIds[x] = mtm.get(selectedRows[x]).id();
+//            messageIds[x] = mtm.get(selectedRows[x]).id();
+            messageIds[x] = mainFrame.getMessageTable().get(selectedRows[x]).id();
         }
 
         // -----------------
