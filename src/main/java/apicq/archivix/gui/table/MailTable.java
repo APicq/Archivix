@@ -43,6 +43,7 @@ public class MailTable extends JTable {
 
         this.mainFrame = mainFrame ;
         setModel(new MailTableModel());
+        setDefaultRenderer(Object.class,new MailTableRenderer());
 
         // prevents column moves :
         getTableHeader().setReorderingAllowed(false);
