@@ -11,13 +11,18 @@ import java.awt.*;
 public class MailTableRenderer implements TableCellRenderer{
 
 
-    public static Color SUBJECT_BACKGROUND_COLOR = new Color(246,245,154);
+    public static Color SUBJECT_BACKGROUND_COLOR = new Color(246,245,175);
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = new JLabel();
         label.setOpaque(true);
-        label.setBackground(Color.WHITE);
+        if( (row%2)==0 ) {
+            label.setBackground(Color.WHITE);
+        }
+        else {
+            label.setBackground(Color.LIGHT_GRAY);
+        }
         label.setText(value.toString());
 //        label.setHorizontalAlignment(JLabel.CENTER);
 
@@ -33,7 +38,8 @@ public class MailTableRenderer implements TableCellRenderer{
         }
         if(isSelected){
 //            label.setBackground(Color.blue.LIGHT_GRAY);
-            label.setBorder(new LineBorder(Color.RED));
+//            label.setBorder(new LineBorder(Color.BLACK));
+            label.setBackground(new Color(153,153,153));
         }
     return label ;
     }
