@@ -255,11 +255,13 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
             add(messageField, "span");
 
             // Progressbar configuration :
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            int goodWidth = (int) (screenSize.getWidth() / 2);
             progressBar = new JProgressBar();
             progressBar.setMaximum(100);
             progressBar.setIndeterminate(false);
             progressBar.setStringPainted(true);
-            progressBar.setMinimumSize(new Dimension(400,0));
+            progressBar.setMinimumSize(new Dimension(goodWidth,0));
             add(progressBar, "grow,span");
 
             // Button cancel configuration :
