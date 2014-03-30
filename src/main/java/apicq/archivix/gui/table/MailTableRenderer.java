@@ -10,16 +10,20 @@ import java.awt.*;
  */
 public class MailTableRenderer implements TableCellRenderer{
 
+
+    public static Color SUBJECT_BACKGROUND_COLOR = new Color(219,249,83);
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = new JLabel();
         label.setOpaque(true);
+        label.setBackground(Color.WHITE);
         label.setText(value.toString());
 //        label.setHorizontalAlignment(JLabel.CENTER);
 
         switch(column){
             case MailTableModel.SUBJECTCOL_ORDER :
-                label.setBackground(Color.YELLOW);
+                label.setBackground(SUBJECT_BACKGROUND_COLOR);
                 label.setText(value.toString());
                 break;
             case MailTableModel.DATECOL_ORDER:
