@@ -36,7 +36,7 @@ public class InsertMessageWorker extends SpecializedWorker {
     // User name
     private static final String USER = System.getProperty("user.name");
 
-
+    // Array with all message files to insert into database
     private final File[] messageFiles ;
 
     /**
@@ -71,8 +71,6 @@ public class InsertMessageWorker extends SpecializedWorker {
             catch(Exception e){
                 log.warning(e.getMessage());
             }
-
-
 
             // Update progress
             setProgress(++cursor);

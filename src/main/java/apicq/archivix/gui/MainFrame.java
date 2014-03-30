@@ -22,14 +22,32 @@ public class MainFrame extends JFrame implements ActionListener {
 
     // Full path to sqlite database :
     private String dabataseFile = "";
+
+    /**
+     * Getter for database file
+     * @return
+     */
     public String databaseFile() {return dabataseFile;}
 
     // Full path to attachment directory
     private String attachmentDirectory = "";
+
+    /**
+     * Getter for attachment directory
+     * @return
+     */
     public String attachmentDirectory() {return attachmentDirectory;}
+
+    // Full path to message pool directory :
+    private String messagePoolDirectory = "" ;
 
     // JTable to print messages :
     private final MailTable messageTable ;
+
+    /**
+     * getter for message JTable
+     * @return MailTable
+     */
     public MailTable getMessageTable(){ return messageTable ;}
 
     // Panel with buttons, to search elements
@@ -75,6 +93,7 @@ public class MainFrame extends JFrame implements ActionListener {
         // Apply configuration
         dabataseFile = prop.getProperty("database","");
         attachmentDirectory = prop.getProperty("attachmentdir","");
+        messagePoolDirectory = prop.getProperty("messagepooldir","");
         updateMainTitle();
 
 
@@ -242,10 +261,11 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("insertMessagesAction".equals(e.getActionCommand())){
-            JFileChooser fileChooser = new JFileChooser();
+            JFileChooser fileChooser = new JFileChooser(messagePoolDirectory);
             fileChooser.setDialogTitle("Choisissez un ou des fichiers messages outlook (.msg)");
             fileChooser.setMultiSelectionEnabled(true);
             if(fileChooser.showOpenDialog(MainFrame.this)==JFileChooser.APPROVE_OPTION){
+                messagePoolDirectory = fileChooser.getCurrentDirectory().getAbsolutePath();
                 File[] messageFiles = fileChooser.getSelectedFiles();
                 new InsertMessageWorker(MainFrame.this,messageFiles).start();
 
@@ -276,7 +296,7 @@ public class MainFrame extends JFrame implements ActionListener {
             Properties prop = new Properties();
             prop.setProperty("database",dabataseFile);
             prop.setProperty("attachmentdir",attachmentDirectory);
-
+            prop.setProperty("messagepooldir",messagePoolDirectory);
             if(messageTable.isVisibleColumn(MailTableModel.IDCOL_NAME)){
                 prop.setProperty("idcol","yes");
             }
@@ -361,7 +381,6 @@ public class MainFrame extends JFrame implements ActionListener {
             else {
                 prop.setProperty("linenumbercol","no");
             }
-
             try {
                 prop.store(new FileOutputStream("config.txt"), "properties for Archivix");
                 JOptionPane.showMessageDialog(this,"La configuration est enregistrée sous config.txt");

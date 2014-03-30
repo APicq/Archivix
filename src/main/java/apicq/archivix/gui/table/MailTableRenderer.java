@@ -11,7 +11,7 @@ import java.awt.*;
 public class MailTableRenderer implements TableCellRenderer{
 
 
-    public static Color SUBJECT_BACKGROUND_COLOR = new Color(219,249,83);
+    public static Color SUBJECT_BACKGROUND_COLOR = new Color(246,245,154);
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
