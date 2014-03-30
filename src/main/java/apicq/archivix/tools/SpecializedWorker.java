@@ -198,6 +198,9 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
     @Override
     protected void process(List<String> chunks) {
         for (String str : chunks) progressDialog.getProgressBar().setString(str);
+        //progressDialog.pack();
+//        progressDialog.revalidate();
+//        progressDialog.repaint();
     }
 
     /**
@@ -240,30 +243,51 @@ public class SpecializedWorker extends SwingWorker<Void, String> {
          * @param subject
          */
         ProgressDialog(MainFrame mainFrame, String subject) {
+
+            // Miscallenous configuration :
             super(mainFrame);
             setModal(true);
-            setLayout(new MigLayout());
+            setLayout(new MigLayout("", "[grow][]", ""));
             setTitle("Tâche en cours...");
+
+            // Message textfield configuration :
             messageField = new JLabel(subject);
-            add(messageField, "wrap");
+            add(messageField, "span");
+
+            // Progressbar configuration :
             progressBar = new JProgressBar();
             progressBar.setMaximum(100);
             progressBar.setIndeterminate(false);
             progressBar.setStringPainted(true);
-            add(progressBar, "grow");
+            progressBar.setMinimumSize(new Dimension(400,0));
+            add(progressBar, "grow,span");
+
+            // Button cancel configuration :
             cancelButton = new JButton("Annuler");
             add(cancelButton, "");
             pack();
         }
 
+        /**
+         * Getter for progressbar :
+         * @return
+         */
         public JProgressBar getProgressBar() {
             return progressBar;
         }
 
+        /**
+         * Getter for Cancel button :
+         * @return
+         */
         public JButton getCancelButton() {
             return cancelButton;
         }
 
+        /**
+         * Synchronize progressbar with Worker bound property
+         * @param evt
+         */
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if ("progress".equals(evt.getPropertyName())) {

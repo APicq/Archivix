@@ -63,6 +63,17 @@ public class InsertMessageWorker extends SpecializedWorker {
 
         for( File messageFile : messageFiles ){
 
+            //debug
+            try {
+                log.warning("debug code here");
+                Thread.sleep(300);
+            }
+            catch(Exception e){
+                log.warning(e.getMessage());
+            }
+
+
+
             // Update progress
             setProgress(++cursor);
             setString(messageFile.getName());

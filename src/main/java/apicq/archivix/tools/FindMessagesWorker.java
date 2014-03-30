@@ -147,6 +147,7 @@ public class FindMessagesWorker extends SpecializedWorker {
             ResultSet rs = pstmt.executeQuery();
             int progressCount = 0 ;
             while(rs.next()){
+
                 setProgress((int) (((++progressCount) * 100.0) / (numberOfRows + 1)));
                 // pick up tags
                 PreparedStatement tagsStatement =
